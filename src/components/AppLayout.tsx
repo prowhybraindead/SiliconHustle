@@ -6,6 +6,7 @@ import { Lock, AlertTriangle, LogOut, Delete } from "lucide-react";
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { EmptyState } from "./EmptyState";
+import { BrandWordmark } from "./BrandWordmark";
 import { useGameStore } from "../store/gameStore";
 import { apiRequest, unlockPlayerProfile } from "../api/client";
 import { useSaveGames } from "../api/hooks";
@@ -146,7 +147,7 @@ export function AppLayout() {
         <main className="w-full max-w-[480px] px-margin-safe flex flex-col gap-gutter z-10 relative">
           {/* Header / Brand */}
           <header className="text-center mb-6">
-            <h1 className="font-sans text-2xl font-black text-primary-container tracking-tighter uppercase">SILICON HUSTLE</h1>
+            <BrandWordmark className="mx-auto max-w-[280px]" eager size="lg" />
             <div className="font-mono text-[10px] uppercase tracking-wider text-on-surface-variant mt-2 flex items-center justify-center gap-2">
               <span className="inline-block w-2 h-2 bg-secondary-fixed-dim rounded-full animate-pulse" />
               SYSTEM SECURE // AWAITING AUTHORIZATION
@@ -293,4 +294,3 @@ export function AppLayout() {
     </div>
   );
 }
-

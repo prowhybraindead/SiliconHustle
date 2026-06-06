@@ -2,136 +2,261 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./public/logo/SilHus_W.svg">
     <source media="(prefers-color-scheme: light)" srcset="./public/logo/SilHus_B.svg">
-    <img alt="Silicon Hustle Logo" src="./public/logo/SilHus_W.svg" width="380px" />
+    <img alt="Silicon Hustle wordmark" src="./public/logo/SilHus_W.svg" width="420px" />
   </picture>
 </p>
 
-<h1 align="center">Silicon Hustle: Tech Shop Simulator</h1>
+<h1 align="center">Silicon Hustle</h1>
 
 <p align="center">
-  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License MIT" /></a>
+  <strong>Tech Shop Simulator built as a full frontend + backend experience in one workspace.</strong><br />
+  Buy low. Test hard. Sell smart.
+</p>
+
+<p align="center">
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="MIT License" /></a>
   <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=flat&logo=react&logoColor=black" alt="React" />
   <img src="https://img.shields.io/badge/Vite-5.4-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/FastAPI-0.115-009688?style=flat&logo=fastapi&logoColor=white" alt="FastAPI" />
   <img src="https://img.shields.io/badge/SQLite-3.x-003B57?style=flat&logo=sqlite&logoColor=white" alt="SQLite" />
-  <img src="https://img.shields.io/badge/Tests-95%20Passed-brightgreen?style=flat&logo=pytest&logoColor=white" alt="Tests" />
-</p>
-
-<p align="center">
-  <strong>Simulate the operation of a PC component showroom & hardware refurbish lab.</strong><br />
-  Slogan: <em>"Buy low. Test hard. Sell smart."</em>
+  <img src="https://img.shields.io/badge/Cloudflare%20Pages-ready-F38020?style=flat&logo=cloudflare&logoColor=white" alt="Cloudflare Pages" />
 </p>
 
 ---
 
-## 🖥️ Project Overview
+## Overview
 
-**Silicon Hustle** is a web-based tech shop management simulation game. Players assume the role of a hardware business owner: procuring used and new parts, running detailed hardware telemetry diagnostics, cleaning and refurbishing broken components, negotiating custom sales quotes with customers via chat, and hiring/managing technicians.
+Silicon Hustle is a web-based tech shop management sim where you run a hardware business from the ground up.
 
-The client UI is built with a custom **Cyber-Industrial Game Console** aesthetic, featuring dense information panels, telemetry readouts, dark mode-first visuals, and tactile monospaced terminal logs.
+The frontend is a cyber-industrial management console with dense telemetry panels, inventory views, quote workflows, staff management, and warranty operations.
 
----
+The backend is a FastAPI service with SQLite persistence, rule-based gameplay systems, and deployment support for a private loopback-only production setup.
 
-## 🛠️ Feature Map (Stations)
+This repository includes both halves:
 
-| Station / Module | Description & Key Operational Mechanics |
-| :--- | :--- |
-| **CMD // Command Center** | Financial statistics, transaction log stream, 2D showroom board layout, and active telemetry stats. |
-| **CTL // Catalog Vault** | Detailed hardware databases listing sockets, TDP values, MSRPs, and market volatility scales. |
-| **WRH // Warehouse** | Central repository inventory. Shows known component metrics, wear telemetry, and defects. |
-| **RFB // Refurbish Bench** | Cleaning dust, thermal paste re-application, fan replacements, firmware flashing, and micro-soldering. |
-| **STF // Staff Room** | Hire/fire staff, monitor employee fatigue & morale levels, and assign technicians to different benches. |
-| **WRN // Warranty Desk** | Resolve customer RMA/warranty tickets. Inspect hardware defects and issue repairs, swaps, or refunds. |
-| **FX // FX Exchange** | Real-time foreign exchange market with 10 currencies. Tracks snapshots, spreads, and exchange fees. |
-| **CHT // Sales Chat** | Script-driven negotiation desk. Customize quotes, analyze risk profiles, and seal customer orders. |
+- `game/` contains the frontend app
+- `game/server/` contains the backend API
+- `game/server/cloudflared/` contains the token-based Cloudflare Tunnel runner
+- `game/public/logo/` contains the logo assets used by the UI and README
 
 ---
 
-## 📦 Installation & Local Setup
+## Game Loop
 
-### 1. Frontend Setup (React + Vite)
+You manage a hardware showroom and service lab across multiple stations:
 
-Navigate into the frontend project root:
+| Station | Purpose |
+| :-- | :-- |
+| `CMD` | Command center with cash, reputation, and telemetry |
+| `CTL` | Product catalog and hardware reference data |
+| `WRH` | Warehouse inventory management |
+| `RFB` | Refurbish bench for cleaning, repair, and testing |
+| `STF` | Staff hiring, morale, and assignment management |
+| `WRN` | Warranty claims and resolution workflows |
+| `FX` | Foreign exchange and pricing tools |
+| `CHT` | Customer sales chat and quote negotiation |
+
+The gameplay systems are intentionally rule-based so the data stays predictable, testable, and safe for persistence.
+
+---
+
+## Project Layout
+
+```text
+game/
+  src/                  Frontend source code
+  public/logo/          Brand wordmarks used by the UI
+  server/               FastAPI backend
+    app/                Backend package
+    app.py              Fixed startup launcher for one-command hosts
+    cloudflared/        Token-based tunnel runner
+  docs/                 Deployment and operations docs
+```
+
+---
+
+## Frontend
+
+The frontend is a Vite app built with React 18, TypeScript, Tailwind, React Router, and TanStack Query.
+
+### Local frontend setup
+
 ```bash
 cd game
 npm install
 cp .env.example .env
 npm run dev
 ```
-- **Local Dev Server:** `http://localhost:5173`
 
-### 2. Backend Setup (FastAPI + SQLite)
+- Dev server: `http://localhost:5173`
+- Production build output: `dist`
 
-Navigate to the backend server folder:
+### Frontend build
+
+```bash
+cd game
+npm run build
+```
+
+### UI notes
+
+- The app now uses logo wordmarks from `public/logo/` instead of text-only brand headers in the main shell, top bar, and home screen.
+- The white logo is used on darker surfaces and the black logo is used on lighter surfaces through `<picture>` source switching.
+
+---
+
+## Backend
+
+The backend lives in `game/server/` and serves the API on loopback in production.
+
+### Local backend setup
+
 ```bash
 cd game/server
 python -m venv .venv
-
-# On Windows (PowerShell or CMD):
 .venv\Scripts\activate
-
-# On macOS / Linux:
-source .venv/bin/activate
-
 pip install -r requirements.txt
 cp .env.example .env
 uvicorn app.main:app --reload
 ```
-- **Backend API URL:** `http://localhost:8000`
-- **Swagger Documentation:** `http://localhost:8000/docs`
+
+- Local API: `http://localhost:8000`
+- Swagger: `http://localhost:8000/docs`
+
+### Core backend settings
+
+The most important environment values are:
+
+- `DATABASE_URL=sqlite:///./silicon_hustle.db` for local development
+- `DATABASE_URL=sqlite:////var/lib/silicon_hustle/silicon_hustle.db` for production
+- `FRONTEND_ORIGIN` for the deployed frontend domain
+
+### Fixed startup launcher
+
+Some hosts only allow a single startup command. For that case, use:
+
+```bash
+/usr/local/bin/python /home/container/server/app.py
+```
+
+That launcher is designed to:
+
+- start the backend from `game/server/app/`
+- wait for `http://127.0.0.1:8000/health`
+- start the token-based Cloudflare Tunnel runner
+- stop the companion process if either side exits
 
 ---
 
-## 🔒 Testing & Data Validation
+## Cloudflare Deployment
 
-Silicon Hustle integrates testing and consistency validation utility scripts:
+The recommended production setup is:
+
+Frontend on Cloudflare Pages
+-> API domain on Cloudflare Tunnel
+-> private FastAPI backend on `127.0.0.1:8000`
+-> persistent SQLite file outside the repo tree
+
+### Deployment docs
+
+- [Cloudflare Tunnel Deployment Guide](./docs/DEPLOYMENT_TUNNEL.md)
+- [Cloudflare Tunnel Runner](./server/cloudflared/README.md)
+
+### Pages settings
+
+- Root directory: `game`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Env:
+  - `VITE_API_BASE_URL=https://api-your-domain.example`
+
+### Tunnel runner
+
+The tunnel runner is token-based. It expects:
+
+- `game/server/cloudflared/.env`
+- `CLOUDFLARED_TOKEN`
+- optional `CLOUDFLARED_AUTO_INSTALL=1`
+
+Run it with:
+
+```bash
+cd game/server/cloudflared
+chmod +x startwithtunnel.sh
+./startwithtunnel.sh
+```
+
+If `cloudflared` is missing and auto-install is enabled, the script downloads a local copy into `game/server/cloudflared/.bin/`.
+
+---
+
+## Persistence and Data
+
+The backend stores the game state in SQLite and is designed to keep data stable across restarts and deploys.
+
+Recommended production database path:
+
+```text
+/var/lib/silicon_hustle/silicon_hustle.db
+```
+
+Recommended production backend env:
+
+```env
+DATABASE_URL=sqlite:////var/lib/silicon_hustle/silicon_hustle.db
+FRONTEND_ORIGIN=https://your-cloudflare-pages-domain.pages.dev
+```
+
+The SQLite database, PIN-based profile unlock logic, quote snapshots, market event snapshots, and warranty flow are all server-owned and intentionally isolated from the public frontend bundle.
+
+---
+
+## Useful Commands
+
+### Frontend
+
+```bash
+cd game
+npm run dev
+npm run build
+npm run preview
+```
+
+### Backend
 
 ```bash
 cd game/server
-
-# Run the complete unit test suite (95 tests)
-python -m pytest
-
-# Display row metrics for SQLite records
+pytest
 python scripts/db_counts.py
-
-# Verify master brand assets consistency
 python scripts/validate_brands.py
-
-# Import and validate hardware catalog data v2
 python scripts/validate_hardware_products.py --file data/imports/silicon_hustle_hardware_products_v2_normalized.json
+```
+
+### Tunnel runner
+
+```bash
+cd game/server/cloudflared
+./startwithtunnel.sh
+./startwithtunnel.sh ./prod.env
 ```
 
 ---
 
-## 🌐 Deployment Guidelines (Deploy Readiness)
+## Troubleshooting
 
-### Frontend (e.g., Cloudflare Pages)
-- **Build Command:** `npm run build`
-- **Output Directory:** `dist`
-- **Root Directory:** `game`
-- **Environment Variables:** Set `VITE_API_BASE_URL` to point to the production API domain (do not leave it as localhost).
+- Frontend still calls `localhost`: check `VITE_API_BASE_URL` in Cloudflare Pages and redeploy.
+- CORS errors: confirm `FRONTEND_ORIGIN` matches the deployed frontend domain and restart the backend.
+- 502 from the tunnel: confirm backend is listening on `127.0.0.1:8000` and `curl http://127.0.0.1:8000/health` succeeds.
+- Tunnel token missing: create `game/server/cloudflared/.env` from `.env.example`.
+- Database looks empty: confirm `DATABASE_URL` points to the persistent SQLite file and the backend is using the intended env file.
 
-### Backend (e.g., VPS / Ubuntu Server)
-1. **Virtual Environment Setup:** Activate virtualenv and install dependencies from `requirements.txt`.
-2. **Environment Settings (`.env`):**
-   - Set `ENVIRONMENT=production`.
-   - Set `DATABASE_URL` to an absolute file path pointing to persistent SQLite storage (e.g., `sqlite:////var/lib/silicon_hustle/production.db`).
-   - Configure `FRONTEND_ORIGIN` to match your production frontend domain (e.g., Cloudflare Pages domain) to enforce strict CORS access.
-3. **Operational Hosting:** Run backend with `uvicorn` or `gunicorn` behind an Nginx/Caddy reverse proxy configured with SSL certificates.
+If the tunnel token is ever exposed, rotate it in the Cloudflare dashboard immediately.
 
 ---
 
-## ⚠️ Security & Database Regulations
+## More Docs
 
-> [!IMPORTANT]
-> - **Idempotent Seeding:** Do not delete `silicon_hustle.db` when updating/deploying. The seed process is fully idempotent and protects user progress data.
-> - **Hashed Profiles:** Profile authorization PIN codes and session tokens are encrypted using SHA-256 on the backend server. The `X-Profile-Unlock-Token` is strictly required for editing protected states.
-> - **Hidden Condition attributes:** Wear attributes, sub-defects, and raw condition payload (`hidden_condition_json`) are private and strictly sanitized before responses reach the frontend.
-> - **Git Checks:** Make sure SQLite databases (`*.db`, `*.sqlite`, `*.sqlite3`) and local `.env` keys are untracked by Git.
-
----
-
-## 📄 License
-Licensed under the **MIT License**. See [LICENSE](./LICENSE) for details.
+- [Backend README](./server/README.md)
+- [Deployment Tunnel Guide](./docs/DEPLOYMENT_TUNNEL.md)
+- [Cloudflare Tunnel Runner README](./server/cloudflared/README.md)

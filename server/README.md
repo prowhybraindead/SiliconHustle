@@ -13,6 +13,23 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
+## Production Deployment
+
+For secure production deployment configurations utilizing Cloudflare Pages and the token-based Cloudflare Tunnel runner, bind Uvicorn locally to `127.0.0.1:8000` and consult:
+
+- [Cloudflare Tunnel Deployment Guide](../docs/DEPLOYMENT_TUNNEL.md)
+- [Cloudflare Tunnel Runner](./cloudflared/README.md)
+
+The recommended flow keeps the backend private on loopback and uses Cloudflare dashboard hostname mapping plus the tunnel token runner instead of local tunnel credentials/config files.
+
+If your host only accepts one startup command, use:
+
+```bash
+/usr/local/bin/python /home/container/server/app.py
+```
+
+That launcher starts the backend from `server/app/`, waits for the health check, and then starts the token-based tunnel runner.
+
 ## Environment Variables
 
 - `DATABASE_URL`: SQLite by default, `sqlite:///./silicon_hustle.db`.

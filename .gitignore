@@ -1,44 +1,116 @@
-# Node artifacts
+# ==========================================
+# OS Metadata & System Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+CHECKPOINT.md
+
+# ==========================================
+# IDEs & Editor Configurations
+# ==========================================
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Node / Frontend Artifacts
+# ==========================================
 node_modules/
 dist/
+dist-ssr/
 .vite/
+.eslintcache
+.parcel-cache
+.cache/
+package-lock.json.log
 
-# Python cache & build directories
+# ==========================================
+# Python Artifacts & Cache
+# ==========================================
 __pycache__/
+*.py[cod]
+*$py.class
 .pytest_cache/
 .ruff_cache/
-server/__pycache__/
-server/.pytest_cache/
-server/app/__pycache__/
-server/app/**/__pycache__/
+.mypy_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+*.pyo
+server/**/__pycache__/
+server/**/.pytest_cache/
 server/.pytest-tmp/
 
-# Virtual environments
+# ==========================================
+# Virtual Environments
+# ==========================================
 .venv/
 venv/
+ENV/
 env/
 server/.venv/
 server/venv/
+server/env/
+pip-wheel-metadata/
 
-# Environment configurations (secrets & local settings)
-.env
-.env.local
-.env.*.local
-server/.env
-server/.env.local
-
-# Databases & local stores
+# ==========================================
+# Database Engines & Local Stores
+# ==========================================
 *.db
 *.sqlite
 *.sqlite3
-server/*.db
-server/*.sqlite
-server/*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
 silicon_hustle.db
 server/silicon_hustle.db
 
-# Logs & temp files
+# ==========================================
+# Environment Configuration & Keys (Secrets)
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+server/.env
+server/.env.local
+server/*.env
+!server/.env.example
+server/cloudflared/.env
+server/cloudflared/.env.local
+server/cloudflared/*.env
+!server/cloudflared/.env.example
+server/cloudflared/.bin/
+server/cloudflared/*.json
+server/cloudflared/*.pem
+server/cloudflared/*.crt
+
+# ==========================================
+# Logs & Diagnostic Files
+# ==========================================
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*

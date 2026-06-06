@@ -7,6 +7,7 @@ import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import { StatusBadge } from "../components/StatusBadge";
+import { BrandWordmark } from "../components/BrandWordmark";
 import { useGameStore } from "../store/gameStore";
 import { formatVnd } from "../utils/format";
 
@@ -35,9 +36,9 @@ export function HomePage() {
           <span className="grid h-12 w-12 place-items-center rounded-lg border border-tech-blue/30 bg-tech-blue/10 text-tech-blue">
             <HardDriveDownload className="h-6 w-6" />
           </span>
-          <div>
-            <h1 className="text-3xl font-semibold text-white">Silicon Hustle</h1>
-            <p className="mt-1 text-slate-400">Tech Shop Simulator / Buy low. Test hard. Sell smart.</p>
+          <div className="min-w-0">
+            <BrandWordmark className="max-w-[280px] sm:max-w-[360px]" eager size="xl" />
+            <p className="mt-2 text-slate-400">Tech Shop Simulator / Buy low. Test hard. Sell smart.</p>
           </div>
         </div>
       </section>
