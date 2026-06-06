@@ -1,0 +1,3 @@
+product_slug,price_type,currency,amount,region,source_name,source_url,observed_at,confidence,notes
+intel-core-i5-14400,MSRP,USD,185.00,US,Intel Ark,https://ark.intel.com/content/www/us/en/ark.html,2026-06-04 12:00:00,OFFICIAL,Launch MSRP
+intel-core-i5-14400,LOCAL_RETAIL,VND,4699000,VN,Nguyen Kim,https://nguyenkim.com,2026-06-04 12:00:00,RETAILER,Retail box price

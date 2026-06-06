@@ -1,0 +1,39 @@
+{
+  "products": [
+    {
+      "slug": "example-gpu",
+      "name": "Example GPU",
+      "brand_slug": "example-brand",
+      "chip_vendor_slug": null,
+      "category": "GPU",
+      "release_year": null,
+      "origin_name_vi": null,
+      "origin_code": null,
+      "source_name": "Manual curated sheet",
+      "source_url": null,
+      "data_confidence": "MANUAL",
+      "real_specs": {
+        "raw_key_specs": "Example key specs",
+        "socket_slot": null,
+        "power_watts": 120
+      },
+      "pricing": {
+        "msrp_vnd": null,
+        "base_local_price_vnd": null,
+        "base_used_price_vnd": null,
+        "supplier_cost_vnd": null
+      },
+      "game_balance": {
+        "base_performance_score": 50,
+        "base_power_watts": 120,
+        "base_heat_score": 50,
+        "base_reliability_score": 70,
+        "used_demand_score": 50,
+        "mining_popularity_score": 0,
+        "depreciation_rate": 20
+      },
+      "image_url": null,
+      "notes": null
+    }
+  ]
+}

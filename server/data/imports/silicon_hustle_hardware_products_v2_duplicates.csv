@@ -1,0 +1,22 @@
+﻿product_slug,kept_source_row,duplicate_source_row,brand,model,category,duplicate_key_specs,action
+amd-ryzen-9-9900x,24,214,AMD,Ryzen 9 9900X,CPU,12 Cores 24 Threads | Kiến Trúc Zen 5 Mới Hiệu Năng Khủng,merged_into_existing_product_alternate_rows
+amd-ryzen-5-9600x,25,215,AMD,Ryzen 5 9600X,CPU,6 Cores 12 Threads | Chip Gaming Phổ Thông Thế Hệ Mới,merged_into_existing_product_alternate_rows
+amd-ryzen-7-5700x,29,220,AMD,Ryzen 7 5700X,CPU,8 Cores 16 Threads | Đồ Họa Kiến Trúc Render Giá Tốt,merged_into_existing_product_alternate_rows
+corsair-vengeance-lpx-32gb,75,226,Corsair,Vengeance LPX 32GB,RAM,2x16GB | DDR4 | 3200MHz | Thanh Đen Tối Giản Quốc Dân,merged_into_existing_product_alternate_rows
+g-skill-ripjaws-v-16gb,80,231,G.Skill,Ripjaws V 16GB,RAM,2x8GB | DDR4 | 3200MHz | Tản Nhôm Cắt Răng Cưa Hầm Hố,merged_into_existing_product_alternate_rows
+hiksemi-armor-ddr4-16gb,95,247,Hiksemi,Armor DDR4 16GB,RAM,2x8GB | DDR4 | 3200MHz | Kit RAM LED Giá Rẻ Nội Địa,merged_into_existing_product_alternate_rows
+crucial-p3-plus-1tb,115,258,Crucial,P3 Plus 1TB,Storage,NVMe PCIe Gen 4.0 | Lựa Chọn Phổ Thông Đáng Tiền,merged_into_existing_product_alternate_rows
+kingston-nv2-1tb,114,269,Kingston,NV2 1TB,Storage,NVMe PCIe Gen 4.0 | Ổ Cứng Quốc Dân Phá Giá Phổ Thông,merged_into_existing_product_alternate_rows
+kingston-a400-480gb,113,270,Kingston,A400 480GB,Storage,SSD 2.5 inch SATA 3 | Ổ Nâng Cấp Máy Cũ Bán Chạy Nhất Việt Nam,merged_into_existing_product_alternate_rows
+lexar-nm790-1tb,118,271,Lexar,NM790 1TB,Storage,NVMe PCIe Gen 4.0 | Tốc Độ Cao Tiết Kiệm Điện Không Cần Tản,merged_into_existing_product_alternate_rows
+intel-core-i7-3770,17,345,Intel,Core i7-3770,CPU,4 Cores 8 Threads | Combo Nâng Cấp Tối Đa Cho Main H61 Cỏ,merged_into_existing_product_alternate_rows
+intel-core-i5-3470,18,346,Intel,Core i5-3470,CPU,4 Cores 4 Threads | Chip Giá Vài Trăm Ngàn Đồng Đọc Báo Chơi LoL,merged_into_existing_product_alternate_rows
+intel-core-i5-2400,20,348,Intel,Core i5-2400,CPU,4 Cores 4 Threads | Con Chip Chống Cháy Giá Rẻ Nhất Máy Hoài Cổ,merged_into_existing_product_alternate_rows
+amd-ryzen-5-9600x,25,352,AMD,Ryzen 5 9600X,CPU,6 Cores 12 Threads | Dòng Chip Sân Chơi Phổ Thông Mới Toanh,merged_into_existing_product_alternate_rows
+amd-ryzen-5-5600g,30,356,AMD,Ryzen 5 5600G,CPU,6 Cores 12 Threads | Tích Hợp Vega 7 Đồ Họa Không Cần Card Rời,merged_into_existing_product_alternate_rows
+kingston-kvr-ddr3-8gb,84,370,Kingston,KVR DDR3 8GB,RAM,1x8GB | DDR3 | 1600MHz | Huyền Thoại Lắp Ráp Nâng Cấp Máy Cỏ,merged_into_existing_product_alternate_rows
+adata-xpg-spectrix-d41-rgb-16gb,88,373,ADATA,XPG SPECTRIX D41 RGB 16GB,RAM,2x8GB | DDR4 | 3200MHz | Bản Tản Đỏ Thiết Kế Thể Thao Cũ,merged_into_existing_product_alternate_rows
+western-digital-wd-blue-sn580-500gb,106,393,Western Digital,WD Blue SN580 500GB,Storage,NVMe PCIe Gen 4.0 | Ổ NVMe Quốc Dân Cho Cấu Hình Tầm Trung,merged_into_existing_product_alternate_rows
+sandisk-ssd-plus-240gb,110,399,SanDisk,SSD Plus 240GB,Storage,SSD Cỏ Vỏ Nhựa Chống Cháy Giá Vài Trăm Ngàn Đồng,merged_into_existing_product_alternate_rows
+walram-sata-iii-240gb,132,419,Walram,SATA III 240GB,Storage,SSD Cỏ Vỏ Nhựa Trắng Thường Thấy Ở PC Thanh Lý Giá Rẻ,merged_into_existing_product_alternate_rows
+toshiba-p300-1tb-hdd,134,421,Toshiba,P300 1TB HDD,Storage,Ổ Cứng Cơ 3.5 inch | Đọc Ghi Êm Ái Độ Bền Chuẩn Nhật Bản,merged_into_existing_product_alternate_rows

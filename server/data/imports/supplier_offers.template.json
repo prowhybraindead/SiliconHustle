@@ -1,0 +1,18 @@
+{
+  "offers": [
+    {
+      "supplier_slug": "example-supplier-slug",
+      "product_slug": "intel-core-i5-14400",
+      "foreign_unit_price": 185.0,
+      "foreign_currency": "USD",
+      "unit_price_vnd": 4700000,
+      "min_order_quantity": 5,
+      "available_quantity": 100,
+      "warranty_months": 12,
+      "quality_risk_modifier": 0.05,
+      "expires_on_day": 14,
+      "offer_type": "OFFICIAL",
+      "notes": "Example offer notes"
+    }
+  ]
+}

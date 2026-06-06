@@ -1,0 +1,213 @@
+﻿category,brand,slug,origin_name_vi,origin_code
+CPU,Intel,intel,Mỹ,US
+CPU,AMD,amd,Mỹ,US
+CPU,Loongson,loongson,Trung Quốc,CN
+CPU,Zhaoxin,zhaoxin,Trung Quốc,CN
+CPU,Phytium,phytium,Trung Quốc,CN
+CPU,Sunway,sunway,Trung Quốc,CN
+CPU,Hygon,hygon,Trung Quốc,CN
+GPU,NVIDIA,nvidia,Mỹ,US
+GPU,AMD,amd,Mỹ,US
+GPU,Intel,intel,Mỹ,US
+GPU,Moore Threads,moore-threads,Trung Quốc,CN
+GPU,ASUS,asus,Đài Loan,TW
+GPU,MSI,msi,Đài Loan,TW
+GPU,GIGABYTE,gigabyte,Đài Loan,TW
+GPU,ASRock,asrock,Đài Loan,TW
+GPU,Palit,palit,Đài Loan,TW
+GPU,Gainward,gainward,Đài Loan,TW
+GPU,Cooler Master,cooler-master,Đài Loan,TW
+GPU,Colorful,colorful,Trung Quốc,CN
+GPU,Maxsun,maxsun,Trung Quốc,CN
+GPU,Yeston,yeston,Trung Quốc,CN
+GPU,Galax,galax,Hong Kong,HK
+GPU,Inno3D,inno3d,Hong Kong,HK
+GPU,Zotac,zotac,Hong Kong,HK
+GPU,Sapphire,sapphire,Hong Kong,HK
+GPU,PowerColor,powercolor,Đài Loan,TW
+GPU,XFX,xfx,Mỹ,US
+GPU,PNY,pny,Mỹ,US
+GPU,EVGA,evga,Mỹ,US
+GPU,Manli,manli,Hong Kong,HK
+GPU,Peladn,peladn,Trung Quốc,CN
+GPU,51Risc,51risc,Trung Quốc,CN
+GPU,MLLSE,mllse,Trung Quốc,CN
+GPU,Sparkle,sparkle,Đài Loan,TW
+GPU,Jeyi,jeyi,Trung Quốc,CN
+GPU,Soyo,soyo,Trung Quốc,CN
+GPU,Onda,onda,Trung Quốc,CN
+GPU,Biostar,biostar,Đài Loan,TW
+GPU,Afox,afox,Hong Kong,HK
+GPU,Axle,axle,Hong Kong,HK
+GPU,Jingsha,jingsha,Trung Quốc,CN
+GPU,Kangkai,kangkai,Trung Quốc,CN
+GPU,AISURIX,aisurix,Trung Quốc,CN
+GPU,Mishax,mishax,Trung Quốc,CN
+MOTHERBOARD,ASUS,asus,Đài Loan,TW
+MOTHERBOARD,MSI,msi,Đài Loan,TW
+MOTHERBOARD,GIGABYTE,gigabyte,Đài Loan,TW
+MOTHERBOARD,ASRock,asrock,Đài Loan,TW
+MOTHERBOARD,Biostar,biostar,Đài Loan,TW
+MOTHERBOARD,EVGA,evga,Mỹ,US
+MOTHERBOARD,NZXT,nzxt,Mỹ,US
+MOTHERBOARD,Colorful,colorful,Trung Quốc,CN
+MOTHERBOARD,Maxsun,maxsun,Trung Quốc,CN
+MOTHERBOARD,Soyo,soyo,Trung Quốc,CN
+MOTHERBOARD,Onda,onda,Trung Quốc,CN
+MOTHERBOARD,Onyx,onyx,Trung Quốc,CN
+MOTHERBOARD,Huananzhi,huananzhi,Trung Quốc,CN
+MOTHERBOARD,Machinist,machinist,Trung Quốc,CN
+MOTHERBOARD,Jiyue,jiyue,Trung Quốc,CN
+MOTHERBOARD,Minisforum,minisforum,Trung Quốc,CN
+MOTHERBOARD,Jingsha,jingsha,Trung Quốc,CN
+MOTHERBOARD,X99,x99,Trung Quốc,CN
+MOTHERBOARD,Kllisre,kllisre,Trung Quốc,CN
+MOTHERBOARD,Szmz,szmz,Trung Quốc,CN
+MOTHERBOARD,Mecer,mecer,Nam Phi,ZA
+MOTHERBOARD,Arktek,arktek,Hong Kong,HK
+RAM,Samsung,samsung,Hàn Quốc,KR
+RAM,SK Hynix,sk-hynix,Hàn Quốc,KR
+RAM,Klevv,klevv,Hàn Quốc,KR
+RAM,Kingston,kingston,Mỹ,US
+RAM,Corsair,corsair,Mỹ,US
+RAM,Crucial,crucial,Mỹ,US
+RAM,Patriot,patriot,Mỹ,US
+RAM,G.Skill,g-skill,Đài Loan,TW
+RAM,ADATA,adata,Đài Loan,TW
+RAM,TeamGroup,teamgroup,Đài Loan,TW
+RAM,Kingmax,kingmax,Đài Loan,TW
+RAM,GeIL,geil,Đài Loan,TW
+RAM,Lexar,lexar,Mỹ,US
+RAM,GIGABYTE,gigabyte,Đài Loan,TW
+RAM,Hiksemi,hiksemi,Trung Quốc,CN
+RAM,Netac,netac,Trung Quốc,CN
+RAM,Asgard,asgard,Trung Quốc,CN
+RAM,Gloway,gloway,Trung Quốc,CN
+RAM,Kimtigo,kimtigo,Trung Quốc,CN
+RAM,Kllisre,kllisre,Trung Quốc,CN
+RAM,Aigo,aigo,Trung Quốc,CN
+RAM,Juhor,juhor,Trung Quốc,CN
+RAM,Vcolor,vcolor,Đài Loan,TW
+RAM,Mushkin,mushkin,Mỹ,US
+RAM,Pioneer,pioneer,Nhật Bản,JP
+RAM,Apacer,apacer,Đài Loan,TW
+RAM,Panram,panram,Đài Loan,TW
+RAM,Silicon Power,silicon-power,Đài Loan,TW
+STORAGE,Samsung,samsung,Hàn Quốc,KR
+STORAGE,SK Hynix,sk-hynix,Hàn Quốc,KR
+STORAGE,Kioxia,kioxia,Nhật Bản,JP
+STORAGE,Toshiba,toshiba,Nhật Bản,JP
+STORAGE,Kingston,kingston,Mỹ,US
+STORAGE,Western Digital,western-digital,Mỹ,US
+STORAGE,SanDisk,sandisk,Mỹ,US
+STORAGE,Crucial,crucial,Mỹ,US
+STORAGE,Seagate,seagate,Mỹ,US
+STORAGE,Solidigm,solidigm,Mỹ,US
+STORAGE,Corsair,corsair,Mỹ,US
+STORAGE,Sabrent,sabrent,Mỹ,US
+STORAGE,Lexar,lexar,Mỹ,US
+STORAGE,ADATA,adata,Đài Loan,TW
+STORAGE,TeamGroup,teamgroup,Đài Loan,TW
+STORAGE,Kingmax,kingmax,Đài Loan,TW
+STORAGE,GIGABYTE,gigabyte,Đài Loan,TW
+STORAGE,Silicon Power,silicon-power,Đài Loan,TW
+STORAGE,Transcend,transcend,Đài Loan,TW
+STORAGE,Apacer,apacer,Đài Loan,TW
+STORAGE,Hiksemi,hiksemi,Trung Quốc,CN
+STORAGE,Netac,netac,Trung Quốc,CN
+STORAGE,Fanxiang,fanxiang,Trung Quốc,CN
+STORAGE,Kingspec,kingspec,Trung Quốc,CN
+STORAGE,Movebest,movebest,Trung Quốc,CN
+STORAGE,Somnambulist,somnambulist,Trung Quốc,CN
+STORAGE,Goldenfir,goldenfir,Trung Quốc,CN
+STORAGE,XrayDisk,xraydisk,Trung Quốc,CN
+STORAGE,Walram,walram,Trung Quốc,CN
+STORAGE,Weijinto,weijinto,Trung Quốc,CN
+STORAGE,Reeinno,reeinno,Trung Quốc,CN
+COOLER,Cooler Master,cooler-master,Đài Loan,TW
+COOLER,Thermalright,thermalright,Đài Loan,TW
+COOLER,Deepcool,deepcool,Trung Quốc,CN
+COOLER,ID-Cooling,id-cooling,Trung Quốc,CN
+COOLER,Jonsbo,jonsbo,Trung Quốc,CN
+COOLER,Valkyrie,valkyrie,Trung Quốc,CN
+COOLER,Aigo,aigo,Trung Quốc,CN
+COOLER,Sama,sama,Trung Quốc,CN
+COOLER,Noctua,noctua,Áo,AT
+COOLER,be quiet!,be-quiet,Đức,DE
+COOLER,Arctic,arctic,Đức,DE
+COOLER,Scythe,scythe,Nhật Bản,JP
+COOLER,Zalman,zalman,Hàn Quốc,KR
+COOLER,NZXT,nzxt,Mỹ,US
+COOLER,Phanteks,phanteks,Hà Lan,NL
+COOLER,Antec,antec,Mỹ,US
+COOLER,Vardar,vardar,Slovenia,SI
+COOLER,Alseye,alseye,Trung Quốc,CN
+COOLER,PCCooler,pccooler,Trung Quốc,CN
+COOLER,Segotep,segotep,Trung Quốc,CN
+COOLER,VSP,vsp,Việt Nam,VN
+COOLER,Xigmatek,xigmatek,Đài Loan,TW
+COOLER,Aerocool,aerocool,Đài Loan,TW
+COOLER,Golden Field,golden-field,Trung Quốc,CN
+COOLER,Gamdias,gamdias,Đài Loan,TW
+COOLER,SilverStone,silverstone,Đài Loan,TW
+PSU,Seasonic,seasonic,Đài Loan,TW
+PSU,Super Flower,super-flower,Đài Loan,TW
+PSU,FSP,fsp,Đài Loan,TW
+PSU,Cooler Master,cooler-master,Đài Loan,TW
+PSU,Corsair,corsair,Mỹ,US
+PSU,Antec,antec,Mỹ,US
+PSU,SilverStone,silverstone,Đài Loan,TW
+PSU,Thermaltake,thermaltake,Đài Loan,TW
+PSU,Xigmatek,xigmatek,Đài Loan,TW
+PSU,ASUS,asus,Đài Loan,TW
+PSU,MSI,msi,Đài Loan,TW
+PSU,GIGABYTE,gigabyte,Đài Loan,TW
+PSU,Deepcool,deepcool,Trung Quốc,CN
+PSU,Aigo,aigo,Trung Quốc,CN
+PSU,Mikro,mikro,Trung Quốc,CN
+PSU,be quiet!,be-quiet,Đức,DE
+PSU,Segotep,segotep,Trung Quốc,CN
+PSU,Sama,sama,Trung Quốc,CN
+PSU,VSP,vsp,Việt Nam,VN
+PSU,AcBel,acbel,Đài Loan,TW
+PSU,Huntkey,huntkey,Trung Quốc,CN
+PSU,1stPlayer,1stplayer,Trung Quốc,CN
+PSU,InWin,inwin,Đài Loan,TW
+PSU,Gamemax,gamemax,Trung Quốc,CN
+PSU,Jetek,jetek,Việt Nam,VN
+CASE,Lian Li,lian-li,Đài Loan,TW
+CASE,Cooler Master,cooler-master,Đài Loan,TW
+CASE,Thermaltake,thermaltake,Đài Loan,TW
+CASE,Xigmatek,xigmatek,Đài Loan,TW
+CASE,Montech,montech,Đài Loan,TW
+CASE,InWin,inwin,Đài Loan,TW
+CASE,NZXT,nzxt,Mỹ,US
+CASE,Corsair,corsair,Mỹ,US
+CASE,Hyte,hyte,Mỹ,US
+CASE,Phanteks,phanteks,Hà Lan,NL
+CASE,Fractal Design,fractal-design,Thụy Điển,SE
+CASE,Deepcool,deepcool,Trung Quốc,CN
+CASE,Jonsbo,jonsbo,Trung Quốc,CN
+CASE,Sama,sama,Trung Quốc,CN
+CASE,Aigo,aigo,Trung Quốc,CN
+CASE,VSP,vsp,Việt Nam,VN
+CASE,Mikro,mikro,Trung Quốc,CN
+CASE,Segotep,segotep,Trung Quốc,CN
+CASE,1stPlayer,1stplayer,Trung Quốc,CN
+CASE,Gamemax,gamemax,Trung Quốc,CN
+CASE,Aerocool,aerocool,Đài Loan,TW
+CASE,Gamdias,gamdias,Đài Loan,TW
+CASE,Galax,galax,Hong Kong,HK
+CASE,Cougar,cougar,Đức,DE
+CASE,Tecware,tecware,Singapore,SG
+WATER_COOLING,EKWB,ekwb,Slovenia,SI
+WATER_COOLING,Alphacool,alphacool,Đức,DE
+WATER_COOLING,Barrow,barrow,Trung Quốc,CN
+WATER_COOLING,Bykski,bykski,Trung Quốc,CN
+WATER_COOLING,Bitspower,bitspower,Đài Loan,TW
+WATER_COOLING,Thermaltake,thermaltake,Đài Loan,TW
+WATER_COOLING,Cooler Master,cooler-master,Đài Loan,TW
+WATER_COOLING,Corsair,corsair,Mỹ,US
+WATER_COOLING,Phanteks,phanteks,Hà Lan,NL
+WATER_COOLING,Freezemod,freezemod,Trung Quốc,CN
+WATER_COOLING,Magicool,magicool,Trung Quốc,CN

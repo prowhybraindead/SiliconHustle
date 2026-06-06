@@ -1,0 +1,170 @@
+﻿Category,Brand,Model,Origin,Key_Specs,Socket_Slot,Power_Watts
+CPU,Intel,Core Ultra 9 285K,Mỹ,24 Cores 24 Threads | Up to 5.7GHz,LGA1851,125W
+CPU,Intel,Core Ultra 7 265K,Mỹ,20 Cores 20 Threads | Up to 5.5GHz,LGA1851,125W
+CPU,Intel,Core Ultra 5 245K,Mỹ,14 Cores 14 Threads | Up to 5.2GHz,LGA1851,125W
+CPU,Intel,Core i9-14900K,Mỹ,24 Cores 32 Threads | Up to 6.0GHz,LGA1700,125W
+CPU,Intel,Core i5-12400F,Mỹ,6 Cores 12 Threads | Up to 4.4GHz,LGA1700,65W
+CPU,AMD,Ryzen 9 9950X,Mỹ,16 Cores 32 Threads | Up to 5.7GHz,AM5,170W
+CPU,AMD,Ryzen 7 9700X,Mỹ,8 Cores 16 Threads | Up to 5.5GHz,AM5,65W
+CPU,AMD,Ryzen 7 7800X3D,Mỹ,8 Cores 16 Threads | 96MB L3 Cache (Gaming King),AM5,120W
+CPU,AMD,Ryzen 5 5600X,Mỹ,6 Cores 12 Threads | Up to 4.6GHz,AM4,65W
+CPU,Loongson,3A6000,Trung Quốc,4 Cores 8 Threads | 2.5GHz (Kiến trúc LoongArch),LA464,50W
+CPU,Zhaoxin,KaiXian KX-7000,Trung Quốc,8 Cores 8 Threads | Up to 3.3GHz (Tương thích x86),HJJ,75W
+GPU,NVIDIA,GeForce RTX 5090 Founders Edition,Mỹ,32GB GDDR7 | 512-bit | DLSS 4.0,PCIe 5.0 x16,600W
+GPU,NVIDIA,GeForce RTX 5080 Founders Edition,Mỹ,16GB GDDR7 | 256-bit,PCIe 5.0 x16,400W
+GPU,NVIDIA,GeForce RTX 4060 Ti,Mỹ,8GB GDDR6 | 128-bit | DLSS 3.0,PCIe 4.0 x8,160W
+GPU,AMD,Radeon RX 7900 XTX,Mỹ,24GB GDDR6 | 384-bit | FSR 3.0,PCIe 4.0 x16,355W
+GPU,Intel,Arc A770 Limited Edition,Mỹ,16GB GDDR6 | 256-bit | XeSS,PCIe 4.0 x16,225W
+GPU,ASUS,ROG Strix RTX 5090 OC,Đài Loan,32GB GDDR7 | Bản Custom 3 Quạt Hầm Hố RGB,PCIe 5.0 x16,650W
+GPU,MSI,RTX 5080 SUPRIM X,Đài Loan,16GB GDDR7 | Vỏ Nhôm Phay Xước Sang Trọng,PCIe 5.0 x16,420W
+GPU,GIGABYTE,AORUS RTX 4070 Ti SUPER Master,Đài Loan,16GB GDDR6X | Tích hợp màn hình LCD mini,PCIe 4.0 x16,285W
+GPU,Colorful,iGame RTX 5070 Vulcan OC,Trung Quốc,12GB GDDR7 | Màn hình LCD lật tháo rời được,PCIe 5.0 x16,250W
+GPU,Yeston,RTX 4060 Sakura Sugar,Trung Quốc,8GB GDDR6 | Thiết kế Waifu Hoa Anh Đào Hồng,PCIe 4.0 x8,115W
+GPU,Maxsun,RTX 4060 Ti iCraft OC White,Trung Quốc,8GB GDDR6 | Vỏ Trắng Phong Cách Anime,PCIe 4.0 x8,160W
+GPU,Galax,RTX 4090 Hall of Fame (HOF),Hong Kong,24GB GDDR6X | PCB Màu Trắng Chuyên Ép Xung,PCIe 4.0 x16,500W
+GPU,Inno3D,RTX 3060 Twin X2,Hong Kong,12GB GDDR6 | Bản 2 Quạt Giá Rẻ Tối Giản,PCIe 4.0 x16,170W
+GPU,Peladn,RTX 3060 Ti Gaming,Trung Quốc,8GB GDDR6 | Card Giá Rẻ Nội Địa,PCIe 4.0 x16,200W
+GPU,AISURIX,RX 580 8GB,Trung Quốc,8GB GDDR5 | Card Cỏ Tái Chế Giá Siêu Rẻ,PCIe 3.0 x16,185W
+Mainboard,ASUS,ROG MAXIMUS Z890 HERO,Đài Loan,Chipset Z890 | ATX | Hỗ trợ Thunderbolt 4,LGA1851 (DDR5),0W
+Mainboard,ASUS,TUF GAMING B760M-PLUS,Đài Loan,Chipset B760 | M-ATX | Bền Bỉ Tầm Trung,LGA1700 (DDR5),0W
+Mainboard,MSI,MEG X870E GODLIKE,Đài Loan,Chipset X870E | E-ATX | Màn Hình LED Cảm Ứng,AM5 (DDR5),0W
+Mainboard,MSI,MAG B650 TOMAHAWK WIFI,Đài Loan,Chipset B650 | ATX | Bo Mạch Quốc Dân,AM5 (DDR5),0W
+Mainboard,GIGABYTE,B650M AORUS ELITE,Đài Loan,Chipset B650 | M-ATX | Phân Khúc Tầm Trung,AM5 (DDR5),0W
+Mainboard,ASRock,Z890 Taichi,Đài Loan,Chipset Z890 | ATX | Thiết Kế Bánh Răng Cơ Khí,LGA1851 (DDR5),0W
+Mainboard,Colorful,CVN B760M FROZEN WIFI,Trung Quốc,Chipset B760 | M-ATX | PCB Màu Trắng Tuyết,LGA1700 (DDR4),0W
+Mainboard,Maxsun,MS-Terminator B760M GIGA,Trung Quốc,Chipset B760 | M-ATX | Vua Phá Giá Phân Khúc,LGA1700 (DDR4),0W
+Mainboard,Huananzhi,X99-F8,Trung Quốc,Chipset X99 | ATX | Chuyên Chạy CPU Xeon Cũ,LGA2011-3 (DDR3),0W
+Mainboard,Machinist,X99 RS9,Trung Quốc,Chipset X99 | M-ATX | Bo Mạch Giá Rẻ Cày Giả Lập,LGA2011-3 (DDR3),0W
+RAM,Corsair,Dominator Titanium RGB 32GB,Mỹ,2x16GB | DDR5 | 7200MHz | LED Cao Cấp,DDR5 Slot,5W
+RAM,Corsair,Vengeance LPX 16GB,Mỹ,2x8GB | DDR4 | 3200MHz | Bản Tối Giản Không LED,DDR4 Slot,4W
+RAM,G.Skill,Trident Z5 Royal 32GB,Đài Loan,2x16GB | DDR5 | 8000MHz | Viền Đá Quý Luxury,DDR5 Slot,6W
+RAM,Kingston,FURY Beast RGB 16GB,Mỹ,1x16GB | DDR5 | 5600MHz | Ram Quốc Dân,DDR5 Slot,4W
+RAM,TeamGroup,T-Force Delta RGB 32GB,Đài Loan,2x16GB | DDR5 | 6000MHz | Thiết Kế Cánh Chim,DDR5 Slot,5W
+RAM,Lexar,Thor OC 16GB,Mỹ,2x8GB | DDR4 | 3600MHz | Tản Nhiệt Nhôm Xám Giá Tốt,DDR4 Slot,4W
+RAM,Hiksemi,Armor DDR4 8GB,Trung Quốc,1x8GB | DDR4 | 3200MHz | Hàng Giá Rẻ Phổ Thông,DDR4 Slot,3W
+RAM,Netac,Shadow RGB 16GB,Trung Quốc,2x8GB | DDR4 | 3200MHz | Hàng Giá Rẻ Có LED,DDR4 Slot,4W
+RAM,Juhor,Vanguard RGB 16GB,Trung Quốc,2x8GB | DDR4 | 3600MHz | Ram Nội Địa Giá Rẻ,DDR4 Slot,4W
+Storage,Samsung,990 PRO 2TB,Hàn Quốc,NVMe PCIe Gen 4.0 | Đọc 7450MB/s | Ghi 6900MB/s,M.2 NVMe Slot,8W
+Storage,Samsung,990 EVO 1TB,Hàn Quốc,NVMe PCIe Gen 4.0/5.0 x2 | Tiết Kiệm Điện,M.2 NVMe Slot,6W
+Storage,Western Digital,WD_BLACK SN850X 1TB,Mỹ,NVMe PCIe Gen 4.0 | Chuyên Dụng Cho Gaming,M.2 NVMe Slot,8W
+Storage,SanDisk,Ultra 3D SATA III 1TB,Mỹ,SSD 2.5 inch | Đọc 560MB/s | Cắm Dây Cáp,SATA 3 Port,4W
+Storage,Kingston,KC3000 1TB,Mỹ,NVMe PCIe Gen 4.0 | Tốc Độ Cao P/P Cực Tốt,M.2 NVMe Slot,7W
+Storage,Crucial,P3 Plus 500GB,Mỹ,NVMe PCIe Gen 4.0 | Phân Khúc Giá Rẻ Chính Hãng,M.2 NVMe Slot,5W
+Storage,Kioxia,Exceria G2 1TB,Nhật Bản,NVMe PCIe Gen 3.0 | Ổ Cứng Ngon Bổ Rẻ Thần Thánh,M.2 NVMe Slot,5W
+Storage,Seagate,Barrauda 2TB HDD,Mỹ,Ổ Cứng Cơ 3.5 inch | 7200RPM | Lưu Trữ Dữ Liệu,SATA 3 Port,7W
+Storage,Hiksemi,Future 1TB,Trung Quốc,NVMe PCIe Gen 4.0 | Tốc Độ 7450MB/s Giá Siêu Tốt,M.2 NVMe Slot,6W
+Storage,Somnambulist,SATA III 120GB,Trung Quốc,SSD 2.5 inch | Ổ Cỏ Siêu Rẻ Chỉ Hơn 100k,SATA 3 Port,3W
+Storage,XrayDisk,NVMe 512GB,Trung Quốc,NVMe PCIe Gen 3.0 | Ổ Cứng Giá Rẻ Trên Sàn TMĐT,M.2 NVMe Slot,5W
+Cooling,Noctua,NH-D15 chromax.black,Áo,Tản Nhiệt Khí Tháp Đôi | Siêu Êm | Cân CPU Khủng,CPU Fan Header,5W
+Cooling,Thermalright,Peerless Assassin 120 SE,Đài Loan,Tản Nhiệt Khí Tháp Đôi | Vua Ngon Bổ Rẻ,CPU Fan Header,4W
+Cooling,Deepcool,LT720 ARGB,Trung Quốc,Tản Nhiệt Nước AIO 360mm | Vô Cực Khối,CPU Fan Header,15W
+Cooling,NZXT,Kraken Elite 360 RGB,Mỹ,Tản Nước AIO 360mm | Màn Hình LCD Tròn Thay Đổi GIF,CPU Fan Header,18W
+Cooling,Jonsbo,CR-1000 EVO RGB,Trung Quốc,Tản Nhiệt Khí Tháp Đơn | Tản Quốc Dân 300k,CPU Fan Header,3W
+Cooling,ID-Cooling,SE-214-XT ARGB,Trung Quốc,Tản Nhiệt Khí Tầm Trung Giá Rẻ 250k,CPU Fan Header,3W
+Cooling,Arctic,Liquid Freezer III 360,Đức,Tản Nước AIO Siêu Dày | Giải Nhiệt Cực Tốt,CPU Fan Header,12W
+Cooling,Valkyrie,Syn 360 ARGB,Trung Quốc,Tản Nước AIO Cao Cấp Có Màn Hình LCD Vuông,CPU Fan Header,16W
+Cooling,VSP,V400 Plus,Việt Nam,Tản Khí Giá Rẻ Đèn LED Cố Định,CPU Fan Header,3W
+PSU,Seasonic,Focus GX-1000,Đài Loan,1000W | 80 Plus Gold | Full Modular,ATX Frame,1000W
+PSU,Corsair,RM850e ATX 3.0,Mỹ,850W | 80 Plus Gold | Có Cổng PCIe 5.0 12VHPWR,ATX Frame,850W
+PSU,Super Flower,Leadex III Gold 750W,Đài Loan,750W | 80 Plus Gold | Độ Bền Siêu Cao,ATX Frame,750W
+PSU,Antec,Atom Zen 550W,Mỹ,550W | Chuẩn Nguồn Thường Cho Máy Văn Phòng,ATX Frame,550W
+PSU,Xigmatek,X-Power III 650,Đài Loan,650W | Nguồn Giá Rẻ Cho Cấu Hình Tầm Trung,ATX Frame,650W
+PSU,Jetek,Star ST500,Việt Nam,500W | Nguồn Cỏ Giá Rẻ Lắp Máy Văn Phòng,ATX Frame,500W
+PSU,Aigo,VK650,Trung Quốc,650W | Nguồn Giá Rẻ Phổ Biến Trên Shopee,ATX Frame,650W
+Case,Lian Li,O11 Dynamic EVO,Đài Loan,Vỏ Máy Bể Cá Kính Cường Lực | Sang Trọng,ATX Case Form,0W
+Case,NZXT,H9 Flow White,Mỹ,Vỏ Máy Bể Cá Hai Mặt Kính Màu Trắng Tuyết,ATX Case Form,0W
+Case,Montech,Air 903 Max,Đài Loan,Vỏ Case Lưới Thoáng Khí | Tặng Kèm 4 Quạt ARGB,ATX Case Form,0W
+Case,Fractal Design,North Charcoal,Thụy Điển,Vỏ Máy Mặt Trước Ốp Gỗ Sồi | Phong Cách Bắc Âu,ATX Case Form,0W
+Case,Hyte,Y70 Touch,Mỹ,Vỏ Bể Cá Góc Vát Tích Hợp Màn Hình Cảm Ứng Lớn,ATX Case Form,0W
+Case,Xigmatek,NYX 3F,Đài Loan,Vỏ Case M-ATX Nhỏ Gọn | Giá Rẻ Tặng 3 Quạt LED,Micro-ATX Form,0W
+Case,VSP,G9 Premium,Việt Nam,Vỏ Máy Giá Rẻ Phổ Thông,ATX Case Form,0W
+Water_Cooling,EKWB,EK-Quantum Vector2 RTX 4090,Slovenia,Block Nước Custom Cho Card Đồ Họa Cao Cấp,Custom Loop,0W
+Water_Cooling,Barrow,CPU Water Block Intel,Trung Quốc,Block Nước Custom Cho CPU Intel Giá Tốt,Custom Loop,0W
+Water_Cooling,Bykski,DDC Pump Combo 200mm,Trung Quốc,Bơm Kiêm Bình Chứa Nước Tản Custom Giá Rẻ,Custom Loop,15W
+CPU,Intel,Xeon E5-2678 v3,Mỹ,12 Cores 24 Threads | 2.5GHz | Chuyên Cày Giả Lập,LGA2011-3,120W
+CPU,Intel,Xeon E5-2680 v4,Mỹ,14 Cores 28 Threads | 2.4GHz | Chuyên Chạy Server,LGA2011-3,120W
+CPU,Intel,Core i3-12100F,Mỹ,4 Cores 8 Threads | Up to 4.3GHz | Gaming Giá Rẻ,LGA1700,58W
+CPU,Intel,Core i7-14700K,Mỹ,20 Cores 28 Threads | Up to 5.6GHz,LGA1700,125W
+CPU,AMD,Ryzen 5 7600,Mỹ,6 Cores 12 Threads | Up to 5.1GHz | Kèm Tản Wraith Stealth,AM5,65W
+CPU,AMD,Ryzen 9 7950X3D,Mỹ,16 Cores 32 Threads | 128MB V-Cache Siêu Cấp,AM5,120W
+CPU,AMD,Ryzen 3 4100,Mỹ,4 Cores 8 Threads | Up to 4.0GHz | Chip Chống Cháy,AM4,65W
+GPU,NVIDIA,GeForce RTX 4070 SUPER Founders Edition,Mỹ,12GB GDDR6X | 192-bit,PCIe 4.0 x16,220W
+GPU,AMD,Radeon RX 7600 XT,Mỹ,16GB GDDR6 | 128-bit | Chiến Game 1080p,PCIe 4.0 x8,190W
+GPU,ASUS,Dual RTX 4060 Ti EVO,Đài Loan,8GB GDDR6 | Bản 2 Quạt Nhỏ Gọn Cho Case Mini,PCIe 4.0 x8,160W
+GPU,ASUS,ROG Strix RX 7600 XT OC,Đài Loan,16GB GDDR6 | Bản Gaming Cao Cấp Đèn RGB,PCIe 4.0 x8,210W
+GPU,MSI,RTX 4070 Ti SUPER Gaming X Slim,Đài Loan,16GB GDDR6X | Thiết Kế Mỏng Nhẹ,PCIe 4.0 x16,285W
+GPU,MSI,GTX 1650 D6 Ventus XS,Đài Loan,4GB GDDR6 | Card Đồ Họa Quốc Dân Không Nguồn Phụ,PCIe 3.0 x16,75W
+GPU,GIGABYTE,GeForce RTX 4060 EAGLE OC,Đài Loan,8GB GDDR6 | Thiết Kế 3 Quạt Giá Tốt,PCIe 4.0 x8,115W
+GPU,GIGABYTE,Radeon RX 7900 GRE Gaming OC,Đài Loan,16GB GDDR6 | Hiệu Năng Trên Giá Cực Tốt,PCIe 4.0 x16,260W
+GPU,ASRock,Radeon RX 7800 XT Steel Legend OC,Đài Loan,16GB GDDR6 | Tông Màu Trắng Tuyết,PCIe 4.0 x16,263W
+GPU,ASRock,Arc A580 Challenger D,Đài Loan,8GB GDDR6 | Card Đồ Họa Intel Giá Rẻ,PCIe 4.0 x16,185W
+GPU,Colorful,GeForce RTX 4060 NB EX V2,Trung Quốc,8GB GDDR6 | Bản Chiến Binh Đen Đỏ Giá Rẻ,PCIe 4.0 x8,115W
+GPU,Zotac,RTX 4070 Super Twin Edge,Hong Kong,12GB GDDR6X | Thiết Kế Bo Tròn Độc Đáo,PCIe 4.0 x16,220W
+GPU,Sapphire,Radeon RX 7900 XTX NITRO+,Hong Kong,24GB GDDR6 | Trùm Cuối Card Đồ Họa AMD,PCIe 4.0 x16,420W
+GPU,PowerColor,Hellhound RX 7800 XT,Đài Loan,16GB GDDR6 | Đèn LED Xanh Sương Mù,PCIe 4.0 x16,263W
+GPU,XFX,Speedster MERC310 RX 7900 XT,Mỹ,20GB GDDR6 | Thiết Kế Dài Hầm Hố Đậm Chất Mỹ,PCIe 4.0 x16,315W
+GPU,Palit,RTX 4060 Dual,Đài Loan,8GB GDDR6 | Card Giá Tốt Phổ Biến Tại Châu Âu,PCIe 4.0 x8,115W
+GPU,Gainward,RTX 4070 Ghost,Đài Loan,12GB GDDR6X | Thiết Kế Đen Tuyền Không Đèn LED,PCIe 4.0 x16,200W
+GPU,Afox,GTX 1050 Ti 4GB,Hong Kong,4GB GDDR5 | Card Cỏ Lắp Máy Mượt LoL/Fifa,PCIe 3.0 x16,75W
+GPU,MLLSE,AMD Radeon RX 550 4GB,Trung Quốc,4GB GDDR5 | Card Xuất Hình Giá Siêu Rẻ Shopee,PCIe 3.0 x8,50W
+Mainboard,ASUS,ROG STRIX B760-A GAMING WIFI,Đài Loan,Chipset B760 | ATX | Tông Trắng Bạc,LGA1700 (DDR5),0W
+Mainboard,ASUS,PRIME H610M-K,Đài Loan,Chipset H610 | M-ATX | Mainboard Văn Phòng Quốc Dân,LGA1700 (DDR4),0W
+Mainboard,MSI,PRO B760M-E,Đài Loan,Chipset B760 | M-ATX | Cấu Hình Tối Giản Giá Rẻ,LGA1700 (DDR4),0W
+Mainboard,MSI,MPG X670E CARBON WIFI,Đài Loan,Chipset X670E | ATX | Phân Khúc Cận Cao Cấp,AM5 (DDR5),0W
+Mainboard,GIGABYTE,Z890 AORUS ELITE WIFI,Đài Loan,Chipset Z890 | ATX | Thiết Kế Đậm Chất Gaming,LGA1851 (DDR5),0W
+Mainboard,GIGABYTE,H610M H V2,Đài Loan,Chipset H610 | M-ATX | Bo Mạch Giá Rẻ Đáng Tin Cậy,LGA1700 (DDR4),0W
+Mainboard,ASRock,B650M Pro RS,Đài Loan,Chipset B650 | M-ATX | Vua P/P Cho AMD Ryzen 7000,AM5 (DDR5),0W
+Mainboard,ASRock,H110M-DVS,Đài Loan,Chipset H110 | M-ATX | Huyền Thoại Chạy Chip Intel Gen 6/7,LGA1151 (DDR4),0W
+Mainboard,Biostar,H610MH,Đài Loan,Chipset H610 | M-ATX | Bo Mạch Siêu Tiết Kiệm Ngân Sách,LGA1700 (DDR4),0W
+Mainboard,Huananzhi,X99-BD4,Trung Quốc,Chipset X99 | ATX | Bản Có 2 Quạt Tản Nhiệt VRM Nhỏ,LGA2011-3 (DDR4),0W
+Mainboard,Soyo,Classic B550M,Trung Quốc,Chipset B550 | M-ATX | Hàng Nội Địa Khóa Xung Tốt,AM4 (DDR4),0W
+Mainboard,Onda,A68V+ Smart,Trung Quốc,Chipset AMD A68H | Chạy Các Dòng APU AMD Đời Cũ,FM2+ (DDR3),0W
+RAM,Kingston,FURY Renegade RGB 32GB,Mỹ,2x16GB | DDR5 | 6400MHz | Cas Thấp Độ Trễ Nhỏ,DDR5 Slot,5W
+RAM,Kingston,ValueRAM 8GB,Mỹ,1x8GB | DDR4 | 2666MHz | Bo Mạch Xanh Không Tản Nhiệt,DDR4 Slot,3W
+RAM,SK Hynix,DDR5 Desktop Memory 16GB,Hàn Quốc,1x16GB | DDR5 | 5600MHz | Ram Trần Chuyên Ép Xung,DDR5 Slot,4W
+RAM,Crucial,Basics 8GB,Mỹ,1x8GB | DDR4 | 3200MHz | Ram Trần Giá Rẻ Độ Bền Cao,DDR4 Slot,3W
+RAM,Patriot,Viper Steel 16GB,Mỹ,2x8GB | DDR4 | 3200MHz | Tản Thép Xám Góc Cạnh,DDR4 Slot,4W
+RAM,ADATA,XPG SPECTRIX D50 RGB 16GB,Đài Loan,2x8GB | DDR4 | 3200MHz | Thiết Kế Hình Khối,DDR4 Slot,4W
+RAM,Kingmax,Heatsink 8GB,Đài Loan,1x8GB | DDR4 | 3200MHz | Tản Nhiệt Nhôm Cơ Bản Giá Rẻ,DDR4 Slot,3W
+RAM,Asgard,Loki W2 RGB 16GB,Trung Quốc,2x8GB | DDR4 | 3200MHz | Ram Nội Địa Led Đẹp,DDR4 Slot,4W
+RAM,Gloway,Type A 8GB,Trung Quốc,1x8GB | DDR4 | 2666MHz | Ram Giá Rẻ Cho Máy Văn Phòng,DDR4 Slot,3W
+RAM,Aigo,Dark Knight 16GB,Trung Quốc,2x8GB | DDR4 | 3200MHz | Hàng Nội Địa Đen Tuyền,DDR4 Slot,4W
+Storage,Samsung,980 PCIe Gen 3.0 500GB,Hàn Quốc,NVMe PCIe Gen 3.0 | Ổ Cứng Cao Cấp Đời Cũ,M.2 NVMe Slot,5W
+Storage,SK Hynix,Platinum P41 1TB,Hàn Quốc,NVMe PCIe Gen 4.0 | Đối Thủ Sòng Phẳng Với 990 Pro,M.2 NVMe Slot,8W
+Storage,Crucial,T700 Gen5 1TB,Mỹ,NVMe PCIe Gen 5.0 | Siêu Tốc Độ Đọc Ghi 11700MB/s,M.2 NVMe Slot,11W
+Storage,Western Digital,WD Blue SA510 500GB,Mỹ,SSD 2.5 inch SATA | Chuyên Nâng Cấp Máy Cũ,SATA 3 Port,4W
+Storage,Western Digital,WD Caviar Blue 1TB HDD,Mỹ,Ổ Cứng Cơ 3.5 inch | Lưu Trữ Quốc Dân,SATA 3 Port,6W
+Storage,Kioxia,Exceria Plus G3 1TB,Nhật Bản,NVMe PCIe Gen 4.0 | Bản Nâng Cấp Tốc Độ Tốt,M.2 NVMe Slot,6W
+Storage,Kingston,NV2 500GB,Mỹ,NVMe PCIe Gen 4.0 | Ổ Cứng Quốc Dân Ngon Bổ Rẻ,M.2 NVMe Slot,4W
+Storage,Sabrent,Rocket 4 Plus 2TB,Mỹ,NVMe PCIe Gen 4.0 | Đi Kèm Tản Nhiệt Đồng Khổng Lồ,M.2 NVMe Slot,9W
+Storage,Netac,N535S 240GB,Trung Quốc,SSD 2.5 inch SATA | Giá Rẻ Cho Cấu Hình Thấp,SATA 3 Port,3W
+Storage,Goldenfir,SATA3 246GB,Trung Quốc,SSD 2.5 inch | Ổ Siêu Rẻ Bán Chạy Trên AliExpress,SATA 3 Port,3W
+Storage,Kingspec,Chameleon 512GB,Trung Quốc,SSD 2.5 inch | Vỏ Nhôm Họa Tiết Tắc Kè Hoa,SATA 3 Port,4W
+Cooling,Thermalright,Assassin X 120 Refined SE,Đài Loan,Tản Nhiệt Khí Tháp Đơn | Vua Giá Rẻ 300k,CPU Fan Header,3W
+Cooling,Cooler Master,Hyper 212 Spectrum V3,Đài Loan,Huyền Thoại Tản Khí Bản Nâng Cấp RGB,CPU Fan Header,4W
+Cooling,Cooler Master,MasterLiquid 360L Core,Đài Loan,Tản Nước AIO Phân Khúc Tiếp Cận Giá Tốt,CPU Fan Header,12W
+Cooling,Deepcool,AK400 Digital,Trung Quốc,Tản Khí Có Màn Hình LED Hiển Thị Nhiệt Độ CPU,CPU Fan Header,4W
+Cooling,ID-Cooling,Zoomflow 240 XT,Trung Quốc,Tản Nước AIO 240mm Phổ Biến Nhất Cho Máy Gaming,CPU Fan Header,10W
+Cooling,Noctua,NH-U12S Redux,Áo,Tản Khí Tháp Đơn Phiên Bản Cắt Giảm Giá Dễ Tiếp Cận,CPU Fan Header,4W
+Cooling,Arctic,P12 PWM PST,Đức,Quạt Case Tối Ưu Áp Suất Tĩnh Siêu Êm Không LED,Case Fan Header,2W
+Cooling,Alseye,M120-ST RGB,Trung Quốc,Bộ 3 Quạt Case Thiết Kế Phong Cách Khung Độc Đáo,Case Fan Header,6W
+Cooling,PCCooler,Paladin 400,Trung Quốc,Tản Khí 4 Ống Đồng Cánh Quạt 130mm Siêu Mát,CPU Fan Header,4W
+Cooling,Sama,KA400,Trung Quốc,Tản Nhiệt Khí Giá Rẻ Cạnh Tranh Trực Tiếp 214-XT,CPU Fan Header,3W
+PSU,Corsair,CV550,Mỹ,550W | 80 Plus Bronze | Nguồn Quốc Dân Cho Cấu Hình Quốc Dân,ATX Frame,550W
+PSU,Seasonic,B12 BC-650,Đài Loan,650W | 80 Plus Bronze | Độ Ổn Định Cao Giá Hợp Lý,ATX Frame,650W
+PSU,MSI,MAG A650BN,Đài Loan,650W | 80 Plus Bronze | Lựa Chọn Hàng Đầu Cho RTX 3060/4060,ATX Frame,650W
+PSU,FSP,HYPER K 500W,Đài Loan,500W | 80 Plus EU Standard | Nguồn Tầm Trung Bền Bỉ,ATX Frame,500W
+PSU,Antec,CUPRUM Strike CSK550,Mỹ,550W | 80 Plus Bronze | Thiết Kế Cáp Dẹt Tiện Đi Dây,ATX Frame,550W
+PSU,Xigmatek,X-Power III 350,Đài Loan,350W | Nguồn Cỏ Chống Cháy Cho Máy Không Card Rời,ATX Frame,350W
+PSU,Segotep,AN650,Trung Quốc,650W | Nguồn Nội Địa Giá Rẻ Được Chuộng Ở Việt Nam,ATX Frame,650W
+PSU,Jetek,Star ST650,Việt Nam,650W | Nguồn Lắp Máy Gaming Phổ Thông Giá Rẻ,ATX Frame,650W
+Case,Xigmatek,Gaming X 3FX,Đài Loan,Vỏ Máy Mặt Lưới Thoáng Khí Kèm Sẵn 3 Quạt RGB,ATX Case Form,0W
+Case,Montech,King 95 Pro,Đài Loan,Vỏ Bể Cá Mặt Kính Cong Tặng Kèm 6 Quạt ARGB,ATX Case Form,0W
+Case,Sama,3301 Black,Trung Quốc,Vỏ Case Kính Cường Lực Giá Rẻ Kèm 3 Quạt Thường,ATX Case Form,0W
+Case,VSP,V3-B,Việt Nam,Vỏ Case Kích Thước Nhỏ Mini-Tower Cho Máy Văn Phòng,Micro-ATX Form,0W
+Case,Antec,NX292,Mỹ,Vỏ Case Lưới Giá Rẻ Kèm Sẵn Quạt LED RGB Thường,ATX Case Form,0W
+Case,Cooler Master,MasterBox TD500 Mesh V2,Đài Loan,Mặt Lưới Họa Tiết Cắt Kim Cương,ATX Case Form,0W
+Case,Cougar,Conquer,Đức,Vỏ Case Phi Thuyền Khung Thép Mở Cực Kỳ Hầm Hố,Open Frame ATX,0W
+Water_Cooling,Barrow,D5 Pump Core,Trung Quốc,Lõi Bơm D5 Siêu Khỏe Cho Hệ Thống Custom Lớn,Custom Loop,23W
+Water_Cooling,Bykski,Rigid Fitting 14mm,Trung Quốc,Đầu Nối Ống Cứng 14mm Giá Rẻ Tiết Kiệm,Custom Loop,0W
+Water_Cooling,Alphacool,NexXxoS Full Copper Rad,Đức,Két Nước (Radiator) Bằng Đồng Nguyên Chất,Custom Loop,0W
