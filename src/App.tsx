@@ -16,6 +16,7 @@ import { ProgressionPage } from "./pages/ProgressionPage";
 import { QuotesPage } from "./pages/QuotesPage";
 import { ReviewsPage } from "./pages/ReviewsPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { TutorialPage } from "./pages/TutorialPage";
 import { SuppliersPage } from "./pages/SuppliersPage";
 import { WarrantyPage } from "./pages/WarrantyPage";
 import { ProfilesPage } from "./pages/ProfilesPage";
@@ -50,6 +51,7 @@ export default function App() {
         <Route element={<ProfilesPage />} path="/profiles" />
         <Route element={<UsedMarketPage />} path="/used-market" />
         <Route element={<SettingsPage />} path="/settings" />
+        <Route element={<TutorialPage />} path="/tutorial" />
       </Route>
       <Route element={<Navigate replace to="/" />} path="*" />
     </Routes>

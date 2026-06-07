@@ -7,11 +7,13 @@ import { MetricBar } from "./MetricBar";
 import { StatusChip } from "./ui/StatusChip";
 import { ConsolePanel } from "./ui/ConsolePanel";
 import { ActionButton } from "./ui/ActionButton";
+import { tutorialHighlight, tutorialTooltip } from "../utils/tutorial";
 
 interface InventoryUnitCardProps {
   unit: InventoryUnit;
   onRunTest: (unitId: number, action: string) => void;
   isTesting?: boolean;
+  tutorialActive?: boolean;
 }
 
 const tests = [
@@ -21,7 +23,7 @@ const tests = [
   ["Full Inspection", "full-inspection"],
 ] as const;
 
-export function InventoryUnitCard({ unit, onRunTest, isTesting }: InventoryUnitCardProps) {
+export function InventoryUnitCard({ unit, onRunTest, isTesting, tutorialActive }: InventoryUnitCardProps) {
   // Safe extraction of condition to ensure hidden_condition_json or raw defects are never rendered
   const isNew = unit.condition_type === "NEW";
   const isDefective = unit.status === "DEFECTIVE";
@@ -52,14 +54,15 @@ export function InventoryUnitCard({ unit, onRunTest, isTesting }: InventoryUnitC
             </p>
           </div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className={`flex flex-wrap gap-2 ${tutorialActive ? tutorialHighlight(true) : ""}`}>
           {tests.map(([label, action]) => (
             <ActionButton
               key={action}
               variant="secondary"
-              className="!h-9 !w-auto !px-3 font-mono text-[11px]"
+              className={`!h-9 !w-auto !px-3 font-mono text-[11px] ${tutorialHighlight(Boolean(tutorialActive))}`}
               disabled={isTesting}
               onClick={() => onRunTest(unit.id, action)}
+              title={tutorialTooltip(Boolean(tutorialActive), `Run ${label.toLowerCase()}`)}
             >
               <Zap className="h-3.5 w-3.5 text-primary-container" />
               {label}
@@ -82,4 +85,3 @@ export function InventoryUnitCard({ unit, onRunTest, isTesting }: InventoryUnitC
     </ConsolePanel>
   );
 }
-

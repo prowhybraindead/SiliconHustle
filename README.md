@@ -31,6 +31,8 @@ Silicon Hustle is a web-based tech shop management sim where you run a hardware 
 
 The frontend is a cyber-industrial management console with dense telemetry panels, inventory views, quote workflows, staff management, and warranty operations.
 
+It also includes a guided first-run tutorial on the home and PIN screens so new players can enter a safe practice save, follow the core gameplay loop, and learn the main stations step by step.
+
 The backend is a FastAPI service with SQLite persistence, rule-based gameplay systems, and deployment support for a private loopback-only production setup.
 
 This repository includes both halves:
@@ -103,6 +105,8 @@ npm run build
 
 - The app now uses logo wordmarks from `public/logo/` instead of text-only brand headers in the main shell, top bar, and home screen.
 - The white logo is used on darker surfaces and the black logo is used on lighter surfaces through `<picture>` source switching.
+- The home screen includes a guided tutorial entry point, and the locked-save PIN screen also offers the same tutorial flow for first-time players.
+- Tutorial mode highlights the main gameplay actions, adds short hover tooltips, and opens a sample practice save automatically on first use when no save exists.
 
 ---
 

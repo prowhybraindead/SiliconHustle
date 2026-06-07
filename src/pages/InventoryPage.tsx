@@ -14,6 +14,7 @@ import { StatusChip } from "../components/ui/StatusChip";
 import { ActionButton } from "../components/ui/ActionButton";
 import { SectionHeader } from "../components/ui/SectionHeader";
 import { MetricPill } from "../components/ui/MetricPill";
+import { tutorialHighlight, tutorialTooltip } from "../utils/tutorial";
 
 export function InventoryPage() {
   const saveId = useGameStore((state) => state.selectedSaveId);
@@ -22,6 +23,8 @@ export function InventoryPage() {
   const createUnit = useCreateInventoryUnit(saveId);
   const runTest = useRunInventoryTest(saveId);
   const progression = useProgression(saveId);
+  const tutorialMode = useGameStore((state) => state.tutorialMode);
+  const tutorialStep = useGameStore((state) => state.tutorialStep);
 
   const [productId, setProductId] = useState<number | null>(null);
   const [filter, setFilter] = useState<"ALL" | "NEW" | "USED" | "UNTESTED" | "REFURBISHED" | "DEFECTIVE">("ALL");
@@ -120,7 +123,7 @@ export function InventoryPage() {
         </div>
 
         {/* Capacity telemetry */}
-        <div className="w-full md:w-80 flex flex-col gap-1.5">
+        <div className={`w-full md:w-80 flex flex-col gap-1.5 ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}>
           <div className="flex justify-between items-center font-mono text-[10px] uppercase">
             <span className="text-slate-400">Inventory Capacity</span>
             <span className="text-[#ffba20] font-bold">
@@ -147,7 +150,7 @@ export function InventoryPage() {
       </ConsolePanel>
 
       {/* Filter and intake desk */}
-      <ConsolePanel variant="z-1" className="flex flex-wrap items-center justify-between gap-4">
+      <ConsolePanel variant="z-1" className={`flex flex-wrap items-center justify-between gap-4 ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}>
         {/* Monospace filter chips */}
         <div className="flex flex-wrap gap-1">
           {(["ALL", "NEW", "USED", "UNTESTED", "REFURBISHED", "DEFECTIVE"] as const).map((t) => (
@@ -172,7 +175,8 @@ export function InventoryPage() {
         <div className="flex flex-wrap gap-3 items-center">
           <Link
             to="/refurbish"
-            className="h-10 border border-primary-container text-primary-container bg-transparent hover:bg-primary-container/10 font-mono text-xs uppercase tracking-wider px-3 flex items-center gap-1.5 transition"
+            className={`h-10 border border-primary-container text-primary-container bg-transparent hover:bg-primary-container/10 font-mono text-xs uppercase tracking-wider px-3 flex items-center gap-1.5 transition ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
+            title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Open refurbish bench")}
           >
             <Wrench className="h-4 w-4 text-primary-container" /> Refurbish Bench
           </Link>
@@ -188,7 +192,12 @@ export function InventoryPage() {
                 </option>
               ))}
             </select>
-            <ActionButton disabled={createUnit.isPending} type="submit" className="!w-auto !px-4">
+            <ActionButton
+              disabled={createUnit.isPending}
+              type="submit"
+              className={`!w-auto !px-4 ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
+              title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Add used stock")}
+            >
               Add Used
             </ActionButton>
           </form>
@@ -228,6 +237,7 @@ export function InventoryPage() {
                 isTesting={runTest.isPending}
                 onRunTest={handleRunTest}
                 unit={unit}
+                tutorialActive={tutorialMode && tutorialStep >= 3}
               />
             ))}
           </div>
@@ -282,4 +292,3 @@ export function InventoryPage() {
     </section>
   );
 }
-

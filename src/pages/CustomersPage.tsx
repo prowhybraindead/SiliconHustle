@@ -18,6 +18,7 @@ import type { CustomerRequest } from "../types/game";
 import { ConsolePanel } from "../components/ui/ConsolePanel";
 import { StatusChip } from "../components/ui/StatusChip";
 import { ActionButton } from "../components/ui/ActionButton";
+import { tutorialHighlight, tutorialTooltip } from "../utils/tutorial";
 
 export function CustomersPage() {
   const saveId = useGameStore((state) => state.selectedSaveId);
@@ -28,6 +29,8 @@ export function CustomersPage() {
   const generateQuote = useGenerateQuote(saveId);
   const evaluateQuotes = useEvaluateRequestQuotes(saveId);
   const createConversation = useCreateConversationForRequest(saveId);
+  const tutorialMode = useGameStore((state) => state.tutorialMode);
+  const tutorialStep = useGameStore((state) => state.tutorialStep);
 
   async function handleGenerateQuote(requestId: number) {
     await generateQuote.mutateAsync(requestId);
@@ -56,10 +59,11 @@ export function CustomersPage() {
         </div>
         <div>
           <ActionButton
-            className="h-9 px-4 text-[11px]"
+            className={`h-9 px-4 text-[11px] ${tutorialHighlight(tutorialMode && tutorialStep <= 1)}`}
             variant="primary"
             disabled={generateCustomer.isPending}
             onClick={() => generateCustomer.mutate()}
+            title={tutorialTooltip(tutorialMode && tutorialStep <= 1, "Generate sample walk-in")}
           >
             GENERATE WALK-IN SAMPLE
           </ActionButton>
@@ -142,29 +146,36 @@ export function CustomersPage() {
               </div>
 
               {/* Action columns */}
-              <div className="flex flex-row lg:flex-col gap-2 shrink-0 w-full lg:w-[130px] pt-3 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-3 select-none">
+              <div
+                className={`flex flex-row lg:flex-col gap-2 shrink-0 w-full lg:w-[130px] pt-3 lg:pt-0 lg:border-l lg:border-white/5 lg:pl-3 select-none ${
+                  tutorialMode && tutorialStep >= 2 ? tutorialHighlight(true) : ""
+                }`}
+              >
                 <ActionButton
-                  className="h-8 text-[9px] flex-1 lg:flex-none"
+                  className={`h-8 text-[9px] flex-1 lg:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 2)}`}
                   variant="primary"
                   disabled={generateQuote.isPending || request.status === "ACCEPTED" || request.status === "COMPLETED"}
                   onClick={() => handleGenerateQuote(request.id)}
+                  title={tutorialTooltip(tutorialMode && tutorialStep >= 2, "Generate quote from this request")}
                 >
                   SCOUT QUOTE
                 </ActionButton>
-                <ActionButton
-                  className="h-8 text-[9px] flex-1 lg:flex-none"
-                  variant="secondary"
-                  disabled={createConversation.isPending}
-                  onClick={() => handleOpenChat(request)}
-                >
+                  <ActionButton
+                    className={`h-8 text-[9px] flex-1 lg:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 2)}`}
+                    variant="secondary"
+                    disabled={createConversation.isPending}
+                    onClick={() => handleOpenChat(request)}
+                    title={tutorialTooltip(tutorialMode && tutorialStep >= 2, "Open customer chat")}
+                  >
                   OPEN CHAT DESK
-                </ActionButton>
-                <ActionButton
-                  className="h-8 text-[9px] flex-1 lg:flex-none"
-                  variant="secondary"
-                  disabled={evaluateQuotes.isPending}
-                  onClick={() => evaluateQuotes.mutate(request.id)}
-                >
+                  </ActionButton>
+                  <ActionButton
+                    className={`h-8 text-[9px] flex-1 lg:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 2)}`}
+                    variant="secondary"
+                    disabled={evaluateQuotes.isPending}
+                    onClick={() => evaluateQuotes.mutate(request.id)}
+                    title={tutorialTooltip(tutorialMode && tutorialStep >= 2, "Re-score fit")}
+                  >
                   RE-SCORE FIT
                 </ActionButton>
               </div>

@@ -7,6 +7,27 @@ export function formatVnd(value: number | null | undefined): string {
   }).format(value);
 }
 
+export function formatVndCompact(value: number | null | undefined): string {
+  if (value === null || value === undefined) return "?";
+
+  const abs = Math.abs(value);
+  const sign = value < 0 ? "-" : "";
+
+  if (abs >= 1_000_000_000) {
+    return `${sign}₫${(abs / 1_000_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}B`;
+  }
+
+  if (abs >= 1_000_000) {
+    return `${sign}₫${(abs / 1_000_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}M`;
+  }
+
+  if (abs >= 1_000) {
+    return `${sign}₫${(abs / 1_000).toLocaleString("en-US", { maximumFractionDigits: 1 })}K`;
+  }
+
+  return `${sign}₫${abs.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+}
+
 export function labelize(value: string): string {
   return value.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (letter: string) => letter.toUpperCase());
 }

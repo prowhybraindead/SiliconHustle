@@ -8,6 +8,8 @@ import { ScorePill } from "./ScorePill";
 import { StatusChip } from "./ui/StatusChip";
 import { ConsolePanel } from "./ui/ConsolePanel";
 import { ActionButton } from "./ui/ActionButton";
+import { useGameStore } from "../store/gameStore";
+import { tutorialHighlight, tutorialTooltip } from "../utils/tutorial";
 
 interface QuoteCardProps {
   detail: QuoteDetail;
@@ -20,6 +22,8 @@ interface QuoteCardProps {
 
 export function QuoteCard({ detail, onReserve, onRelease, onAccept, onOpenChat, isBusy }: QuoteCardProps) {
   const [open, setOpen] = useState(false);
+  const tutorialMode = useGameStore((state) => state.tutorialMode);
+  const tutorialStep = useGameStore((state) => state.tutorialStep);
   const { quote, quote_items: items } = detail;
   const compatibility = quote.compatibility_result;
   const warningCount = compatibility?.warnings.length ?? quote.compatibility_warnings_json?.length ?? 0;
@@ -87,43 +91,47 @@ export function QuoteCard({ detail, onReserve, onRelease, onAccept, onOpenChat, 
         </button>
 
         {/* Right Side: Action Buttons Desk */}
-        <div className="flex flex-wrap gap-2 xl:justify-end shrink-0 select-none w-full xl:w-auto">
+        <div className={`flex flex-wrap gap-2 xl:justify-end shrink-0 select-none w-full xl:w-auto ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}>
           {quote.customer_request.conversation_id && onOpenChat && (
             <ActionButton
-              className="h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none"
+              className={`h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
               variant="secondary"
               onClick={() => onOpenChat(quote.customer_request.conversation_id as number)}
+              title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Open customer chat")}
             >
               COMM CHAT
             </ActionButton>
           )}
-          <ActionButton
-            className="h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none"
-            variant="secondary"
-            disabled={isBusy || isConverted}
-            onClick={() => onReserve(quote.id)}
-          >
-            <Lock className="h-3 w-3" />
-            RESERVE
-          </ActionButton>
-          <ActionButton
-            className="h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none"
-            variant="secondary"
-            disabled={isBusy || isConverted}
-            onClick={() => onRelease(quote.id)}
-          >
-            <Unlock className="h-3 w-3" />
-            RELEASE
-          </ActionButton>
-          <ActionButton
-            className="h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none"
-            variant="primary"
-            disabled={isBusy || isConverted}
-            onClick={() => onAccept(quote.id)}
-          >
-            <Check className="h-3 w-3" />
-            ACCEPT
-          </ActionButton>
+            <ActionButton
+              className={`h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
+              variant="secondary"
+              disabled={isBusy || isConverted}
+              onClick={() => onReserve(quote.id)}
+              title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Reserve quote")}
+            >
+              <Lock className="h-3 w-3" />
+              RESERVE
+            </ActionButton>
+            <ActionButton
+              className={`h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
+              variant="secondary"
+              disabled={isBusy || isConverted}
+              onClick={() => onRelease(quote.id)}
+              title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Release quote")}
+            >
+              <Unlock className="h-3 w-3" />
+              RELEASE
+            </ActionButton>
+            <ActionButton
+              className={`h-8 text-[9px] px-3 w-auto flex-1 xl:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
+              variant="primary"
+              disabled={isBusy || isConverted}
+              onClick={() => onAccept(quote.id)}
+              title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Accept quote")}
+            >
+              <Check className="h-3 w-3" />
+              ACCEPT
+            </ActionButton>
         </div>
       </div>
 

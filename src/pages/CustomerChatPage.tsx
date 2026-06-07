@@ -20,6 +20,7 @@ import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import { useGameStore } from "../store/gameStore";
 import { formatVnd, labelize } from "../utils/format";
+import { tutorialHighlight, tutorialTooltip } from "../utils/tutorial";
 import type { CustomerConversation, CustomerConversationMessage, ConversationActionType } from "../types/game";
 
 import { ConsolePanel } from "../components/ui/ConsolePanel";
@@ -38,6 +39,8 @@ const QUICK_ACTIONS: { action: ConversationActionType; label: string; variant: "
 
 export function CustomerChatPage() {
   const saveId = useGameStore((state) => state.selectedSaveId);
+  const tutorialMode = useGameStore((state) => state.tutorialMode);
+  const tutorialStep = useGameStore((state) => state.tutorialStep);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   
@@ -241,6 +244,7 @@ export function CustomerChatPage() {
                     variant={requestItem.conversation_id ? "secondary" : "primary"}
                     disabled={createConversation.isPending}
                     onClick={() => openConversationForRequest(requestItem.id)}
+                    title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Open or create chat")}
                   >
                     {requestItem.conversation_id ? "OPEN CHAT LINK" : "ESTABLISH LINK"}
                   </ActionButton>
@@ -256,7 +260,10 @@ export function CustomerChatPage() {
             <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
               {/* Center Panel (Transcript, Replies and inputs) */}
               <div className="space-y-4">
-                <ConsolePanel variant="z-2-active" className="flex flex-col h-[650px]">
+                <ConsolePanel
+                  variant="z-2-active"
+                  className={`flex flex-col h-[650px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
+                >
                   <div className="flex justify-between items-center border-b border-white/10 pb-2 mb-3 select-none">
                     <span className="font-mono text-[10px] uppercase text-outline">COMMUNICATION TRANSCRIPT</span>
                     <span className="font-mono text-[9px] text-[#00f2ff]">
@@ -274,7 +281,7 @@ export function CustomerChatPage() {
                   {/* Actions area */}
                   <div className="border-t border-white/10 pt-3 space-y-3">
                     {/* Quick reply game action verbs */}
-                    <div>
+                    <div className={tutorialHighlight(tutorialMode && tutorialStep >= 3)}>
                       <div className="mb-2 font-mono text-[9px] uppercase tracking-wider text-outline select-none">
                         QUICK ACTION DESK COGNITIONS
                       </div>
@@ -290,6 +297,7 @@ export function CustomerChatPage() {
                             disabled={quickReply.isPending}
                             onClick={() => handleQuickReply(item.action)}
                             type="button"
+                            title={tutorialTooltip(tutorialMode && tutorialStep >= 3, item.label)}
                           >
                             {item.label.toUpperCase()}
                           </button>
@@ -298,9 +306,11 @@ export function CustomerChatPage() {
                     </div>
 
                     {/* Chat Text Input field */}
-                    <div className="flex flex-col gap-2">
+                    <div className={tutorialHighlight(tutorialMode && tutorialStep >= 3)}>
                       <textarea
-                        className="h-16 border border-white/10 bg-[#080a0d] p-2 font-mono text-[11px] text-on-surface outline-none focus:border-primary-container"
+                        className={`h-16 border border-white/10 bg-[#080a0d] p-2 font-mono text-[11px] text-on-surface outline-none focus:border-primary-container ${tutorialHighlight(
+                          tutorialMode && tutorialStep >= 3,
+                        )}`}
                         onChange={(event) => setDraft(event.target.value)}
                         placeholder="INPUT CUSTOMER COMMUNICATOR SPEECH INSTRUCTIONS..."
                         value={draft}
@@ -308,33 +318,37 @@ export function CustomerChatPage() {
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                         <ActionButton
                           variant="primary"
-                          className="h-8 text-[10px]"
+                          className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={sendMessage.isPending || draft.trim().length === 0}
                           onClick={() => handleSendMessage()}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Send message")}
                         >
                           SEND MESSAGE
                         </ActionButton>
                         <ActionButton
                           variant="secondary"
-                          className="h-8 text-[10px]"
+                          className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={readyToOrder.isPending}
                           onClick={() => handleReadyToOrder()}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Mark ready")}
                         >
                           READY TO ORDER
                         </ActionButton>
                         <ActionButton
                           variant="secondary"
-                          className="h-8 text-[10px]"
+                          className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={closeConversation.isPending}
                           onClick={() => handleClose(true)}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Close won")}
                         >
                           CLOSE WON
                         </ActionButton>
                         <ActionButton
                           variant="danger"
-                          className="h-8 text-[10px]"
+                          className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={closeConversation.isPending}
                           onClick={() => handleClose(false)}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Close lost")}
                         >
                           CLOSE LOST
                         </ActionButton>

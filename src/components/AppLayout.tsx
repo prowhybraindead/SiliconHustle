@@ -1,26 +1,50 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Lock, AlertTriangle, LogOut, Delete } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, Delete, LogIn } from "lucide-react";
 
 import { Sidebar } from "./Sidebar";
 import { TopBar } from "./TopBar";
 import { EmptyState } from "./EmptyState";
-import { BrandWordmark } from "./BrandWordmark";
 import { useGameStore } from "../store/gameStore";
-import { apiRequest, unlockPlayerProfile } from "../api/client";
-import { useSaveGames } from "../api/hooks";
+import { ApiError, apiRequest, unlockPlayerProfile } from "../api/client";
+import { useCreateSaveGame, useSaveGames } from "../api/hooks";
 import type { SaveGame } from "../types/game";
-import { ApiError } from "../api/client";
 import { getErrorMessage } from "../utils/error";
+import { formatVndCompact } from "../utils/format";
+
+function getInitials(name: string) {
+  return (
+    name
+      .split(/[\s_-]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("")
+      .slice(0, 2) || "SH"
+  );
+}
+
+function formatSyncTime(value: string | null | undefined) {
+  if (!value) return "UNKNOWN";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "UNKNOWN";
+  return `${date.toLocaleTimeString("en-GB", {
+    hour12: false,
+    timeZone: "UTC",
+  })} UTC`;
+}
 
 export function AppLayout() {
   const saveId = useGameStore((state) => state.selectedSaveId);
+  const setSelectedSaveId = useGameStore((state) => state.setSelectedSaveId);
+  const startTutorial = useGameStore((state) => state.startTutorial);
+  const endTutorial = useGameStore((state) => state.endTutorial);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const savesQuery = useSaveGames();
+  const createSave = useCreateSaveGame();
 
-  // Query details of the active save game
   const saveDetail = useQuery({
     queryKey: ["active-save-detail", saveId],
     queryFn: () => apiRequest<SaveGame>(`/api/save-games/${saveId}`),
@@ -32,31 +56,33 @@ export function AppLayout() {
   const [errorMsg, setErrorMsg] = useState("");
   const [lockoutTime, setLockoutTime] = useState<number | null>(null);
 
-  const currentSave = savesQuery.data?.find((s) => s.id === saveId);
+  const currentSave = savesQuery.data?.find((save) => save.id === saveId);
   const isLocked = saveDetail.error instanceof ApiError && saveDetail.error.status === 403;
   const profileId = currentSave?.player_profile_id;
-  const profileName = currentSave?.profile_display_name ?? "Security Profile";
+  const profileName = currentSave?.profile_display_name ?? currentSave?.name ?? "Security Profile";
+  const profileSync = formatSyncTime(currentSave?.last_autosave_at ?? currentSave?.updated_at);
 
-  // Lockout timer countdown
   useEffect(() => {
     if (lockoutTime !== null && lockoutTime > 0) {
       const timer = setTimeout(() => setLockoutTime(lockoutTime - 1), 1000);
       return () => clearTimeout(timer);
-    } else if (lockoutTime === 0) {
+    }
+
+    if (lockoutTime === 0) {
       setLockoutTime(null);
       setErrorMsg("");
     }
   }, [lockoutTime]);
 
-  // Extract lockout from error details
   useEffect(() => {
     if (saveDetail.error instanceof ApiError && saveDetail.error.status === 403) {
       const msg = saveDetail.error.message;
       setErrorMsg(msg);
+
       if (msg.includes("locked") && msg.includes("seconds")) {
         const matches = msg.match(/\d+/);
         if (matches) {
-          setLockoutTime(parseInt(matches[0], 10));
+          setLockoutTime(Number.parseInt(matches[0], 10));
         }
       }
     }
@@ -71,7 +97,6 @@ export function AppLayout() {
       localStorage.setItem("profile_unlock_token", data.token);
       setErrorMsg("");
       setPin("");
-      // Refetch detail and state
       queryClient.invalidateQueries({ queryKey: ["active-save-detail", saveId] });
       queryClient.invalidateQueries({ queryKey: ["save-state", saveId] });
       queryClient.invalidateQueries({ queryKey: ["save-games"] });
@@ -80,28 +105,32 @@ export function AppLayout() {
       const message = getErrorMessage(err, "Unable to unlock the save.");
       setErrorMsg(message);
       setPin("");
+
       if (message.includes("locked") && message.includes("seconds")) {
         const matches = message.match(/\d+/);
         if (matches) {
-          setLockoutTime(parseInt(matches[0], 10));
+          setLockoutTime(Number.parseInt(matches[0], 10));
         }
       }
     },
   });
 
-  const handleUnlockSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const handleUnlockSubmit = (event?: FormEvent) => {
+    if (event) event.preventDefault();
     if (lockoutTime !== null) return;
+
     if (pin.length < 4) {
       setErrorMsg("PIN must be at least 4 digits.");
       return;
     }
+
     unlockMutation.mutate(pin);
   };
 
   const handleKeyPress = (num: string) => {
     if (lockoutTime !== null) return;
     setErrorMsg("");
+
     if (pin.length < 12) {
       setPin((prev) => prev + num);
     }
@@ -112,19 +141,20 @@ export function AppLayout() {
     setPin((prev) => prev.slice(0, -1));
   };
 
-  const handleClear = () => {
-    setErrorMsg("");
-    setPin("");
-  };
-
   const handleExitSave = () => {
-    // Clear save state store
     window.localStorage.removeItem("silicon-hustle-save-id");
-    // Clear token
     localStorage.removeItem("profile_unlock_token");
+    endTutorial();
     queryClient.invalidateQueries();
     navigate("/");
     window.location.reload();
+  };
+
+  const handleStartTutorial = async () => {
+    const tutorialSave = await createSave.mutateAsync("Tutorial Sandbox");
+    setSelectedSaveId(tutorialSave.id);
+    startTutorial(tutorialSave.id);
+    navigate("/tutorial");
   };
 
   if (!saveId) {
@@ -138,79 +168,95 @@ export function AppLayout() {
     );
   }
 
-  // If save is locked, render the stunning lock screen overlay
   if (isLocked) {
     return (
-      <div className="min-h-screen game-console-bg flex flex-col items-center justify-center p-4 relative overflow-hidden z-0 select-none">
+      <div className="game-console-bg relative z-0 flex min-h-screen select-none flex-col items-center justify-center overflow-hidden p-4 text-on-surface">
         <div className="scanline-animation" />
 
-        <main className="w-full max-w-[480px] px-margin-safe flex flex-col gap-gutter z-10 relative">
-          {/* Header / Brand */}
-          <header className="text-center mb-6">
-            <BrandWordmark className="mx-auto max-w-[280px]" eager size="lg" />
-            <div className="font-mono text-[10px] uppercase tracking-wider text-on-surface-variant mt-2 flex items-center justify-center gap-2">
-              <span className="inline-block w-2 h-2 bg-secondary-fixed-dim rounded-full animate-pulse" />
+        <main className="relative z-10 flex w-full max-w-[480px] flex-col gap-gutter px-margin-safe py-12">
+          <header className="mb-2 text-center">
+            <h1 className="text-[2rem] font-black uppercase tracking-tighter text-primary-container sm:text-[2.25rem]">
+              SILICON HUSTLE
+            </h1>
+            <div className="mt-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
+              <span className="inline-block h-2 w-2 rounded-full bg-secondary-fixed-dim animate-pulse" />
               SYSTEM SECURE // AWAITING AUTHORIZATION
             </div>
           </header>
 
-          {/* Selected Profile Card (Z-1 Panel) */}
-          <div className="bg-surface-container-high border border-white/10 rounded-none overflow-hidden">
-            {/* Card Header */}
-            <div className="bg-surface-container-highest px-4 py-2 border-b border-white/10 flex justify-between items-center">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-outline">TARGET PROFILE</span>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-primary-container bg-primary-container/10 px-2 py-1 rounded-sm border border-primary-container/20">[LOCKED]</span>
+          <section className="overflow-hidden border border-white/10 bg-surface-container-high">
+            <div className="flex items-center justify-between border-b border-white/10 bg-surface-container-highest px-4 py-2">
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
+                TARGET PROFILE
+              </span>
+              <span className="rounded-sm border border-primary-container/30 bg-primary-container/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary-container">
+                [LOCKED]
+              </span>
             </div>
-            {/* Card Body */}
-            <div className="p-4 flex flex-col gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-surface-container-lowest border border-white/10 flex items-center justify-center flex-shrink-0 font-mono text-xl text-outline font-bold">
-                  {profileName.slice(0, 2).toUpperCase()}
-                </div>
-                <div className="flex-grow">
-                  <h2 className="font-sans text-lg font-bold text-on-surface uppercase">{profileName}</h2>
-                  <div className="font-mono text-[10px] text-on-surface-variant mt-1">SECURE ACCESS REQUIRED</div>
-                </div>
-              </div>
-              {/* Stats Grid */}
-              <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
-                <div className="flex flex-col">
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-outline">FUNDS</span>
-                  <span className="font-mono text-xs font-bold text-secondary-fixed-dim">₫{(currentSave?.cash ?? 0).toLocaleString()}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-outline">CYCLE</span>
-                  <span className="font-mono text-xs font-bold text-on-surface">DAY {currentSave?.game_day ?? 1}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-mono text-[9px] uppercase tracking-wider text-outline">REP</span>
-                  <span className="font-mono text-xs font-bold text-on-surface">{currentSave?.reputation ?? 0}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          {/* PIN Input Area (Z-2 Active Modal style) */}
-          <div className="bg-surface-container-low/80 backdrop-blur-md border border-primary-container/40 terminal-glow rounded-none mt-2 flex flex-col relative z-20">
-            {/* Input Display */}
-            <div className="p-6 border-b border-white/10 flex justify-center items-center h-20">
-              <div className="flex gap-4 font-mono text-2xl text-primary-container tracking-[1em] items-center relative">
-                {[...Array(4)].map((_, i) => (
+            <div className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center border border-white/10 bg-surface-container-lowest text-lg font-bold text-outline">
+                  {getInitials(profileName)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="truncate text-lg font-bold uppercase text-on-surface">{profileName}</h2>
+                  <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
+                    LAST SYNC: {profileSync}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 border-t border-white/10 pt-4">
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">
+                      FUNDS
+                    </span>
+                    <span className="font-mono text-sm font-bold text-secondary-fixed-dim">
+                      {formatVndCompact(currentSave?.cash)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">
+                      CYCLE
+                    </span>
+                    <span className="font-mono text-sm font-bold text-on-surface">
+                      DAY {currentSave?.game_day ?? 1}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">
+                      REP
+                    </span>
+                    <span className="font-mono text-sm font-bold text-on-surface">
+                      {currentSave?.reputation ?? 0}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="relative z-20 overflow-hidden border border-primary-container/40 bg-surface-container-low/80 backdrop-blur-md terminal-glow">
+            <div className="flex h-20 items-center justify-center border-b border-white/10 p-6">
+              <div className="flex items-center gap-4 font-mono text-2xl tracking-[1em] text-primary-container">
+                {[0, 1, 2, 3].map((index) => (
                   <span
-                    key={i}
-                    className={`font-mono transition-all duration-150 ${
-                      i < pin.length
-                        ? "text-primary-container scale-110 drop-shadow-[0_0_8px_rgba(0,242,255,0.6)] font-bold"
+                    key={index}
+                    className={`transition-all duration-150 ${
+                      index < pin.length
+                        ? "scale-110 font-bold text-primary-container drop-shadow-[0_0_8px_rgba(0,242,255,0.6)]"
                         : "text-on-surface-variant/30"
                     }`}
                   >
-                    {i < pin.length ? "*" : "•"}
+                    {index < pin.length ? "*" : "•"}
                   </span>
                 ))}
-                <span className="pin-cursor border-l-2 border-primary-container ml-[-0.5em] h-8 animate-pulse" />
+                <span className="pin-cursor ml-[-0.5em] h-8 border-l-2 border-primary-container animate-pulse" />
               </div>
             </div>
-            {/* Numeric Keypad */}
+
             <div className="grid grid-cols-3 gap-[1px] bg-white/10 p-[1px]">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <button
@@ -218,76 +264,84 @@ export function AppLayout() {
                   type="button"
                   onClick={() => handleKeyPress(String(num))}
                   disabled={lockoutTime !== null}
-                  className="bg-surface-container-high h-16 font-mono text-base font-bold text-on-surface hover:bg-surface-container-highest focus:outline-none flex items-center justify-center transition-all duration-100 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  {num}
-                </button>
+                  className="flex h-16 items-center justify-center bg-surface-container-high font-mono text-base font-bold text-on-surface transition-colors hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    {num}
+                  </button>
               ))}
+
               <button
                 type="button"
-                onClick={handleClear}
-                className="bg-surface-container-high h-16 font-mono text-[10px] font-bold text-outline hover:bg-surface-container-highest focus:outline-none flex items-center justify-center transition-all duration-100"
+                onClick={handleBackspace}
+                className="flex h-16 items-center justify-center bg-surface-container-high font-mono text-outline transition-colors hover:bg-surface-container-highest"
               >
-                CLEAR
+                <Delete className="h-4 w-4" />
               </button>
               <button
                 type="button"
                 onClick={() => handleKeyPress("0")}
                 disabled={lockoutTime !== null}
-                className="bg-surface-container-high h-16 font-mono text-base font-bold text-on-surface hover:bg-surface-container-highest focus:outline-none flex items-center justify-center transition-all duration-100 disabled:opacity-30 disabled:cursor-not-allowed"
+                className="flex h-16 items-center justify-center bg-surface-container-high font-mono text-base font-bold text-on-surface transition-colors hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-30"
               >
                 0
               </button>
               <button
                 type="button"
-                onClick={handleBackspace}
-                className="bg-surface-container-high h-16 font-mono text-[10px] font-bold text-outline hover:bg-surface-container-highest focus:outline-none flex items-center justify-center transition-all duration-100"
+                onClick={() => handleUnlockSubmit()}
+                disabled={unlockMutation.isPending || lockoutTime !== null}
+                className="flex h-16 items-center justify-center bg-primary-container font-mono text-lg text-on-primary-fixed transition-colors hover:bg-primary-fixed-dim disabled:cursor-not-allowed disabled:opacity-70"
               >
-                BACK
+                <LogIn className="h-5 w-5" />
               </button>
             </div>
-          </div>
+          </section>
 
-          {/* Error Message */}
-          {errorMsg && (
-            <div className="flex items-center gap-2 rounded-none border border-rose-500/20 bg-rose-500/10 p-3 text-xs text-rose-400 leading-snug mt-2">
+          {errorMsg ? (
+            <div className="mt-1 flex items-center gap-2 border border-rose-500/20 bg-rose-500/10 p-3 text-xs leading-snug text-rose-400">
               <AlertTriangle className="h-4 w-4 shrink-0" />
               <span>{errorMsg}</span>
             </div>
-          )}
+          ) : null}
 
-          {/* Action buttons */}
-          <div className="flex gap-3 pt-4 border-t border-white/5 mt-2">
-            <button
-              type="button"
-              onClick={handleExitSave}
-              className="flex-1 inline-flex h-12 items-center justify-center gap-1.5 border border-white/10 bg-surface text-xs font-bold text-on-surface hover:bg-white/5 transition uppercase"
-            >
-              <LogOut className="h-4 w-4" />
-              Exit Save
-            </button>
+          <div className="flex gap-3 pt-1">
             <button
               type="button"
               onClick={() => handleUnlockSubmit()}
               disabled={unlockMutation.isPending || lockoutTime !== null}
-              className="flex-1 inline-flex h-12 items-center justify-center gap-1.5 bg-primary-container text-xs font-black text-on-primary-fixed hover:bg-primary-fixed-dim transition uppercase disabled:opacity-40"
+              className="inline-flex h-12 flex-1 items-center justify-center border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-on-surface-variant"
             >
-              {unlockMutation.isPending ? "Unlocking..." : lockoutTime !== null ? `Locked (${lockoutTime}s)` : "Unlock"}
+              {unlockMutation.isPending ? "RESUMING..." : lockoutTime !== null ? `LOCKED (${lockoutTime}s)` : "RESUME SAVE"}
+            </button>
+            <button
+              type="button"
+              onClick={handleExitSave}
+              className="inline-flex h-12 flex-1 items-center justify-center border border-white/10 bg-surface-container px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant transition hover:bg-white/5"
+            >
+              NEW SHOWROOM
             </button>
           </div>
+
+          <button
+            type="button"
+            onClick={handleStartTutorial}
+            disabled={createSave.isPending}
+            title="Open tutorial demo"
+            className="inline-flex h-12 w-full items-center justify-center gap-2 border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {createSave.isPending ? "PREPARING TUTORIAL..." : "GUIDED TUTORIAL"}
+          </button>
         </main>
       </div>
     );
   }
 
-  // Standard Page Layout when unlocked (High Z-Index Locked Operations Console)
   return (
-    <div className="min-h-screen game-console-bg text-on-surface flex flex-col font-sans selection:bg-primary-container selection:text-on-primary-container relative">
+    <div className="game-console-bg relative min-h-screen font-sans text-on-surface selection:bg-primary-container selection:text-on-primary-container">
       <div className="scanline-animation" />
       <TopBar />
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="relative flex flex-1 overflow-hidden">
         <Sidebar />
-        <main className="flex-1 mt-12 md:ml-16 p-margin-safe pb-20 md:pb-margin-safe overflow-y-auto console-scrollbar">
+        <main className="console-scrollbar mt-12 flex-1 overflow-y-auto p-margin-safe pb-20 md:ml-16 md:pb-margin-safe">
           <Outlet />
         </main>
       </div>
