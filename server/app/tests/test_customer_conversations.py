@@ -116,12 +116,16 @@ def test_conversation_quick_reply_quote_and_staff_flow(client: TestClient) -> No
 
     quick = client.post(
         f"/api/save-games/{save_id}/customer-conversations/{conv_id}/quick-reply",
-        json={"action_type": "ASK_USED_PARTS"},
+        json={"action_type": "ASK_USED_PARTS", "locale": "en"},
     )
     assert quick.status_code == 200
     quick_data = quick.json()
     assert quick_data["stage"] == "DISCUSSING_USED_PARTS"
     assert 0 <= quick_data["conversion_probability"] <= 100
+    assert quick_data["messages"][-1]["sender_type"] == "CUSTOMER"
+    assert quick_data["messages"][-1]["body"].startswith(
+        ("Used parts", "I prefer new parts", "I might consider used parts", "I'm not sure yet")
+    )
 
     candidate_res = client.post(f"/api/save-games/{save_id}/staff/candidates/generate?role=SALES&count=1")
     assert candidate_res.status_code == 200
@@ -132,10 +136,12 @@ def test_conversation_quick_reply_quote_and_staff_flow(client: TestClient) -> No
 
     assign_res = client.post(
         f"/api/save-games/{save_id}/customer-conversations/{conv_id}/assign-staff",
-        json={"staff_id": staff_id},
+        json={"staff_id": staff_id, "locale": "vi"},
     )
     assert assign_res.status_code == 200
     assert assign_res.json()["assigned_staff_id"] == staff_id
+    assert any(message["sender_type"] == "STAFF" for message in assign_res.json()["messages"])
+    assert any("Em sẽ hỗ trợ tư vấn" in message["body"] for message in assign_res.json()["messages"] if message["sender_type"] == "STAFF")
 
     quote_res = client.post(f"/api/save-games/{save_id}/customer-requests/{request['id']}/generate-quote", json={})
     assert quote_res.status_code == 200
@@ -175,8 +181,11 @@ def test_mutating_customer_conversation_routes_respect_profile_lock(client: Test
 
     allowed = client.post(
         f"/api/save-games/{save_id}/customer-conversations/{conv_id}/messages",
-        json={"body": "Hello from the showroom."},
+        json={"body": "Anh muốn hỏi thêm về ngân sách phù hợp.", "locale": "vi"},
         headers={"X-Profile-Unlock-Token": token},
     )
     assert allowed.status_code == 200
     assert allowed.json()["id"] == conv_id
+    assert allowed.json()["messages"][-2]["sender_type"] == "PLAYER"
+    assert allowed.json()["messages"][-1]["sender_type"] == "CUSTOMER"
+    assert "Em muốn giữ quanh mức" in allowed.json()["messages"][-1]["body"]

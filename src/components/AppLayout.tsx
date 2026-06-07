@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Delete, LogIn } from "lucide-react";
@@ -11,7 +11,7 @@ import { ApiError, apiRequest, unlockPlayerProfile } from "../api/client";
 import { useCreateSaveGame, useSaveGames } from "../api/hooks";
 import type { SaveGame } from "../types/game";
 import { getErrorMessage } from "../utils/error";
-import { formatVndCompact } from "../utils/format";
+import { formatVndCompact, pickUiText } from "../utils/format";
 
 function getInitials(name: string) {
   return (
@@ -40,10 +40,34 @@ export function AppLayout() {
   const setSelectedSaveId = useGameStore((state) => state.setSelectedSaveId);
   const startTutorial = useGameStore((state) => state.startTutorial);
   const endTutorial = useGameStore((state) => state.endTutorial);
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const savesQuery = useSaveGames();
   const createSave = useCreateSaveGame();
+
+  const copy = useMemo(
+    () => ({
+      noSaveTitle: pickUiText("Chưa chọn trung tâm điều khiển", "No command center selected", uiLanguage),
+      noSaveBody: pickUiText("Mở hoặc tạo một bản lưu showroom từ màn hình chính.", "Open or create a showroom save from the home screen.", uiLanguage),
+      waitingVerify: pickUiText("HỆ THỐNG AN TOÀN // ĐANG CHỜ XÁC THỰC", "SECURE SYSTEM // WAITING FOR VERIFICATION", uiLanguage),
+      targetProfile: pickUiText("HỒ SƠ MỤC TIÊU", "TARGET PROFILE", uiLanguage),
+      locked: pickUiText("[ĐÃ KHÓA]", "[LOCKED]", uiLanguage),
+      lastSync: pickUiText("ĐỒNG BỘ LẦN CUỐI", "LAST SYNC", uiLanguage),
+      funds: pickUiText("TIỀN", "FUNDS", uiLanguage),
+      cycle: pickUiText("CHU KỲ", "CYCLE", uiLanguage),
+      day: pickUiText("NGÀY", "DAY", uiLanguage),
+      pinMin: pickUiText("PIN phải có ít nhất 4 số.", "PIN must be at least 4 digits.", uiLanguage),
+      unlockFallback: pickUiText("Không thể mở khóa bản lưu.", "Unable to unlock the save.", uiLanguage),
+      continuing: pickUiText("ĐANG TIẾP TỤC...", "CONTINUING...", uiLanguage),
+      continueSave: pickUiText("TIẾP TỤC BẢN LƯU", "CONTINUE SAVE", uiLanguage),
+      newShowroom: pickUiText("SHOWROOM MỚI", "NEW SHOWROOM", uiLanguage),
+      tutorial: pickUiText("TUTORIAL HƯỚNG DẪN", "GUIDED TUTORIAL", uiLanguage),
+      preparingTutorial: pickUiText("ĐANG CHUẨN BỊ TUTORIAL...", "PREPARING TUTORIAL...", uiLanguage),
+      openTutorial: pickUiText("Mở màn demo tutorial", "Open tutorial demo", uiLanguage),
+    }),
+    [uiLanguage],
+  );
 
   const saveDetail = useQuery({
     queryKey: ["active-save-detail", saveId],
@@ -59,7 +83,7 @@ export function AppLayout() {
   const currentSave = savesQuery.data?.find((save) => save.id === saveId);
   const isLocked = saveDetail.error instanceof ApiError && saveDetail.error.status === 403;
   const profileId = currentSave?.player_profile_id;
-  const profileName = currentSave?.profile_display_name ?? currentSave?.name ?? "Security Profile";
+  const profileName = currentSave?.profile_display_name ?? currentSave?.name ?? pickUiText("Hồ sơ bảo mật", "Security Profile", uiLanguage);
   const profileSync = formatSyncTime(currentSave?.last_autosave_at ?? currentSave?.updated_at);
 
   useEffect(() => {
@@ -102,7 +126,7 @@ export function AppLayout() {
       queryClient.invalidateQueries({ queryKey: ["save-games"] });
     },
     onError: (err: unknown) => {
-      const message = getErrorMessage(err, "Unable to unlock the save.");
+      const message = getErrorMessage(err, copy.unlockFallback);
       setErrorMsg(message);
       setPin("");
 
@@ -120,7 +144,7 @@ export function AppLayout() {
     if (lockoutTime !== null) return;
 
     if (pin.length < 4) {
-      setErrorMsg("PIN must be at least 4 digits.");
+      setErrorMsg(copy.pinMin);
       return;
     }
 
@@ -162,7 +186,7 @@ export function AppLayout() {
       <div className="min-h-screen">
         <TopBar />
         <main className="p-6">
-          <EmptyState title="No command center selected" body="Open or create a showroom save from the home screen." />
+          <EmptyState title={copy.noSaveTitle} body={copy.noSaveBody} />
         </main>
       </div>
     );
@@ -180,17 +204,15 @@ export function AppLayout() {
             </h1>
             <div className="mt-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
               <span className="inline-block h-2 w-2 rounded-full bg-secondary-fixed-dim animate-pulse" />
-              HỆ THỐNG AN TOÀN // ĐANG CHỜ XÁC THỰC
+              {copy.waitingVerify}
             </div>
           </header>
 
           <section className="overflow-hidden border border-white/10 bg-surface-container-high">
             <div className="flex items-center justify-between border-b border-white/10 bg-surface-container-highest px-4 py-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-                HỒ SƠ MỤC TIÊU
-              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">{copy.targetProfile}</span>
               <span className="rounded-sm border border-primary-container/30 bg-primary-container/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary-container">
-                [ĐÃ KHÓA]
+                {copy.locked}
               </span>
             </div>
 
@@ -202,7 +224,7 @@ export function AppLayout() {
                 <div className="min-w-0 flex-1">
                   <h2 className="truncate text-lg font-bold uppercase text-on-surface">{profileName}</h2>
                   <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
-                    LAST SYNC: {profileSync}
+                    {copy.lastSync}: {profileSync}
                   </div>
                 </div>
               </div>
@@ -210,28 +232,18 @@ export function AppLayout() {
               <div className="mt-4 border-t border-white/10 pt-4">
                 <div className="grid grid-cols-3 gap-2">
                   <div className="flex flex-col gap-1">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">
-                      FUNDS
-                    </span>
-                    <span className="font-mono text-sm font-bold text-secondary-fixed-dim">
-                      {formatVndCompact(currentSave?.cash)}
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">{copy.funds}</span>
+                    <span className="font-mono text-sm font-bold text-secondary-fixed-dim">{formatVndCompact(currentSave?.cash)}</span>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">{copy.cycle}</span>
+                    <span className="font-mono text-sm font-bold text-on-surface">
+                      {copy.day} {currentSave?.game_day ?? 1}
                     </span>
                   </div>
                   <div className="flex flex-col gap-1">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">
-                      CYCLE
-                    </span>
-                    <span className="font-mono text-sm font-bold text-on-surface">
-                      DAY {currentSave?.game_day ?? 1}
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">
-                      REP
-                    </span>
-                    <span className="font-mono text-sm font-bold text-on-surface">
-                      {currentSave?.reputation ?? 0}%
-                    </span>
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-outline">REP</span>
+                    <span className="font-mono text-sm font-bold text-on-surface">{currentSave?.reputation ?? 0}%</span>
                   </div>
                 </div>
               </div>
@@ -265,9 +277,9 @@ export function AppLayout() {
                   onClick={() => handleKeyPress(String(num))}
                   disabled={lockoutTime !== null}
                   className="flex h-16 items-center justify-center bg-surface-container-high font-mono text-base font-bold text-on-surface transition-colors hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-30"
-                  >
-                    {num}
-                  </button>
+                >
+                  {num}
+                </button>
               ))}
 
               <button
@@ -310,14 +322,14 @@ export function AppLayout() {
               disabled={unlockMutation.isPending || lockoutTime !== null}
               className="inline-flex h-12 flex-1 items-center justify-center border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-on-surface-variant"
             >
-              {unlockMutation.isPending ? "ĐANG TIẾP TỤC..." : lockoutTime !== null ? `ĐÃ KHÓA (${lockoutTime}s)` : "TIẾP TỤC BẢN LƯU"}
+              {unlockMutation.isPending ? copy.continuing : lockoutTime !== null ? `${copy.locked.replace("[", "").replace("]", "")} (${lockoutTime}s)` : copy.continueSave}
             </button>
             <button
               type="button"
               onClick={handleExitSave}
               className="inline-flex h-12 flex-1 items-center justify-center border border-white/10 bg-surface-container px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant transition hover:bg-white/5"
             >
-              SHOWROOM MỚI
+              {copy.newShowroom}
             </button>
           </div>
 
@@ -325,10 +337,10 @@ export function AppLayout() {
             type="button"
             onClick={handleStartTutorial}
             disabled={createSave.isPending}
-            title="Open tutorial demo"
+            title={copy.openTutorial}
             className="inline-flex h-12 w-full items-center justify-center gap-2 border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {createSave.isPending ? "ĐANG CHUẨN BỊ TUTORIAL..." : "TUTORIAL HƯỚNG DẪN"}
+            {createSave.isPending ? copy.preparingTutorial : copy.tutorial}
           </button>
         </main>
       </div>

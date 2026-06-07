@@ -23,28 +23,31 @@ import {
   Star,
 } from "lucide-react";
 
+import { useGameStore } from "../store/gameStore";
+import { translateUiText, pickUiText } from "../utils/format";
+
 const navItems = [
-  { to: "/dashboard", label: "CMD", title: "Trung tâm điều khiển", icon: LayoutDashboard },
-  { to: "/profiles", label: "PRF", title: "Hồ sơ bảo mật", icon: User },
-  { to: "/operations", label: "OPS", title: "Bảng vận hành", icon: ListTree },
-  { to: "/progression", label: "UPG", title: "Cửa hàng nâng cấp", icon: BadgeDollarSign },
-  { to: "/catalog", label: "CTL", title: "Danh mục phần cứng", icon: Cpu },
-  { to: "/inventory", label: "WRH", title: "Kho hàng", icon: Boxes },
-  { to: "/refurbish", label: "RFB", title: "Bàn tân trang", icon: Wrench },
-  { to: "/staff", label: "STF", title: "Phòng nhân sự", icon: UserPlus2 },
-  { to: "/resale", label: "RSL", title: "Chợ bán lại", icon: Repeat },
-  { to: "/brands", label: "BRD", title: "Kho thương hiệu", icon: Tags },
-  { to: "/currency", label: "FX", title: "Bàn FX", icon: Coins },
-  { to: "/market", label: "MKT", title: "Sự kiện thị trường", icon: TrendingUp },
-  { to: "/used-market", label: "USD", title: "Chợ hàng cũ", icon: ShoppingBag },
-  { to: "/suppliers", label: "SPL", title: "Quầy nhà cung cấp", icon: Store },
-  { to: "/customers", label: "CST", title: "Quầy khách hàng", icon: Users },
-  { to: "/customer-chat", label: "CHT", title: "Chat tư vấn", icon: MessageSquareText },
-  { to: "/quotes", label: "QTE", title: "Báo giá", icon: FileText },
-  { to: "/orders", label: "ORD", title: "Đơn hàng", icon: ShoppingCart },
-  { to: "/warranty", label: "WRN", title: "Bảo hành / RMA", icon: ShieldAlert },
-  { to: "/reviews", label: "REV", title: "Đánh giá", icon: Star },
-  { to: "/settings", label: "SYS", title: "Cài đặt hệ thống", icon: Settings },
+  { to: "/dashboard", label: "CMD", title: "Command Center", icon: LayoutDashboard },
+  { to: "/profiles", label: "PRF", title: "Security Profiles", icon: User },
+  { to: "/operations", label: "OPS", title: "Operations Board", icon: ListTree },
+  { to: "/progression", label: "UPG", title: "Upgrade Shop", icon: BadgeDollarSign },
+  { to: "/catalog", label: "CTL", title: "Product Catalog", icon: Cpu },
+  { to: "/inventory", label: "WRH", title: "Warehouse Inventory", icon: Boxes },
+  { to: "/refurbish", label: "RFB", title: "Refurbish Bench", icon: Wrench },
+  { to: "/staff", label: "STF", title: "Staff Room", icon: UserPlus2 },
+  { to: "/resale", label: "RSL", title: "Resale Market", icon: Repeat },
+  { to: "/brands", label: "BRD", title: "Brands Vault", icon: Tags },
+  { to: "/currency", label: "FX", title: "FX Desk", icon: Coins },
+  { to: "/market", label: "MKT", title: "Market Events", icon: TrendingUp },
+  { to: "/used-market", label: "USD", title: "Used Market / Trade-in Console", icon: ShoppingBag },
+  { to: "/suppliers", label: "SPL", title: "Supplier Desk", icon: Store },
+  { to: "/customers", label: "CST", title: "Customers Desk", icon: Users },
+  { to: "/customer-chat", label: "CHT", title: "Sales Chat Consultation", icon: MessageSquareText },
+  { to: "/quotes", label: "QTE", title: "Build Quotes", icon: FileText },
+  { to: "/orders", label: "ORD", title: "Orders & Assemblies", icon: ShoppingCart },
+  { to: "/warranty", label: "WRN", title: "Warranty RMA Desk", icon: ShieldAlert },
+  { to: "/reviews", label: "REV", title: "Reviews Feed", icon: Star },
+  { to: "/settings", label: "SYS", title: "System Settings", icon: Settings },
 ];
 
 const mobileNavItems = [
@@ -56,6 +59,8 @@ const mobileNavItems = [
 ];
 
 export function Sidebar() {
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
+
   return (
     <>
       <nav className="hidden md:flex fixed left-0 top-12 bottom-0 w-16 flex-col items-center py-panel-gap z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-r border-white/10 transition-all duration-200 ease-in-out select-none">
@@ -64,8 +69,10 @@ export function Sidebar() {
             <span className="font-mono text-xs text-secondary-fixed-dim font-black">OP</span>
           </div>
           <div className="flex flex-col items-center text-center">
-            <span className="font-mono text-[9px] text-secondary-fixed-dim">TRẠM-01</span>
-            <span className="text-[7px] text-primary-container/60 font-mono tracking-wider">[TRỰC TUYẾN]</span>
+            <span className="font-mono text-[9px] text-secondary-fixed-dim">{pickUiText("TRẠM-01", "ST-01", uiLanguage)}</span>
+            <span className="text-[7px] text-primary-container/60 font-mono tracking-wider">
+              {pickUiText("[TRỰC TUYẾN]", "[ONLINE]", uiLanguage)}
+            </span>
           </div>
         </div>
 
@@ -74,7 +81,7 @@ export function Sidebar() {
             <NavLink
               key={item.to}
               to={item.to}
-              title={item.title}
+              title={translateUiText(item.title)}
               className={({ isActive }) =>
                 `w-full h-12 flex flex-col items-center justify-center gap-0.5 relative transition-all duration-200 ease-in-out ${
                   isActive

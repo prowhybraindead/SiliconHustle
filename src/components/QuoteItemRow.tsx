@@ -1,5 +1,5 @@
 import type { QuoteItem } from "../types/game";
-import { formatVnd } from "../utils/format";
+import { useGameStore } from "../store/gameStore";
 import { BrandLogo } from "./BrandLogo";
 import { StatusChip } from "./ui/StatusChip";
 
@@ -8,6 +8,7 @@ interface QuoteItemRowProps {
 }
 
 export function QuoteItemRow({ item }: QuoteItemRowProps) {
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
   const isInventory = item.source === "INVENTORY";
   const isSupplier = item.source === "SUPPLIER_NEEDED";
 
@@ -26,23 +27,20 @@ export function QuoteItemRow({ item }: QuoteItemRowProps) {
             <span className="text-[8px] border border-white/10 bg-white/[0.02] px-1 text-outline">
               {item.product.category.toUpperCase()}
             </span>
-            <StatusChip
-              label={item.source}
-              variant={isInventory ? "success" : isSupplier ? "warning" : "neutral"}
-            />
+            <StatusChip label={item.source} variant={isInventory ? "success" : isSupplier ? "warning" : "neutral"} />
           </div>
           <div className="text-[10px] text-outline mt-0.5">
-            SL: {item.quantity} // {item.notes ?? "KHÔNG CÓ GHI CHÚ"}
+            {uiLanguage === "en" ? "QTY" : "SL"}: {item.quantity} // {item.notes ?? (uiLanguage === "en" ? "NO NOTES" : "KHÔNG CÓ GHI CHÚ")}
           </div>
         </div>
       </div>
 
       <div className="flex flex-wrap md:flex-nowrap gap-4 items-center justify-between md:justify-end shrink-0 select-none">
         <div className="text-outline">
-          GIÁ BÁN ĐƠN VỊ: <span className="font-bold text-emerald-400">₫{item.unit_price_vnd.toLocaleString()}</span>
+          {uiLanguage === "en" ? "UNIT PRICE" : "GIÁ BÁN ĐƠN VỊ"}: <span className="font-bold text-emerald-400">₫{item.unit_price_vnd.toLocaleString()}</span>
         </div>
         <div className="text-outline">
-          GIÁ VỐN ĐƠN VỊ: <span className="font-bold text-on-surface">₫{item.unit_cost_vnd.toLocaleString()}</span>
+          {uiLanguage === "en" ? "UNIT COST" : "GIÁ VỐN ĐƠN VỊ"}: <span className="font-bold text-on-surface">₫{item.unit_cost_vnd.toLocaleString()}</span>
         </div>
         <div className="flex gap-1.5">
           {item.inventory_unit && (

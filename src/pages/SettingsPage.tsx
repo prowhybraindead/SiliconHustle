@@ -13,6 +13,8 @@ import { SectionHeader } from "../components/ui/SectionHeader";
 
 export function SettingsPage() {
   const selectedSaveId = useGameStore((state) => state.selectedSaveId);
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
+  const setUiLanguage = useGameStore((state) => state.setUiLanguage);
   const saves = useSaveGames();
   const profiles = usePlayerProfiles();
   const lockProfileMut = useLockPlayerProfile();
@@ -92,6 +94,11 @@ export function SettingsPage() {
   const saveStateLabel = selectedSaveId ? `SAVE ACTIVE [ID: ${selectedSaveId}]` : "NO SAVE LOADED";
   const pinStatusLabel = selectedProfile ? (selectedProfile.pin_enabled ? "PIN LOCKED" : "PIN OFF") : "NO PROFILE";
   const lockActionLabel = activeToken ? "REVOKE SESSION" : "LOCKED OUT";
+  const languageTitle = uiLanguage === "vi" ? "Ngôn ngữ hội thoại" : "Conversation language";
+  const languageBody =
+    uiLanguage === "vi"
+      ? "Chọn ngôn ngữ cho customer chat, quick action, staff intro và các thông báo hệ thống liên quan."
+      : "Choose the language for customer chat, quick replies, staff intros, and related system notices.";
 
   return (
     <section className="space-y-4">
@@ -127,6 +134,39 @@ export function SettingsPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         {/* Left Side: Save Profile & Security details */}
         <div className="space-y-4">
+          <ConsolePanel variant="z-1" className="p-5 space-y-4">
+            <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider border-b border-white/5 pb-2 flex items-center gap-1.5">
+              <Terminal className="h-4 w-4 text-[#00f2ff]" />
+              ENG / VIE
+            </h2>
+
+            <div className="space-y-3 font-mono text-xs">
+              <div className="bg-[#0c0e11] border border-white/5 p-3 rounded-none">
+                <div className="text-white font-bold uppercase tracking-wider">{languageTitle}</div>
+                <p className="mt-2 text-[11px] leading-relaxed text-slate-400 normal-case">{languageBody}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <ActionButton
+                  variant={uiLanguage === "en" ? "primary" : "secondary"}
+                  onClick={() => setUiLanguage("en")}
+                >
+                  ENG
+                </ActionButton>
+                <ActionButton
+                  variant={uiLanguage === "vi" ? "primary" : "secondary"}
+                  onClick={() => setUiLanguage("vi")}
+                >
+                  VIE
+                </ActionButton>
+              </div>
+
+              <div className="bg-[#00f2ff]/5 border border-[#00f2ff]/20 p-2 text-[10px] text-[#00f2ff] uppercase text-center">
+                {uiLanguage === "vi" ? "Đang dùng tiếng Việt cho hội thoại" : "Conversation language set to English"}
+              </div>
+            </div>
+          </ConsolePanel>
+
           <ConsolePanel variant="z-1" className="p-5 space-y-4">
             <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider border-b border-white/5 pb-2 flex items-center gap-1.5">
               <HardDrive className="h-4 w-4 text-[#00f2ff]" />

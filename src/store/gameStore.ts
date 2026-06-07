@@ -1,12 +1,15 @@
 import { create } from "zustand";
+import type { UiLanguage } from "../types/game";
 
 interface GameStore {
   selectedSaveId: number | null;
+  uiLanguage: UiLanguage;
   tutorialMode: boolean;
   tutorialStep: number;
   tutorialSaveId: number | null;
   tutorialSeen: boolean;
   setSelectedSaveId: (id: number | null) => void;
+  setUiLanguage: (language: UiLanguage) => void;
   startTutorial: (saveId: number) => void;
   setTutorialStep: (step: number) => void;
   resetTutorial: () => void;
@@ -14,6 +17,7 @@ interface GameStore {
 }
 
 const storedSaveId = window.localStorage.getItem("silicon-hustle-save-id");
+const storedUiLanguage = window.localStorage.getItem("silicon-hustle-ui-language");
 const storedTutorialMode = window.localStorage.getItem("silicon-hustle-tutorial-mode") === "true";
 const storedTutorialStep = Number(window.localStorage.getItem("silicon-hustle-tutorial-step") ?? "0");
 const storedTutorialSaveId = Number(window.localStorage.getItem("silicon-hustle-tutorial-save-id") ?? "0");
@@ -21,6 +25,7 @@ const storedTutorialSeen = window.localStorage.getItem("silicon-hustle-tutorial-
 
 export const useGameStore = create<GameStore>((set, get) => ({
   selectedSaveId: storedSaveId ? Number(storedSaveId) : null,
+  uiLanguage: storedUiLanguage === "en" ? "en" : "vi",
   tutorialMode: storedTutorialMode,
   tutorialStep: Number.isFinite(storedTutorialStep) ? storedTutorialStep : 0,
   tutorialSaveId: storedTutorialMode && Number.isFinite(storedTutorialSaveId) && storedTutorialSaveId > 0 ? storedTutorialSaveId : null,
@@ -35,6 +40,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
       selectedSaveId: id,
       tutorialMode: id !== null && id === get().tutorialSaveId,
     });
+  },
+  setUiLanguage: (language) => {
+    window.localStorage.setItem("silicon-hustle-ui-language", language);
+    set({ uiLanguage: language });
   },
   startTutorial: (saveId) => {
     window.localStorage.setItem("silicon-hustle-tutorial-mode", "true");

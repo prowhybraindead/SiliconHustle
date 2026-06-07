@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -689,18 +689,22 @@ class CustomerConversationCreateResponse(BaseModel):
 
 class ConversationMessageCreateRequest(BaseModel):
     body: str = Field(min_length=1, max_length=2000)
+    locale: Literal["vi", "en"] | None = "vi"
 
 
 class ConversationQuickReplyRequest(BaseModel):
     action_type: ConversationActionType
+    locale: Literal["vi", "en"] | None = "vi"
 
 
 class ConversationAssignStaffRequest(BaseModel):
     staff_id: int
+    locale: Literal["vi", "en"] | None = "vi"
 
 
 class ConversationCloseRequest(BaseModel):
     won: bool
+    locale: Literal["vi", "en"] | None = "vi"
 
 
 class ConversationSendQuoteResponse(BaseModel):

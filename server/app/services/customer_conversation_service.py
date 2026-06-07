@@ -51,6 +51,7 @@ def list_conversations(db: Session, save_game_id: int, status: CustomerConversat
 
 
 def get_conversation(db: Session, save_game_id: int, conversation_id: int) -> CustomerConversation:
+    db.expire_all()
     conversation = db.scalar(_conversation_query(include_messages=True).where(
         CustomerConversation.save_game_id == save_game_id,
         CustomerConversation.id == conversation_id,
@@ -61,7 +62,12 @@ def get_conversation(db: Session, save_game_id: int, conversation_id: int) -> Cu
     return conversation
 
 
-def get_or_create_conversation_for_request(db: Session, save_game_id: int, request_id: int) -> CustomerConversation:
+def get_or_create_conversation_for_request(
+    db: Session,
+    save_game_id: int,
+    request_id: int,
+    locale: str | None = None,
+) -> CustomerConversation:
     request = _get_customer_request(db, save_game_id, request_id)
     if request.conversation_id:
         existing = db.scalar(
@@ -86,7 +92,7 @@ def get_or_create_conversation_for_request(db: Session, save_game_id: int, reque
         db.commit()
         return get_conversation(db, save_game_id, existing.id)
 
-    return create_conversation_for_customer(db, save_game_id, customer_id=request.customer_id, request_id=request.id)
+    return create_conversation_for_customer(db, save_game_id, customer_id=request.customer_id, request_id=request.id, locale=locale)
 
 
 def create_conversation_for_customer(
@@ -94,7 +100,9 @@ def create_conversation_for_customer(
     save_game_id: int,
     customer_id: int | None = None,
     request_id: int | None = None,
+    locale: str | None = None,
 ) -> CustomerConversation:
+    normalized_locale = _normalize_locale(locale)
     save_game = get_save_game(db, save_game_id)
     customer: Customer | None = None
     request: CustomerRequest | None = None
@@ -144,7 +152,7 @@ def create_conversation_for_customer(
         db,
         save_game_id,
         conversation.id,
-        "Conversation opened for customer request.",
+        _t(normalized_locale, "Da mo cuoc tro chuyen cho yeu cau cua khach.", "Conversation opened for customer request."),
         metadata={
             "event": "conversation_opened",
             "persona_type": persona_type,
@@ -156,7 +164,7 @@ def create_conversation_for_customer(
         save_game_id,
         conversation.id,
         sender_type=ConversationMessageSender.CUSTOMER,
-        body=_build_customer_opening_message(request, customer, conversation),
+        body=_build_customer_opening_message(request, customer, conversation, normalized_locale),
         sender_label=customer.name if customer else "Customer",
         message_type=ConversationMessageType.TEXT,
         metadata={
@@ -168,11 +176,7 @@ def create_conversation_for_customer(
         db,
         save_game_id,
         conversation.id,
-        "Intent parsed: "
-        f"budget={_format_vnd(conversation.detected_budget_vnd)}, "
-        f"use_case={conversation.detected_use_case or 'n/a'}, "
-        f"used_parts={conversation.accepts_used_parts if conversation.accepts_used_parts is not None else 'unknown'}, "
-        f"warranty_sensitivity={detected_preferences.get('warranty_sensitivity', 'unknown')}.",
+        _build_intent_summary(conversation, detected_preferences, normalized_locale),
         metadata={
             "intent": detected_preferences,
         },
@@ -269,7 +273,64 @@ def add_system_message(
     )
 
 
-def assign_sales_staff(db: Session, save_game_id: int, conversation_id: int, staff_id: int) -> CustomerConversation:
+def handle_player_message(
+    db: Session,
+    save_game_id: int,
+    conversation_id: int,
+    body: str,
+    locale: str | None = None,
+) -> CustomerConversation:
+    normalized_locale = _normalize_locale(locale)
+    conversation = _get_conversation_row(db, save_game_id, conversation_id)
+    message_body = body.strip()
+    if not message_body:
+        raise bad_request("Message body is required")
+
+    add_message(
+        db,
+        save_game_id,
+        conversation.id,
+        sender_type=ConversationMessageSender.PLAYER,
+        sender_label=_t(normalized_locale, "Ban", "You"),
+        body=message_body,
+    )
+
+    if conversation.status not in {
+        CustomerConversationStatus.CLOSED_WON,
+        CustomerConversationStatus.CLOSED_LOST,
+        CustomerConversationStatus.ARCHIVED,
+    }:
+        reply_payload = _generate_customer_reply(conversation, message_body, normalized_locale)
+        add_message(
+            db,
+            save_game_id,
+            conversation.id,
+            sender_type=ConversationMessageSender.CUSTOMER,
+            body=reply_payload["body"],
+            sender_label=conversation.customer.name if conversation.customer else _t(normalized_locale, "Khach hang", "Customer"),
+            message_type=ConversationMessageType.TEXT,
+            metadata=reply_payload.get("metadata"),
+        )
+        if reply_payload.get("stage") is not None:
+            conversation.stage = reply_payload["stage"]
+        conversation.status = CustomerConversationStatus.WAITING_FOR_PLAYER
+        conversation.engagement_score = _clamp(conversation.engagement_score + int(reply_payload.get("engagement_delta", 2)))
+        conversation.urgency_score = _clamp(conversation.urgency_score + int(reply_payload.get("urgency_delta", 0)))
+
+    conversation.conversion_probability = compute_conversion_probability(db, conversation)
+    _sync_request_from_conversation(conversation)
+    db.commit()
+    return get_conversation(db, save_game_id, conversation.id)
+
+
+def assign_sales_staff(
+    db: Session,
+    save_game_id: int,
+    conversation_id: int,
+    staff_id: int,
+    locale: str | None = None,
+) -> CustomerConversation:
+    normalized_locale = _normalize_locale(locale)
     conversation = _get_conversation_row(db, save_game_id, conversation_id)
     staff = staff_service.get_staff_member(db, save_game_id, staff_id)
     conversation.assigned_staff_id = staff.id
@@ -278,11 +339,26 @@ def assign_sales_staff(db: Session, save_game_id: int, conversation_id: int, sta
         db,
         save_game_id,
         conversation.id,
-        f"Assigned sales staff: {staff.name} ({staff.role.value}).",
+        _t(
+            normalized_locale,
+            f"Da phan cong nhan su tu van: {staff.name} ({staff.role.value}).",
+            f"Assigned sales staff: {staff.name} ({staff.role.value}).",
+        ),
         metadata={
             "staff_id": staff.id,
             "staff_role": staff.role.value,
         },
+    )
+    add_message(
+        db,
+        save_game_id,
+        conversation.id,
+        sender_type=ConversationMessageSender.STAFF,
+        sender_label=staff.name,
+        staff_id=staff.id,
+        message_type=ConversationMessageType.TEXT,
+        body=_staff_intro_message(staff.name, normalized_locale),
+        metadata={"event": "staff_intro"},
     )
     conversation.conversion_probability = compute_conversion_probability(db, conversation)
     _sync_request_from_conversation(conversation)
@@ -290,7 +366,14 @@ def assign_sales_staff(db: Session, save_game_id: int, conversation_id: int, sta
     return get_conversation(db, save_game_id, conversation.id)
 
 
-def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_type: ConversationActionType | str) -> CustomerConversation:
+def quick_reply(
+    db: Session,
+    save_game_id: int,
+    conversation_id: int,
+    action_type: ConversationActionType | str,
+    locale: str | None = None,
+) -> CustomerConversation:
+    normalized_locale = _normalize_locale(locale)
     conversation = _get_conversation_row(db, save_game_id, conversation_id)
     action = _coerce_action(action_type)
     request = conversation.customer_request
@@ -302,8 +385,8 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.PLAYER,
-            "What budget range are you trying to stay within?",
-            sender_label="You",
+            _t(normalized_locale, "Minh dang muon giu ngan sach trong khoang nao a?", "What budget range are you trying to stay within?"),
+            sender_label=_t(normalized_locale, "Ban", "You"),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
         )
@@ -312,7 +395,7 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.CUSTOMER,
-            _budget_reply(conversation),
+            _budget_reply(conversation, normalized_locale),
             sender_label=customer.name if customer else "Customer",
             message_type=ConversationMessageType.TEXT,
         )
@@ -325,8 +408,8 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.PLAYER,
-            "What will you mainly use the PC for?",
-            sender_label="You",
+            _t(normalized_locale, "Minh se dung bo may nay chu yeu cho viec gi a?", "What will you mainly use the PC for?"),
+            sender_label=_t(normalized_locale, "Ban", "You"),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
         )
@@ -335,7 +418,7 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.CUSTOMER,
-            _use_case_reply(request, customer),
+            _use_case_reply(request, customer, normalized_locale),
             sender_label=customer.name if customer else "Customer",
             message_type=ConversationMessageType.TEXT,
         )
@@ -348,12 +431,16 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.PLAYER,
-            "Would you accept tested used parts if it keeps the build under budget?",
-            sender_label="You",
+            _t(
+                normalized_locale,
+                "Neu de giu dung ngan sach thi minh co the chap nhan linh kien cu da test ky khong a?",
+                "Would you accept tested used parts if it keeps the build under budget?",
+            ),
+            sender_label=_t(normalized_locale, "Ban", "You"),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
         )
-        reply = _used_parts_reply(conversation, customer)
+        reply = _used_parts_reply(conversation, customer, normalized_locale)
         add_message(
             db,
             save_game_id,
@@ -373,7 +460,11 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.STAFF if conversation.assigned_staff_id else ConversationMessageSender.PLAYER,
-            "A hybrid value build may fit your budget better while preserving performance.",
+            _t(
+                normalized_locale,
+                "Em nghi mot cau hinh toi uu gia tri se hop ngan sach hon ma van giu duoc hieu nang.",
+                "A hybrid value build may fit your budget better while preserving performance.",
+            ),
             sender_label=_assigned_staff_name(conversation),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
@@ -384,7 +475,7 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.CUSTOMER,
-            _value_build_reply(conversation, customer),
+            _value_build_reply(conversation, customer, normalized_locale),
             sender_label=customer.name if customer else "Customer",
             message_type=ConversationMessageType.TEXT,
         )
@@ -398,7 +489,11 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.STAFF if conversation.assigned_staff_id else ConversationMessageSender.PLAYER,
-            "An all-new build improves warranty confidence, but it may stretch the budget.",
+            _t(
+                normalized_locale,
+                "Neu di toan do moi thi se yen tam hon ve bao hanh, nhung chi phi co the cao hon.",
+                "An all-new build improves warranty confidence, but it may stretch the budget.",
+            ),
             sender_label=_assigned_staff_name(conversation),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
@@ -409,7 +504,7 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.CUSTOMER,
-            _all_new_reply(conversation, customer),
+            _all_new_reply(conversation, customer, normalized_locale),
             sender_label=customer.name if customer else "Customer",
             message_type=ConversationMessageType.TEXT,
         )
@@ -423,7 +518,11 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.STAFF if conversation.assigned_staff_id else ConversationMessageSender.PLAYER,
-            "Used or low-confidence parts can save money, but may increase warranty risk.",
+            _t(
+                normalized_locale,
+                "Linh kien cu hoac do tin cay thap co the tiet kiem tien, nhung rui ro bao hanh se cao hon.",
+                "Used or low-confidence parts can save money, but may increase warranty risk.",
+            ),
             sender_label=_assigned_staff_name(conversation),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
@@ -434,7 +533,7 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.CUSTOMER,
-            _warranty_reply(conversation, customer),
+            _warranty_reply(conversation, customer, normalized_locale),
             sender_label=customer.name if customer else "Customer",
             message_type=ConversationMessageType.TEXT,
         )
@@ -447,7 +546,7 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
             save_game_id,
             conversation.id,
             ConversationMessageSender.SYSTEM,
-            "Quote build initiated for the current request.",
+            _t(normalized_locale, "Da bat dau len bao gia cho yeu cau hien tai.", "Quote build initiated for the current request."),
             sender_label="System",
             message_type=ConversationMessageType.ACTION_EVENT,
             action_type=action,
@@ -470,7 +569,14 @@ def quick_reply(db: Session, save_game_id: int, conversation_id: int, action_typ
     return get_conversation(db, save_game_id, conversation.id)
 
 
-def send_quote_to_customer(db: Session, save_game_id: int, conversation_id: int, quote_id: int) -> CustomerConversationMessage:
+def send_quote_to_customer(
+    db: Session,
+    save_game_id: int,
+    conversation_id: int,
+    quote_id: int,
+    locale: str | None = None,
+) -> CustomerConversationMessage:
+    normalized_locale = _normalize_locale(locale)
     conversation = _get_conversation_row(db, save_game_id, conversation_id)
     quote = _get_quote(db, save_game_id, quote_id)
     if conversation.customer_request_id and quote.customer_request_id != conversation.customer_request_id:
@@ -490,7 +596,7 @@ def send_quote_to_customer(db: Session, save_game_id: int, conversation_id: int,
         message_type=ConversationMessageType.QUOTE_ATTACHMENT,
         action_type=ConversationActionType.SEND_QUOTE,
         quote_id=quote.id,
-        body=f"Quote attached: #{quote.id} - {quote.title}",
+        body=_t(normalized_locale, f"Da gui bao gia: #{quote.id} - {quote.title}", f"Quote attached: #{quote.id} - {quote.title}"),
         metadata={
             "quote_id": quote.id,
             "quote_status": quote.status.value,
@@ -516,7 +622,13 @@ def send_quote_to_customer(db: Session, save_game_id: int, conversation_id: int,
     return message
 
 
-def mark_ready_to_order(db: Session, save_game_id: int, conversation_id: int) -> CustomerConversation:
+def mark_ready_to_order(
+    db: Session,
+    save_game_id: int,
+    conversation_id: int,
+    locale: str | None = None,
+) -> CustomerConversation:
+    normalized_locale = _normalize_locale(locale)
     conversation = _get_conversation_row(db, save_game_id, conversation_id)
     conversation.status = CustomerConversationStatus.READY_TO_ORDER
     conversation.stage = CustomerConversationStage.READY_TO_ORDER
@@ -525,7 +637,11 @@ def mark_ready_to_order(db: Session, save_game_id: int, conversation_id: int) ->
         db,
         save_game_id,
         conversation.id,
-        "Customer is ready to order. Quote can now be converted using the existing quote workflow.",
+        _t(
+            normalized_locale,
+            "Khach da san sang dat hang. Bay gio co the chuyen bao gia thanh don theo quy trinh hien tai.",
+            "Customer is ready to order. Quote can now be converted using the existing quote workflow.",
+        ),
         metadata={"event": "ready_to_order"},
     )
     conversation.conversion_probability = compute_conversion_probability(db, conversation)
@@ -534,7 +650,14 @@ def mark_ready_to_order(db: Session, save_game_id: int, conversation_id: int) ->
     return get_conversation(db, save_game_id, conversation.id)
 
 
-def close_conversation(db: Session, save_game_id: int, conversation_id: int, won: bool) -> CustomerConversation:
+def close_conversation(
+    db: Session,
+    save_game_id: int,
+    conversation_id: int,
+    won: bool,
+    locale: str | None = None,
+) -> CustomerConversation:
+    normalized_locale = _normalize_locale(locale)
     conversation = _get_conversation_row(db, save_game_id, conversation_id)
     conversation.status = CustomerConversationStatus.CLOSED_WON if won else CustomerConversationStatus.CLOSED_LOST
     conversation.stage = CustomerConversationStage.CLOSED
@@ -544,7 +667,9 @@ def close_conversation(db: Session, save_game_id: int, conversation_id: int, won
         db,
         save_game_id,
         conversation.id,
-        "Conversation closed as won." if won else "Conversation closed as lost.",
+        _t(normalized_locale, "Da dong cuoc tro chuyen va chot thanh cong.", "Conversation closed as won.")
+        if won
+        else _t(normalized_locale, "Da dong cuoc tro chuyen va mat khach.", "Conversation closed as lost."),
         metadata={"won": won, "event": "conversation_closed"},
     )
     _sync_request_from_conversation(conversation)
@@ -724,20 +849,30 @@ def _build_conversation_title(request: CustomerRequest | None, customer: Custome
     return f"{customer.name if customer else 'Customer'} consultation"
 
 
-def _build_customer_opening_message(request: CustomerRequest | None, customer: Customer | None, conversation: CustomerConversation) -> str:
+def _build_customer_opening_message(
+    request: CustomerRequest | None,
+    customer: Customer | None,
+    conversation: CustomerConversation,
+    locale: str,
+) -> str:
     if request:
         budget = _format_vnd(request.budget_vnd)
         use_case = request.use_case.rstrip(".")
         if request.request_type.value == "BUILD_PC":
-            return f"I need a PC for {use_case}. My budget is around {budget}."
+            return _t(locale, f"Em cần một bộ PC để {use_case}. Ngân sách của em khoảng {budget}.", f"I need a PC for {use_case}. My budget is around {budget}.")
         if request.request_type.value == "BUY_COMPONENT":
-            return f"I'm looking for a component for {use_case}. I can spend about {budget}."
+            return _t(locale, f"Em đang tìm một linh kiện để phục vụ {use_case}. Em có thể chi khoảng {budget}.", f"I'm looking for a component for {use_case}. I can spend about {budget}.")
         if request.request_type.value == "UPGRADE_PC":
-            return f"I want to upgrade my PC for {use_case}. I can stay near {budget}."
+            return _t(locale, f"Em muốn nâng cấp PC để {use_case}. Em muốn giữ quanh mức {budget}.", f"I want to upgrade my PC for {use_case}. I can stay near {budget}.")
         if request.request_type.value == "REPAIR":
-            return f"My PC needs repair for {use_case}. I'd like to keep it near {budget}."
+            return _t(locale, f"Máy của em đang cần sửa cho nhu cầu {use_case}. Em muốn giữ chi phí quanh {budget}.", f"My PC needs repair for {use_case}. I'd like to keep it near {budget}.")
     persona_text = conversation.persona_type or (customer.persona_type if customer else "GENERIC")
-    return f"I'm here to talk about a build and I care about a {persona_text.lower().replace('_', ' ')} plan."
+    persona_label = persona_text.lower().replace("_", " ")
+    return _t(
+        locale,
+        f"Em ghé để trao đổi về cấu hình và ưu tiên một phương án kiểu {persona_label}.",
+        f"I'm here to talk about a build and I care about a {persona_label} plan.",
+    )
 
 
 def _build_customer_mood(customer: Customer | None, request: CustomerRequest | None) -> str | None:
@@ -806,44 +941,178 @@ def _persona_type(request: CustomerRequest | None, customer: Customer | None) ->
     return None
 
 
-def _budget_reply(conversation: CustomerConversation) -> str:
+def _budget_reply(conversation: CustomerConversation, locale: str) -> str:
     if conversation.detected_budget_vnd:
-        return f"I would like to stay near {_format_vnd(conversation.detected_budget_vnd)} if possible."
-    return "I want to keep the budget sensible if we can."
+        return _t(
+            locale,
+            f"Em muốn giữ quanh mức {_format_vnd(conversation.detected_budget_vnd)} nếu được.",
+            f"I would like to stay near {_format_vnd(conversation.detected_budget_vnd)} if possible.",
+        )
+    return _t(locale, "Em muốn giữ ngân sách hợp lý nếu có thể.", "I want to keep the budget sensible if we can.")
 
 
-def _use_case_reply(request: CustomerRequest | None, customer: Customer | None) -> str:
+def _use_case_reply(request: CustomerRequest | None, customer: Customer | None, locale: str) -> str:
     if request:
-        return f"Mostly for {request.use_case.rstrip('.')}. That's the main thing I need to cover."
-    return f"Mostly for {customer.persona_type if customer and customer.persona_type else 'general use'}."
+        return _t(
+            locale,
+            f"Chủ yếu là để {request.use_case.rstrip('.')}. Đó là nhu cầu chính của em.",
+            f"Mostly for {request.use_case.rstrip('.')}. That's the main thing I need to cover.",
+        )
+    fallback = customer.persona_type if customer and customer.persona_type else "general use"
+    return _t(locale, f"Chủ yếu là cho nhu cầu {fallback}.", f"Mostly for {fallback}.")
 
 
-def _used_parts_reply(conversation: CustomerConversation, customer: Customer | None) -> str:
+def _used_parts_reply(conversation: CustomerConversation, customer: Customer | None, locale: str) -> str:
     if conversation.accepts_used_parts is True:
-        return "Used parts are okay if they are tested and not risky."
+        return _t(locale, "Linh kiện cũ thì ổn nếu đã test kỹ và rủi ro không cao.", "Used parts are okay if they are tested and not risky.")
     if conversation.accepts_used_parts is False:
-        return "I prefer new parts. I care about warranty and reliability."
+        return _t(locale, "Em ưu tiên đồ mới hơn. Em quan tâm đến bảo hành và độ ổn định.", "I prefer new parts. I care about warranty and reliability.")
     if customer and customer.risk_tolerance.value == "HIGH":
-        return "I might consider used parts if the savings are worth it."
-    return "I'm not sure yet, but I want to hear the tradeoffs first."
+        return _t(locale, "Em có thể cân nhắc đồ cũ nếu số tiền tiết kiệm đủ đáng kể.", "I might consider used parts if the savings are worth it.")
+    return _t(locale, "Em vẫn chưa chốt, nhưng muốn nghe rõ phần đánh đổi trước.", "I'm not sure yet, but I want to hear the tradeoffs first.")
 
 
-def _value_build_reply(conversation: CustomerConversation, customer: Customer | None) -> str:
+def _value_build_reply(conversation: CustomerConversation, customer: Customer | None, locale: str) -> str:
     if customer and customer.price_sensitivity is not None and customer.price_sensitivity >= 60:
-        return "That sounds practical. I just want it to stay within budget."
-    return "That sounds sensible if it keeps the performance balanced."
+        return _t(locale, "Nghe hợp lý đó, miễn là vẫn nằm trong ngân sách của em.", "That sounds practical. I just want it to stay within budget.")
+    return _t(locale, "Nghe ổn đó, miễn là hiệu năng vẫn cân bằng.", "That sounds sensible if it keeps the performance balanced.")
 
 
-def _all_new_reply(conversation: CustomerConversation, customer: Customer | None) -> str:
+def _all_new_reply(conversation: CustomerConversation, customer: Customer | None, locale: str) -> str:
     if customer and customer.warranty_sensitivity is not None and customer.warranty_sensitivity >= 60:
-        return "I prefer new parts if the price still works and the warranty feels safer."
-    return "I like the warranty angle, but we need to keep an eye on price."
+        return _t(
+            locale,
+            "Em thích đồ mới hơn nếu giá vẫn ổn và phần bảo hành yên tâm hơn.",
+            "I prefer new parts if the price still works and the warranty feels safer.",
+        )
+    return _t(locale, "Em thích hướng bảo hành đó, nhưng mình vẫn phải canh giá.", "I like the warranty angle, but we need to keep an eye on price.")
 
 
-def _warranty_reply(conversation: CustomerConversation, customer: Customer | None) -> str:
+def _warranty_reply(conversation: CustomerConversation, customer: Customer | None, locale: str) -> str:
     if customer and customer.warranty_sensitivity is not None and customer.warranty_sensitivity >= 60:
-        return "Warranty matters a lot to me, so I want the safer option."
-    return "I understand the risk. Let's balance warranty and budget."
+        return _t(locale, "Bảo hành khá quan trọng với em, nên em nghiêng về phương án an toàn hơn.", "Warranty matters a lot to me, so I want the safer option.")
+    return _t(locale, "Em hiểu phần rủi ro rồi. Mình cân bằng giữa bảo hành và ngân sách nhé.", "I understand the risk. Let's balance warranty and budget.")
+
+
+def _build_intent_summary(conversation: CustomerConversation, detected_preferences: dict[str, Any], locale: str) -> str:
+    used_parts = conversation.accepts_used_parts
+    used_parts_label = "co" if used_parts is True else "khong" if used_parts is False else "chua ro"
+    warranty_label = detected_preferences.get("warranty_sensitivity", "chua ro")
+    return _t(
+        locale,
+        "Da phan tich nhu cau: "
+        f"ngan_sach={_format_vnd(conversation.detected_budget_vnd)}, "
+        f"muc_dich={conversation.detected_use_case or 'khong_ro'}, "
+        f"chap_nhan_do_cu={used_parts_label}, "
+        f"do_nhay_bao_hanh={warranty_label}.",
+        "Intent parsed: "
+        f"budget={_format_vnd(conversation.detected_budget_vnd)}, "
+        f"use_case={conversation.detected_use_case or 'n/a'}, "
+        f"used_parts={used_parts if used_parts is not None else 'unknown'}, "
+        f"warranty_sensitivity={detected_preferences.get('warranty_sensitivity', 'unknown')}.",
+    )
+
+
+def _staff_intro_message(staff_name: str, locale: str) -> str:
+    return _t(
+        locale,
+        f"Chào anh/chị, em là {staff_name}. Em sẽ hỗ trợ tư vấn cấu hình này từ đây nhé.",
+        f"Hi, I'm {staff_name}. I'll help with this consultation from here.",
+    )
+
+
+def _generate_customer_reply(conversation: CustomerConversation, body: str, locale: str) -> dict[str, Any]:
+    request = conversation.customer_request
+    customer = conversation.customer
+    lowered = body.casefold()
+
+    if _contains_any(lowered, "budget", "price", "cost", "ngân sách", "ngan sach", "giá", "gia", "chi phí", "chi phi"):
+        return {
+            "body": _budget_reply(conversation, locale),
+            "stage": CustomerConversationStage.QUALIFYING_NEEDS,
+            "engagement_delta": 3,
+            "metadata": {"auto_reply_topic": "budget"},
+        }
+    if _contains_any(lowered, "use case", "dùng", "dung", "nhu cầu", "nhu cau", "gaming", "stream", "edit", "work"):
+        return {
+            "body": _use_case_reply(request, customer, locale),
+            "stage": CustomerConversationStage.QUALIFYING_NEEDS,
+            "engagement_delta": 3,
+            "metadata": {"auto_reply_topic": "use_case"},
+        }
+    if _contains_any(lowered, "used", "second hand", "đồ cũ", "do cu", "linh kiện cũ", "linh kien cu"):
+        return {
+            "body": _used_parts_reply(conversation, customer, locale),
+            "stage": CustomerConversationStage.DISCUSSING_USED_PARTS,
+            "engagement_delta": 2,
+            "metadata": {"auto_reply_topic": "used_parts", "accepts_used_parts": conversation.accepts_used_parts},
+        }
+    if _contains_any(lowered, "warranty", "risk", "bao hanh", "bảo hành", "rủi ro", "rui ro"):
+        return {
+            "body": _warranty_reply(conversation, customer, locale),
+            "stage": CustomerConversationStage.NEEDS_CONSULTATION,
+            "engagement_delta": 2,
+            "metadata": {"auto_reply_topic": "warranty"},
+        }
+    if _contains_any(lowered, "quote", "proposal", "build", "cấu hình", "cau hinh", "báo giá", "bao gia", "gợi ý", "goi y", "đề xuất", "de xuat"):
+        reply = _value_build_reply(conversation, customer, locale)
+        if conversation.assigned_staff_id:
+            reply = _t(
+                locale,
+                "Dạ được, anh/chị cứ lên giúp em một phương án phù hợp nhé. " + reply,
+                "Sounds good. Please put together a fitting option for me. " + reply,
+            )
+        return {
+            "body": reply,
+            "stage": CustomerConversationStage.QUOTE_BUILDING,
+            "engagement_delta": 4,
+            "urgency_delta": 1,
+            "metadata": {"auto_reply_topic": "quote"},
+        }
+    if _contains_any(lowered, "order", "đặt", "dat hang", "chốt", "chot", "buy", "purchase"):
+        return {
+            "body": _t(
+                locale,
+                "Nếu cấu hình và mức giá ổn thì em có thể chốt khá nhanh.",
+                "If the build and price look good, I can decide pretty quickly.",
+            ),
+            "stage": CustomerConversationStage.QUOTE_SENT if conversation.stage == CustomerConversationStage.QUOTE_SENT else conversation.stage,
+            "engagement_delta": 3,
+            "urgency_delta": 2,
+            "metadata": {"auto_reply_topic": "order_readiness"},
+        }
+    if _contains_any(lowered, "xin chào", "chào", "hello", "hi", "alo"):
+        return {
+            "body": _t(
+                locale,
+                "Chào anh/chị, em đang muốn nhờ tư vấn thêm cho nhu cầu của mình.",
+                "Hi, I'd like a bit more help with what I need.",
+            ),
+            "stage": CustomerConversationStage.NEEDS_CONSULTATION,
+            "engagement_delta": 2,
+            "metadata": {"auto_reply_topic": "greeting"},
+        }
+    return {
+        "body": _fallback_customer_reply(conversation, locale),
+        "stage": CustomerConversationStage.NEEDS_CONSULTATION,
+        "engagement_delta": 2,
+        "metadata": {"auto_reply_topic": "generic"},
+    }
+
+
+def _fallback_customer_reply(conversation: CustomerConversation, locale: str) -> str:
+    use_case = conversation.detected_use_case or _t(locale, "nhu cầu hiện tại", "my current needs")
+    if conversation.assigned_staff_id:
+        return _t(
+            locale,
+            f"Vâng, anh/chị cứ tư vấn thêm giúp em nhé. Em đang ưu tiên phần {use_case}.",
+            f"Sure, please walk me through it. I'm mainly focused on {use_case}.",
+        )
+    return _t(
+        locale,
+        f"Vâng, anh/chị cứ tư vấn thêm giúp em nhé. Em đang quan tâm nhất tới phần {use_case}.",
+        f"Sure, please tell me more. I'm mainly focused on {use_case}.",
+    )
 
 
 def _assigned_staff_name(conversation: CustomerConversation) -> str:
@@ -884,6 +1153,18 @@ def _coerce_action(action_type: ConversationActionType | str | None) -> Conversa
     if isinstance(action_type, ConversationActionType):
         return action_type
     return ConversationActionType[str(action_type)]
+
+
+def _normalize_locale(locale: str | None) -> str:
+    return "en" if locale == "en" else "vi"
+
+
+def _t(locale: str, vi: str, en: str) -> str:
+    return vi if _normalize_locale(locale) == "vi" else en
+
+
+def _contains_any(value: str, *keywords: str) -> bool:
+    return any(keyword.casefold() in value for keyword in keywords)
 
 
 def _current_day(conversation: CustomerConversation) -> int | None:

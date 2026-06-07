@@ -286,52 +286,85 @@ export function listConversationMessages(saveGameId: number, conversationId: num
   );
 }
 
-export function createConversationForRequest(saveGameId: number, requestId: number) {
+export function createConversationForRequest(
+  saveGameId: number,
+  requestId: number,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").CustomerConversationCreateResponse>(
-    `/api/save-games/${saveGameId}/customer-requests/${requestId}/conversation`,
+    `/api/save-games/${saveGameId}/customer-requests/${requestId}/conversation?locale=${locale}`,
     { method: "POST" }
   );
 }
 
-export function sendConversationMessage(saveGameId: number, conversationId: number, body: string) {
+export function sendConversationMessage(
+  saveGameId: number,
+  conversationId: number,
+  body: string,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").CustomerConversation>(`/api/save-games/${saveGameId}/customer-conversations/${conversationId}/messages`, {
     method: "POST",
-    body: JSON.stringify({ body }),
+    body: JSON.stringify({ body, locale }),
   });
 }
 
-export function quickReplyConversation(saveGameId: number, conversationId: number, actionType: string) {
+export function quickReplyConversation(
+  saveGameId: number,
+  conversationId: number,
+  actionType: string,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").CustomerConversation>(`/api/save-games/${saveGameId}/customer-conversations/${conversationId}/quick-reply`, {
     method: "POST",
-    body: JSON.stringify({ action_type: actionType }),
+    body: JSON.stringify({ action_type: actionType, locale }),
   });
 }
 
-export function assignConversationStaff(saveGameId: number, conversationId: number, staffId: number) {
+export function assignConversationStaff(
+  saveGameId: number,
+  conversationId: number,
+  staffId: number,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").CustomerConversation>(`/api/save-games/${saveGameId}/customer-conversations/${conversationId}/assign-staff`, {
     method: "POST",
-    body: JSON.stringify({ staff_id: staffId }),
+    body: JSON.stringify({ staff_id: staffId, locale }),
   });
 }
 
-export function sendQuoteToConversation(saveGameId: number, conversationId: number, quoteId: number) {
+export function sendQuoteToConversation(
+  saveGameId: number,
+  conversationId: number,
+  quoteId: number,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").ConversationSendQuoteResponse>(
-    `/api/save-games/${saveGameId}/customer-conversations/${conversationId}/send-quote/${quoteId}`,
+    `/api/save-games/${saveGameId}/customer-conversations/${conversationId}/send-quote/${quoteId}?locale=${locale}`,
     { method: "POST" }
   );
 }
 
-export function markConversationReadyToOrder(saveGameId: number, conversationId: number) {
+export function markConversationReadyToOrder(
+  saveGameId: number,
+  conversationId: number,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").CustomerConversation>(
-    `/api/save-games/${saveGameId}/customer-conversations/${conversationId}/ready-to-order`,
+    `/api/save-games/${saveGameId}/customer-conversations/${conversationId}/ready-to-order?locale=${locale}`,
     { method: "POST" }
   );
 }
 
-export function closeConversation(saveGameId: number, conversationId: number, won: boolean) {
+export function closeConversation(
+  saveGameId: number,
+  conversationId: number,
+  won: boolean,
+  locale: import("../types/game").UiLanguage = "vi",
+) {
   return apiRequest<import("../types/game").CustomerConversation>(
     `/api/save-games/${saveGameId}/customer-conversations/${conversationId}/close`,
-    { method: "POST", body: JSON.stringify({ won }) }
+    { method: "POST", body: JSON.stringify({ won, locale }) }
   );
 }
 

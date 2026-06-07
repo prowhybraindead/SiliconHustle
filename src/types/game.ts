@@ -57,6 +57,7 @@ export type StaffTaskType =
   | "PROCUREMENT"
   | "MARKET_ANALYSIS"
   | "OPERATIONS";
+export type UiLanguage = "vi" | "en";
 
 export type ConditionType = "NEW" | "OPEN_BOX" | "USED" | "REFURBISHED" | "DEFECTIVE" | "FOR_PARTS";
 export type InventoryStatus =
@@ -889,18 +890,22 @@ export interface CustomerConversationCreateResponse {
 
 export interface ConversationMessageCreateRequest {
   body: string;
+  locale?: UiLanguage;
 }
 
 export interface ConversationQuickReplyRequest {
   action_type: ConversationActionType;
+  locale?: UiLanguage;
 }
 
 export interface ConversationAssignStaffRequest {
   staff_id: number;
+  locale?: UiLanguage;
 }
 
 export interface ConversationCloseRequest {
   won: boolean;
+  locale?: UiLanguage;
 }
 
 export interface ConversationSendQuoteResponse {

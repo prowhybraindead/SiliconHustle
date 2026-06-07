@@ -153,6 +153,7 @@ import type {
   QuotePersonaEvaluation,
   ConversationSendQuoteResponse,
 } from "../types/game";
+import { useGameStore } from "../store/gameStore";
 
 export function useSaveGames() {
   return useQuery({ queryKey: ["save-games"], queryFn: () => apiRequest<SaveGame[]>("/api/save-games") });
@@ -388,7 +389,7 @@ function invalidateConversationWorkflow(queryClient: ReturnType<typeof useQueryC
 export function useCreateConversationForRequest(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (requestId: number) => createConversationForRequest(saveId as number, requestId),
+    mutationFn: (requestId: number) => createConversationForRequest(saveId as number, requestId, useGameStore.getState().uiLanguage),
     onSuccess: (data, requestId) => {
       invalidateConversationWorkflow(queryClient, saveId, data.conversation.id);
       queryClient.invalidateQueries({ queryKey: ["customer-requests", saveId, requestId] });
@@ -400,7 +401,7 @@ export function useSendConversationMessage(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ conversationId, body }: { conversationId: number; body: string }) =>
-      sendConversationMessage(saveId as number, conversationId, body),
+      sendConversationMessage(saveId as number, conversationId, body, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
@@ -411,7 +412,7 @@ export function useQuickReplyConversation(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ conversationId, actionType }: { conversationId: number; actionType: string }) =>
-      quickReplyConversation(saveId as number, conversationId, actionType),
+      quickReplyConversation(saveId as number, conversationId, actionType, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
@@ -422,7 +423,7 @@ export function useAssignConversationStaff(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ conversationId, staffId }: { conversationId: number; staffId: number }) =>
-      assignConversationStaff(saveId as number, conversationId, staffId),
+      assignConversationStaff(saveId as number, conversationId, staffId, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
@@ -433,7 +434,7 @@ export function useSendQuoteToConversation(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ conversationId, quoteId }: { conversationId: number; quoteId: number }) =>
-      sendQuoteToConversation(saveId as number, conversationId, quoteId),
+      sendQuoteToConversation(saveId as number, conversationId, quoteId, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
       invalidateConversationWorkflow(queryClient, saveId, data.conversation.id);
       queryClient.invalidateQueries({ queryKey: ["quotes", saveId] });
@@ -445,7 +446,8 @@ export function useSendQuoteToConversation(saveId: number | null) {
 export function useMarkConversationReadyToOrder(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (conversationId: number) => markConversationReadyToOrder(saveId as number, conversationId),
+    mutationFn: (conversationId: number) =>
+      markConversationReadyToOrder(saveId as number, conversationId, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
@@ -456,7 +458,7 @@ export function useCloseConversation(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ conversationId, won }: { conversationId: number; won: boolean }) =>
-      closeConversation(saveId as number, conversationId, won),
+      closeConversation(saveId as number, conversationId, won, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },

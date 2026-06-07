@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import {
   useAssignConversationStaff,
@@ -19,9 +19,9 @@ import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import { useGameStore } from "../store/gameStore";
-import { formatVnd, labelize } from "../utils/format";
+import { labelize } from "../utils/format";
 import { tutorialHighlight, tutorialTooltip } from "../utils/tutorial";
-import type { CustomerConversation, CustomerConversationMessage, ConversationActionType } from "../types/game";
+import type { CustomerConversation, CustomerConversationMessage, ConversationActionType, UiLanguage } from "../types/game";
 
 import { ConsolePanel } from "../components/ui/ConsolePanel";
 import { StatusChip } from "../components/ui/StatusChip";
@@ -37,12 +37,36 @@ const QUICK_ACTIONS: { action: ConversationActionType; label: string; variant: "
   { action: "GENERATE_QUOTE", label: "Tạo báo giá", variant: "primary" },
 ];
 
+function getLocalizedQuickActions(language: UiLanguage) {
+  if (language === "en") {
+    return [
+      { action: "ASK_BUDGET", label: "Ask budget", variant: "secondary" },
+      { action: "ASK_USE_CASE", label: "Ask use case", variant: "secondary" },
+      { action: "ASK_USED_PARTS", label: "Ask used parts", variant: "secondary" },
+      { action: "RECOMMEND_VALUE_BUILD", label: "Suggest value build", variant: "secondary" },
+      { action: "RECOMMEND_ALL_NEW_BUILD", label: "Suggest all-new build", variant: "secondary" },
+      { action: "EXPLAIN_WARRANTY_RISK", label: "Explain warranty", variant: "secondary" },
+      { action: "GENERATE_QUOTE", label: "Generate quote", variant: "primary" },
+    ] as const;
+  }
+
+  return [
+    { action: "ASK_BUDGET", label: "Hỏi ngân sách", variant: "secondary" },
+    { action: "ASK_USE_CASE", label: "Hỏi mục đích", variant: "secondary" },
+    { action: "ASK_USED_PARTS", label: "Hỏi linh kiện cũ", variant: "secondary" },
+    { action: "RECOMMEND_VALUE_BUILD", label: "Gợi ý tối ưu", variant: "secondary" },
+    { action: "RECOMMEND_ALL_NEW_BUILD", label: "Gợi ý toàn đồ mới", variant: "secondary" },
+    { action: "EXPLAIN_WARRANTY_RISK", label: "Giải thích bảo hành", variant: "secondary" },
+    { action: "GENERATE_QUOTE", label: "Tạo báo giá", variant: "primary" },
+  ] as const;
+}
+
 export function CustomerChatPage() {
   const saveId = useGameStore((state) => state.selectedSaveId);
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
   const tutorialMode = useGameStore((state) => state.tutorialMode);
   const tutorialStep = useGameStore((state) => state.tutorialStep);
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   
   const conversationsQuery = useCustomerConversations(saveId);
   const requestsQuery = useCustomerRequests(saveId);
@@ -58,6 +82,42 @@ export function CustomerChatPage() {
   
   const [draft, setDraft] = useState("");
   const [selectedQuoteId, setSelectedQuoteId] = useState<number | null>(null);
+  const quickActions = useMemo(() => getLocalizedQuickActions(uiLanguage), [uiLanguage]);
+  const chatCopy = useMemo(
+    () =>
+      uiLanguage === "en"
+        ? {
+            noSaveTitle: "No save selected",
+            noSaveBody: "Open a save before using customer chat.",
+            quickActionTitle: "QUICK ACTIONS",
+            placeholder: "Type a message for the customer...",
+            send: "SEND MESSAGE",
+            ready: "READY TO ORDER",
+            closeWon: "CLOSE - WON",
+            closeLost: "CLOSE - LOST",
+            staffTitle: "STAFF ASSIGNMENT",
+            staffPlaceholder: "Assign a staff member...",
+            sendProposal: "SEND QUOTE",
+            emptyConversationTitle: "No conversation selected",
+            emptyConversationBody: "Pick a thread from the left or open one from Customers.",
+          }
+        : {
+            noSaveTitle: "Chưa chọn bản lưu",
+            noSaveBody: "Mở một bản lưu trước khi dùng chat khách hàng.",
+            quickActionTitle: "TÁC VỤ NHANH",
+            placeholder: "Nhập nội dung tư vấn cho khách...",
+            send: "GỬI TIN NHẮN",
+            ready: "SẴN SÀNG ĐẶT HÀNG",
+            closeWon: "ĐÓNG - THẮNG",
+            closeLost: "ĐÓNG - THUA",
+            staffTitle: "PHÂN CÔNG NHÂN SỰ",
+            staffPlaceholder: "Phân công nhân sự...",
+            sendProposal: "GỬI BÁO GIÁ",
+            emptyConversationTitle: "Chưa chọn cuộc trò chuyện",
+            emptyConversationBody: "Chọn một luồng ở bên trái hoặc mở từ Khách hàng.",
+          },
+    [uiLanguage],
+  );
 
   const selectedConversationId = searchParams.get("conversationId") ? Number(searchParams.get("conversationId")) : null;
   const conversations = conversationsQuery.data ?? [];
@@ -89,7 +149,7 @@ export function CustomerChatPage() {
   }, [filteredQuotes, selectedQuoteId]);
 
   if (!saveId) {
-    return <EmptyState title="Chưa chọn bản lưu" body="Mở một bản lưu trước khi dùng chat khách hàng." />;
+    return <EmptyState title={chatCopy.noSaveTitle} body={chatCopy.noSaveBody} />;
   }
 
   if (conversationsQuery.isLoading || requestsQuery.isLoading || quotesQuery.isLoading || staffQuery.isLoading) {
@@ -172,6 +232,9 @@ export function CustomerChatPage() {
         <div className="flex items-center gap-3">
           {selectedConversation && (
             <div className="flex items-center gap-2 font-mono text-[10px]">
+              <span className="bg-[#090b0e] border border-white/10 px-2 py-1 text-on-surface font-bold">
+                {uiLanguage === "en" ? "ENG" : "VIE"}
+              </span>
               <StatusChip label={selectedConversation.status} variant={getStatusVariant(selectedConversation.status)} />
               <StatusChip label={selectedConversation.stage} variant="neutral" />
               <span className="bg-[#090b0e] border border-white/10 px-2 py-1 text-on-surface font-bold">
@@ -283,10 +346,10 @@ export function CustomerChatPage() {
                     {/* Quick reply game action verbs */}
                     <div className={tutorialHighlight(tutorialMode && tutorialStep >= 3)}>
                       <div className="mb-2 font-mono text-[9px] uppercase tracking-wider text-outline select-none">
-                        QUICK ACTION DESK COGNITIONS
+                        {chatCopy.quickActionTitle}
                       </div>
                       <div className="flex flex-wrap gap-1.5">
-                        {QUICK_ACTIONS.map((item) => (
+                        {quickActions.map((item) => (
                           <button
                             key={item.action}
                             className={`h-7 px-2 font-mono text-[9px] tracking-wider border cursor-pointer select-none transition disabled:opacity-50 ${
@@ -312,7 +375,7 @@ export function CustomerChatPage() {
                           tutorialMode && tutorialStep >= 3,
                         )}`}
                         onChange={(event) => setDraft(event.target.value)}
-                        placeholder="NHẬP HƯỚNG DẪN NỘI DUNG GIAO TIẾP VỚI KHÁCH..."
+                        placeholder={chatCopy.placeholder}
                         value={draft}
                       />
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -323,7 +386,7 @@ export function CustomerChatPage() {
                           onClick={() => handleSendMessage()}
                           title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Gửi tin nhắn")}
                         >
-                          GỬI TIN NHẮN
+                          {chatCopy.send}
                         </ActionButton>
                         <ActionButton
                           variant="secondary"
@@ -332,7 +395,7 @@ export function CustomerChatPage() {
                           onClick={() => handleReadyToOrder()}
                           title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Đánh dấu sẵn sàng")}
                         >
-                          SẴN SÀNG ĐẶT HÀNG
+                          {chatCopy.ready}
                         </ActionButton>
                         <ActionButton
                           variant="secondary"
@@ -341,7 +404,7 @@ export function CustomerChatPage() {
                           onClick={() => handleClose(true)}
                           title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Đóng và thắng")}
                         >
-                          ĐÓNG - THẮNG
+                          {chatCopy.closeWon}
                         </ActionButton>
                         <ActionButton
                           variant="danger"
@@ -350,7 +413,7 @@ export function CustomerChatPage() {
                           onClick={() => handleClose(false)}
                           title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Đóng và thua")}
                         >
-                          ĐÓNG - THUA
+                          {chatCopy.closeLost}
                         </ActionButton>
                       </div>
                     </div>
@@ -428,7 +491,7 @@ export function CustomerChatPage() {
                 {/* Staff assigner */}
                 <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
                   <div className="border-b border-white/10 pb-2 select-none">
-                    <span className="text-[10px] text-outline uppercase">PHÂN CÔNG NHÂN SỰ</span>
+                    <span className="text-[10px] text-outline uppercase">{chatCopy.staffTitle}</span>
                   </div>
                   <div className="space-y-2">
                     <select
@@ -439,7 +502,7 @@ export function CustomerChatPage() {
                       }}
                       value={selectedConversation.assigned_staff_id ?? ""}
                     >
-                      <option value="">Phân công nhân sự...</option>
+                      <option value="">{chatCopy.staffPlaceholder}</option>
                       {(staffQuery.data ?? []).map((staff) => (
                         <option key={staff.id} value={staff.id}>
                           {staff.name} - {staff.role}
@@ -501,7 +564,7 @@ export function CustomerChatPage() {
                         disabled={sendQuote.isPending || !selectedQuoteId}
                         onClick={() => handleSendQuote()}
                       >
-                        SEND PROPOSAL TO CLIENT
+                        {chatCopy.sendProposal}
                       </ActionButton>
                     </div>
                   )}
@@ -509,7 +572,7 @@ export function CustomerChatPage() {
               </div>
             </div>
           ) : (
-            <EmptyState title="No conversation selected" body="Pick a thread from the left or open one from Customers." />
+            <EmptyState title={chatCopy.emptyConversationTitle} body={chatCopy.emptyConversationBody} />
           )}
         </div>
       </div>
@@ -518,6 +581,7 @@ export function CustomerChatPage() {
 }
 
 function MessageBubble({ message }: { message: CustomerConversationMessage }) {
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
   const isCustomer = message.sender_type === "CUSTOMER";
   const isPlayer = message.sender_type === "PLAYER";
   const isStaff = message.sender_type === "STAFF";
@@ -532,7 +596,7 @@ function MessageBubble({ message }: { message: CustomerConversationMessage }) {
   if (isSystem) {
     return (
       <div className="font-mono text-[10px] text-outline/45 italic leading-relaxed py-1 border-b border-white/[0.02] select-none">
-        [SYSTEM] {message.body}
+        [{uiLanguage === "en" ? "SYSTEM" : "HỆ THỐNG"}] {message.body}
       </div>
     );
   }
@@ -544,15 +608,15 @@ function MessageBubble({ message }: { message: CustomerConversationMessage }) {
   if (isCustomer) {
     bubbleStyle = "bg-white border border-white/20 text-slate-900 self-start p-3 mr-8";
     labelStyle = "text-rose-600 font-bold";
-    senderName = `[CLIENT // ${message.sender_label ?? "WALK-IN"}]`;
+    senderName = uiLanguage === "en" ? `[CLIENT // ${message.sender_label ?? "WALK-IN"}]` : `[KHÁCH // ${message.sender_label ?? "VÃNG LAI"}]`;
   } else if (isPlayer) {
     bubbleStyle = "bg-primary-container/10 border border-primary-container/40 text-on-surface self-end p-3 ml-8";
     labelStyle = "text-[#00f2ff] font-bold";
-    senderName = `[PLAYER // COMMANDER]`;
+    senderName = uiLanguage === "en" ? `[PLAYER // COMMANDER]` : `[BẠN // ĐIỀU PHỐI]`;
   } else if (isStaff) {
     bubbleStyle = "bg-[#74f5ff]/10 border border-[#74f5ff]/30 text-on-surface self-end p-3 ml-8";
     labelStyle = "text-[#74f5ff] font-bold";
-    senderName = `[STAFF // ${message.sender_label ?? "OPERATOR"}]`;
+    senderName = uiLanguage === "en" ? `[STAFF // ${message.sender_label ?? "OPERATOR"}]` : `[NHÂN SỰ // ${message.sender_label ?? "HỖ TRỢ"}]`;
   } else {
     bubbleStyle = "bg-surface-container-low border border-white/10 text-on-surface p-3";
     labelStyle = "text-outline font-bold";
@@ -570,11 +634,13 @@ function MessageBubble({ message }: { message: CustomerConversationMessage }) {
 
         {quoteId && (
           <div className="mt-2.5 pt-2.5 border-t border-dashed border-current/20 font-mono text-[10px] space-y-1 bg-black/5 p-2 text-left">
-            <span className="font-bold uppercase block text-[9px] tracking-wider">[QUOTE ATTACHMENT #${quoteId}]</span>
-            <div>Est. Fit Score: <span className="font-bold">{String(message.metadata_json?.customer_fit_score ?? "?")}</span></div>
-            <div>Acceptance Chance: <span className="font-bold">{String(message.metadata_json?.quote_acceptance_chance ?? "?")}%</span></div>
+            <span className="font-bold uppercase block text-[9px] tracking-wider">
+              [{uiLanguage === "en" ? "QUOTE ATTACHMENT" : "BÁO GIÁ ĐÍNH KÈM"} #{quoteId}]
+            </span>
+            <div>{uiLanguage === "en" ? "Est. Fit Score" : "Điểm phù hợp"}: <span className="font-bold">{String(message.metadata_json?.customer_fit_score ?? "?")}</span></div>
+            <div>{uiLanguage === "en" ? "Acceptance Chance" : "Khả năng chốt"}: <span className="font-bold">{String(message.metadata_json?.quote_acceptance_chance ?? "?")}%</span></div>
             {quotedPrice && (
-              <div className="text-emerald-500 font-bold">Price: ₫{Number(quotedPrice).toLocaleString()}</div>
+              <div className="text-emerald-500 font-bold">{uiLanguage === "en" ? "Price" : "Giá"}: ₫{Number(quotedPrice).toLocaleString()}</div>
             )}
           </div>
         )}

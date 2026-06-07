@@ -1,3 +1,6 @@
+import { useGameStore } from "../store/gameStore";
+import type { UiLanguage } from "../types/game";
+
 export function formatVnd(value: number | null | undefined): string {
   if (value === null || value === undefined) return "?";
   return new Intl.NumberFormat("vi-VN", {
@@ -195,8 +198,39 @@ const PHRASE_LABELS: Record<string, string> = {
   "Something went wrong while syncing with the backend.": "Đã có lỗi khi đồng bộ với backend.",
 };
 
+const REVERSE_CODE_LABELS = Object.fromEntries(Object.entries(CODE_LABELS).map(([code, translated]) => [translated, code]));
+const REVERSE_PHRASE_LABELS = Object.fromEntries(Object.entries(PHRASE_LABELS).map(([english, translated]) => [translated, english]));
+
+export function getUiLanguage(): UiLanguage {
+  try {
+    return useGameStore.getState().uiLanguage ?? "vi";
+  } catch {
+    return "vi";
+  }
+}
+
+export function pickUiText(vi: string, en: string, language: UiLanguage = getUiLanguage()): string {
+  return language === "en" ? en : vi;
+}
+
+function humanizeCode(value: string): string {
+  return value.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (letter: string) => letter.toUpperCase());
+}
+
+function hasOwnKey(target: Record<string, string>, value: string): boolean {
+  return Object.prototype.hasOwnProperty.call(target, value);
+}
+
 export function translateUiText(value: string | null | undefined): string {
   if (!value) return "";
+  const language = getUiLanguage();
+  if (language === "en") {
+    if (hasOwnKey(PHRASE_LABELS, value)) return value;
+    if (hasOwnKey(CODE_LABELS, value)) return humanizeCode(value);
+    if (hasOwnKey(REVERSE_PHRASE_LABELS, value)) return REVERSE_PHRASE_LABELS[value];
+    if (hasOwnKey(REVERSE_CODE_LABELS, value)) return humanizeCode(REVERSE_CODE_LABELS[value]);
+    return value;
+  }
   return PHRASE_LABELS[value] ?? CODE_LABELS[value] ?? value;
 }
 
@@ -222,7 +256,12 @@ export function formatVndCompact(value: number | null | undefined): string {
 }
 
 export function labelize(value: string): string {
-  return CODE_LABELS[value] ?? value.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (letter: string) => letter.toUpperCase());
+  const language = getUiLanguage();
+  if (language === "en") {
+    const normalized = REVERSE_CODE_LABELS[value] ?? value;
+    return humanizeCode(normalized);
+  }
+  return CODE_LABELS[value] ?? humanizeCode(value);
 }
 
 export function formatCurrency(value: number | null | undefined, currency: string): string {

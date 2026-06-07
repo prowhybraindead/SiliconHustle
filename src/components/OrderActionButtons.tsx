@@ -1,6 +1,7 @@
 import { PackageCheck, Play, TestTube2 } from "lucide-react";
 
 import type { Order } from "../types/game";
+import { useGameStore } from "../store/gameStore";
 import { ActionButton } from "./ui/ActionButton";
 
 interface OrderActionButtonsProps {
@@ -12,10 +13,12 @@ interface OrderActionButtonsProps {
 }
 
 export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest, onDeliver }: OrderActionButtonsProps) {
+  const uiLanguage = useGameStore((state) => state.uiLanguage);
+
   if (order.status === "DELIVERED") {
     return (
       <div className="font-mono text-[9px] text-[#00f2ff] border border-[#00f2ff]/20 bg-[#00f2ff]/5 px-2.5 py-1 uppercase font-bold tracking-wider select-none">
-        ĐÃ GIAO
+        {uiLanguage === "en" ? "DELIVERED" : "ĐÃ GIAO"}
       </div>
     );
   }
@@ -29,7 +32,7 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
         onClick={() => onStartBuild(order.id)}
       >
         <Play className="h-3 w-3" />
-        BẮT ĐẦU LẮP RÁP
+        {uiLanguage === "en" ? "START BUILD" : "BẮT ĐẦU LẮP RÁP"}
       </ActionButton>
     );
   }
@@ -43,7 +46,7 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
         onClick={() => onRunBuildTest(order.id)}
       >
         <TestTube2 className="h-3 w-3" />
-        CHẠY KIỂM TRA LẮP RÁP
+        {uiLanguage === "en" ? "RUN BUILD TEST" : "CHẠY KIỂM TRA LẮP RÁP"}
       </ActionButton>
     );
   }
@@ -57,10 +60,10 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
         onClick={() => onDeliver(order.id)}
       >
         <PackageCheck className="h-3 w-3" />
-        GIAO HÀNG
+        {uiLanguage === "en" ? "DELIVER ORDER" : "GIAO HÀNG"}
       </ActionButton>
     );
   }
 
-  return <span className="font-mono text-[9px] text-outline/30 uppercase select-none">KHÔNG CÓ HÀNH ĐỘNG</span>;
+  return <span className="font-mono text-[9px] text-outline/30 uppercase select-none">{uiLanguage === "en" ? "NO ACTION" : "KHÔNG CÓ HÀNH ĐỘNG"}</span>;
 }

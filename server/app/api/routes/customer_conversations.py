@@ -37,13 +37,14 @@ def list_conversations(
 def create_conversation_for_request(
     save_game_id: int,
     request_id: int,
+    locale: str | None = None,
     x_profile_unlock_token: str | None = Header(None, alias="X-Profile-Unlock-Token"),
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
     request = customer_conversation_service._get_customer_request(db, save_game_id, request_id)
     created = request.conversation_id is None
-    conversation = customer_conversation_service.get_or_create_conversation_for_request(db, save_game_id, request_id)
+    conversation = customer_conversation_service.get_or_create_conversation_for_request(db, save_game_id, request_id, locale=locale)
     return CustomerConversationCreateResponse(conversation=CustomerConversationDetailRead.model_validate(conversation), created=created)
 
 
@@ -78,16 +79,14 @@ def add_message(
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
-    customer_conversation_service.add_message(
+    conversation = customer_conversation_service.handle_player_message(
         db,
         save_game_id,
         conversation_id,
-        sender_type="PLAYER",
-        sender_label="You",
         body=payload.body,
+        locale=payload.locale,
     )
-    db.commit()
-    return CustomerConversationDetailRead.model_validate(customer_conversation_service.get_conversation(db, save_game_id, conversation_id))
+    return CustomerConversationDetailRead.model_validate(conversation)
 
 
 @router.post("/customer-conversations/{conversation_id}/quick-reply", response_model=CustomerConversationDetailRead)
@@ -99,7 +98,9 @@ def quick_reply(
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
-    return CustomerConversationDetailRead.model_validate(customer_conversation_service.quick_reply(db, save_game_id, conversation_id, payload.action_type))
+    return CustomerConversationDetailRead.model_validate(
+        customer_conversation_service.quick_reply(db, save_game_id, conversation_id, payload.action_type, locale=payload.locale)
+    )
 
 
 @router.post("/customer-conversations/{conversation_id}/assign-staff", response_model=CustomerConversationDetailRead)
@@ -111,7 +112,9 @@ def assign_staff(
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
-    return CustomerConversationDetailRead.model_validate(customer_conversation_service.assign_sales_staff(db, save_game_id, conversation_id, payload.staff_id))
+    return CustomerConversationDetailRead.model_validate(
+        customer_conversation_service.assign_sales_staff(db, save_game_id, conversation_id, payload.staff_id, locale=payload.locale)
+    )
 
 
 @router.post("/customer-conversations/{conversation_id}/send-quote/{quote_id}", response_model=ConversationSendQuoteResponse)
@@ -119,11 +122,12 @@ def send_quote(
     save_game_id: int,
     conversation_id: int,
     quote_id: int,
+    locale: str | None = None,
     x_profile_unlock_token: str | None = Header(None, alias="X-Profile-Unlock-Token"),
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
-    message = customer_conversation_service.send_quote_to_customer(db, save_game_id, conversation_id, quote_id)
+    message = customer_conversation_service.send_quote_to_customer(db, save_game_id, conversation_id, quote_id, locale=locale)
     conversation = customer_conversation_service.get_conversation(db, save_game_id, conversation_id)
     quote = quote_service.get_quote(db, save_game_id, quote_id)
     return ConversationSendQuoteResponse(
@@ -138,11 +142,14 @@ def send_quote(
 def ready_to_order(
     save_game_id: int,
     conversation_id: int,
+    locale: str | None = None,
     x_profile_unlock_token: str | None = Header(None, alias="X-Profile-Unlock-Token"),
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
-    return CustomerConversationDetailRead.model_validate(customer_conversation_service.mark_ready_to_order(db, save_game_id, conversation_id))
+    return CustomerConversationDetailRead.model_validate(
+        customer_conversation_service.mark_ready_to_order(db, save_game_id, conversation_id, locale=locale)
+    )
 
 
 @router.post("/customer-conversations/{conversation_id}/close", response_model=CustomerConversationDetailRead)
@@ -154,4 +161,6 @@ def close_conversation(
     db: Session = Depends(get_db),
 ):
     _require_access(db, save_game_id, x_profile_unlock_token)
-    return CustomerConversationDetailRead.model_validate(customer_conversation_service.close_conversation(db, save_game_id, conversation_id, payload.won))
+    return CustomerConversationDetailRead.model_validate(
+        customer_conversation_service.close_conversation(db, save_game_id, conversation_id, payload.won, locale=payload.locale)
+    )
