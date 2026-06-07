@@ -203,6 +203,11 @@ export interface SaveGame {
   is_locked: boolean;
 }
 
+export interface SaveGamePinPayload {
+  pin: string;
+  current_pin?: string;
+}
+
 export interface HardwareProduct {
   id: number;
   name: string;

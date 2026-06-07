@@ -1,29 +1,42 @@
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import delete as sa_delete, func, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.errors import not_found
 from app.models.entities import (
+    Customer,
     CustomerRequest,
     CustomerConversation,
     CustomerConversationMessage,
+    CustomerReview,
     InventoryUnit,
+    InventoryRefurbishEvent,
     Order,
     OrderFulfillmentEvent,
+    OrderItem,
     PurchaseOrder,
+    PurchaseOrderItem,
+    PlayerProfile,
+    ProfileUnlockSession,
     Quote,
+    QuoteItem,
     SaveGame,
     SupplierOffer,
     TestResult,
     WarrantyClaim,
+    WarrantyClaimItem,
     WarrantyEvent,
     UsedPartListing,
     UsedPartNegotiation,
-    InventoryRefurbishEvent,
+    NegotiationMessage,
     ResaleListing,
     ResaleBuyerOffer,
+    StaffAssignmentLog,
+    StaffMember,
+    MarketEvent,
+    PurchasedShopUpgrade,
 )
 from app.models.enums import (
     CustomerRequestStatus,
@@ -49,6 +62,122 @@ def list_save_games(db: Session) -> list[SaveGame]:
 def create_save_game(db: Session, name: str) -> SaveGame:
     save_game = SaveGame(name=name)
     db.add(save_game)
+    db.commit()
+    db.refresh(save_game)
+    return save_game
+
+
+def _bulk_delete_save_scoped_rows(db: Session, save_game_id: int) -> None:
+    quote_ids = select(Quote.id).where(Quote.save_game_id == save_game_id)
+    order_ids = select(Order.id).where(Order.save_game_id == save_game_id)
+    customer_ids = select(Customer.id).where(Customer.save_game_id == save_game_id)
+    request_ids = select(CustomerRequest.id).join(CustomerRequest.customer).where(Customer.save_game_id == save_game_id)
+    inventory_ids = select(InventoryUnit.id).where(InventoryUnit.save_game_id == save_game_id)
+    warranty_claim_ids = select(WarrantyClaim.id).where(WarrantyClaim.save_game_id == save_game_id)
+    listing_ids = select(ResaleListing.id).where(ResaleListing.save_game_id == save_game_id)
+    negotiation_ids = select(UsedPartNegotiation.id).where(UsedPartNegotiation.save_game_id == save_game_id)
+
+    # Review records are independent records but still save-scoped, so clear them first.
+    db.execute(sa_delete(CustomerReview).where(CustomerReview.save_game_id == save_game_id))
+
+    # Child rows that reference other save-scoped parents via foreign keys.
+    db.execute(sa_delete(WarrantyClaimItem).where(WarrantyClaimItem.warranty_claim_id.in_(warranty_claim_ids)))
+    db.execute(sa_delete(WarrantyEvent).where(WarrantyEvent.warranty_claim_id.in_(warranty_claim_ids)))
+    db.execute(sa_delete(OrderFulfillmentEvent).where(OrderFulfillmentEvent.order_id.in_(order_ids)))
+    db.execute(sa_delete(OrderItem).where(OrderItem.order_id.in_(order_ids)))
+    db.execute(sa_delete(QuoteItem).where(QuoteItem.quote_id.in_(quote_ids)))
+    db.execute(sa_delete(CustomerConversationMessage).where(CustomerConversationMessage.save_game_id == save_game_id))
+    db.execute(sa_delete(NegotiationMessage).where(NegotiationMessage.negotiation_id.in_(negotiation_ids)))
+    db.execute(sa_delete(PurchaseOrderItem).where(PurchaseOrderItem.purchase_order_id.in_(select(PurchaseOrder.id).where(PurchaseOrder.save_game_id == save_game_id))))
+    db.execute(sa_delete(InventoryRefurbishEvent).where(InventoryRefurbishEvent.save_game_id == save_game_id))
+    db.execute(sa_delete(ResaleBuyerOffer).where(ResaleBuyerOffer.save_game_id == save_game_id))
+
+    # Save-scoped parents.
+    db.execute(sa_delete(WarrantyClaim).where(WarrantyClaim.save_game_id == save_game_id))
+    db.execute(sa_delete(Order).where(Order.save_game_id == save_game_id))
+    db.execute(sa_delete(Quote).where(Quote.save_game_id == save_game_id))
+    db.execute(sa_delete(CustomerConversation).where(CustomerConversation.save_game_id == save_game_id))
+    db.execute(sa_delete(CustomerRequest).where(CustomerRequest.id.in_(request_ids)))
+    db.execute(sa_delete(Customer).where(Customer.save_game_id == save_game_id))
+    db.execute(sa_delete(PurchaseOrder).where(PurchaseOrder.save_game_id == save_game_id))
+    db.execute(sa_delete(UsedPartNegotiation).where(UsedPartNegotiation.save_game_id == save_game_id))
+    db.execute(sa_delete(UsedPartListing).where(UsedPartListing.save_game_id == save_game_id))
+    db.execute(sa_delete(ResaleListing).where(ResaleListing.save_game_id == save_game_id))
+    db.execute(sa_delete(StaffAssignmentLog).where(StaffAssignmentLog.save_game_id == save_game_id))
+    db.execute(sa_delete(StaffMember).where(StaffMember.save_game_id == save_game_id))
+    db.execute(sa_delete(TestResult).where(TestResult.inventory_unit_id.in_(inventory_ids)))
+    db.execute(sa_delete(InventoryUnit).where(InventoryUnit.save_game_id == save_game_id))
+    db.execute(sa_delete(MarketEvent).where(MarketEvent.save_game_id == save_game_id))
+    db.execute(sa_delete(PurchasedShopUpgrade).where(PurchasedShopUpgrade.save_game_id == save_game_id))
+
+
+def _cleanup_unused_profile(db: Session, profile_id: int | None) -> None:
+    if not profile_id:
+        return
+
+    remaining_save_count = (
+        db.scalar(select(func.count()).select_from(SaveGame).where(SaveGame.player_profile_id == profile_id)) or 0
+    )
+    if remaining_save_count > 0:
+        return
+
+    db.execute(sa_delete(ProfileUnlockSession).where(ProfileUnlockSession.profile_id == profile_id))
+    db.execute(sa_delete(PlayerProfile).where(PlayerProfile.id == profile_id))
+    db.commit()
+
+
+def delete_save_game(db: Session, save_game_id: int) -> None:
+    save_game = get_save_game(db, save_game_id)
+    profile_id = save_game.player_profile_id
+
+    _bulk_delete_save_scoped_rows(db, save_game_id)
+    db.delete(save_game)
+    db.commit()
+
+    _cleanup_unused_profile(db, profile_id)
+
+
+def ensure_showroom_profile(db: Session, save_game: SaveGame) -> PlayerProfile:
+    if save_game.player_profile_id:
+        profile = db.get(PlayerProfile, save_game.player_profile_id)
+        if profile:
+            return profile
+
+    from app.services import player_profile_service
+
+    profile_name = save_game.shop_name or save_game.name
+    profile = player_profile_service.create_profile(db, f"{profile_name} Access")
+    save_game.player_profile_id = profile.id
+    save_game.pin_required = profile.pin_enabled
+    db.commit()
+    db.refresh(save_game)
+    return profile
+
+
+def set_showroom_pin(db: Session, save_game_id: int, pin: str, current_pin: str | None = None) -> SaveGame:
+    from app.services import player_profile_service
+
+    save_game = get_save_game(db, save_game_id)
+    profile = ensure_showroom_profile(db, save_game)
+    player_profile_service.set_profile_pin(db, profile.id, pin, current_pin)
+    save_game.pin_required = True
+    db.commit()
+    db.refresh(save_game)
+    return save_game
+
+
+def disable_showroom_pin(db: Session, save_game_id: int, current_pin: str | None = None) -> SaveGame:
+    from app.services import player_profile_service
+
+    save_game = get_save_game(db, save_game_id)
+    if not save_game.player_profile_id:
+        save_game.pin_required = False
+        db.commit()
+        db.refresh(save_game)
+        return save_game
+
+    player_profile_service.disable_profile_pin(db, save_game.player_profile_id, current_pin)
+    save_game.pin_required = False
     db.commit()
     db.refresh(save_game)
     return save_game

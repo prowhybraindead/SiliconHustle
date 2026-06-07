@@ -374,6 +374,11 @@ export function CustomerChatPage() {
                         className={`h-16 border border-white/10 bg-[#080a0d] p-2 font-mono text-[11px] text-on-surface outline-none focus:border-primary-container ${tutorialHighlight(
                           tutorialMode && tutorialStep >= 3,
                         )}`}
+                        onKeyDown={(event) => {
+                          if (event.key !== "Enter" || event.shiftKey) return;
+                          event.preventDefault();
+                          void handleSendMessage();
+                        }}
                         onChange={(event) => setDraft(event.target.value)}
                         placeholder={chatCopy.placeholder}
                         value={draft}

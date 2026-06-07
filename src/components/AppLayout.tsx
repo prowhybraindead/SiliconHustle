@@ -51,16 +51,16 @@ export function AppLayout() {
       noSaveTitle: pickUiText("Chưa chọn trung tâm điều khiển", "No command center selected", uiLanguage),
       noSaveBody: pickUiText("Mở hoặc tạo một bản lưu showroom từ màn hình chính.", "Open or create a showroom save from the home screen.", uiLanguage),
       waitingVerify: pickUiText("HỆ THỐNG AN TOÀN // ĐANG CHỜ XÁC THỰC", "SECURE SYSTEM // WAITING FOR VERIFICATION", uiLanguage),
-      targetProfile: pickUiText("HỒ SƠ MỤC TIÊU", "TARGET PROFILE", uiLanguage),
+      targetProfile: pickUiText("SHOWROOM MỤC TIÊU", "TARGET SHOWROOM", uiLanguage),
       locked: pickUiText("[ĐÃ KHÓA]", "[LOCKED]", uiLanguage),
       lastSync: pickUiText("ĐỒNG BỘ LẦN CUỐI", "LAST SYNC", uiLanguage),
       funds: pickUiText("TIỀN", "FUNDS", uiLanguage),
       cycle: pickUiText("CHU KỲ", "CYCLE", uiLanguage),
       day: pickUiText("NGÀY", "DAY", uiLanguage),
       pinMin: pickUiText("PIN phải có ít nhất 4 số.", "PIN must be at least 4 digits.", uiLanguage),
-      unlockFallback: pickUiText("Không thể mở khóa bản lưu.", "Unable to unlock the save.", uiLanguage),
+      unlockFallback: pickUiText("Không thể mở khóa showroom.", "Unable to unlock the showroom.", uiLanguage),
       continuing: pickUiText("ĐANG TIẾP TỤC...", "CONTINUING...", uiLanguage),
-      continueSave: pickUiText("TIẾP TỤC BẢN LƯU", "CONTINUE SAVE", uiLanguage),
+      continueSave: pickUiText("TIẾP TỤC SHOWROOM", "CONTINUE SHOWROOM", uiLanguage),
       newShowroom: pickUiText("SHOWROOM MỚI", "NEW SHOWROOM", uiLanguage),
       tutorial: pickUiText("TUTORIAL HƯỚNG DẪN", "GUIDED TUTORIAL", uiLanguage),
       preparingTutorial: pickUiText("ĐANG CHUẨN BỊ TUTORIAL...", "PREPARING TUTORIAL...", uiLanguage),
@@ -83,7 +83,7 @@ export function AppLayout() {
   const currentSave = savesQuery.data?.find((save) => save.id === saveId);
   const isLocked = saveDetail.error instanceof ApiError && saveDetail.error.status === 403;
   const profileId = currentSave?.player_profile_id;
-  const profileName = currentSave?.profile_display_name ?? currentSave?.name ?? pickUiText("Hồ sơ bảo mật", "Security Profile", uiLanguage);
+  const profileName = currentSave?.profile_display_name ?? currentSave?.name ?? pickUiText("Showroom bảo mật", "Security Showroom", uiLanguage);
   const profileSync = formatSyncTime(currentSave?.last_autosave_at ?? currentSave?.updated_at);
 
   useEffect(() => {

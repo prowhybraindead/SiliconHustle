@@ -4,6 +4,8 @@ import {
   apiRequest,
   getBrand,
   getHardwareProduct,
+  deleteSaveGame,
+  disableSaveGamePin,
   listBrands,
   listHardwareProducts,
   listSupportedCurrencies,
@@ -23,6 +25,7 @@ import {
   advanceMarketDay,
   getMarketSummary,
   createMarketEvent,
+  updateSaveGamePin,
   listPlayerProfiles,
   createPlayerProfile,
   getPlayerProfile,
@@ -164,6 +167,44 @@ export function useCreateSaveGame() {
   return useMutation({
     mutationFn: (name: string) => apiRequest<SaveGame>("/api/save-games", { method: "POST", body: JSON.stringify({ name }) }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["save-games"] }),
+  });
+}
+
+export function useDeleteSaveGame() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (saveId: number) => deleteSaveGame(saveId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["save-games"] });
+      queryClient.invalidateQueries({ queryKey: ["save-state"] });
+      queryClient.invalidateQueries({ queryKey: ["active-save-detail"] });
+    },
+  });
+}
+
+export function useUpdateSaveGamePin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ saveId, pin, currentPin }: { saveId: number; pin: string; currentPin?: string }) =>
+      updateSaveGamePin(saveId, { pin, current_pin: currentPin }),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["save-games"] });
+      queryClient.invalidateQueries({ queryKey: ["active-save-detail", variables.saveId] });
+      queryClient.invalidateQueries({ queryKey: ["save-state", variables.saveId] });
+    },
+  });
+}
+
+export function useDisableSaveGamePin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ saveId, currentPin }: { saveId: number; currentPin?: string }) =>
+      disableSaveGamePin(saveId, currentPin),
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["save-games"] });
+      queryClient.invalidateQueries({ queryKey: ["active-save-detail", variables.saveId] });
+      queryClient.invalidateQueries({ queryKey: ["save-state", variables.saveId] });
+    },
   });
 }
 
@@ -386,11 +427,23 @@ function invalidateConversationWorkflow(queryClient: ReturnType<typeof useQueryC
   queryClient.invalidateQueries({ queryKey: ["save-state", saveId] });
 }
 
+function primeConversationCache(queryClient: ReturnType<typeof useQueryClient>, saveId: number | null, conversation: CustomerConversation) {
+  queryClient.setQueryData(["customer-conversation-messages", saveId, conversation.id], conversation.messages ?? []);
+  queryClient.setQueryData(["customer-conversations", saveId, conversation.id], conversation);
+
+  queryClient.setQueriesData(
+    { queryKey: ["customer-conversations", saveId] },
+    (existing: CustomerConversation[] | undefined) =>
+      existing?.map((entry) => (entry.id === conversation.id ? { ...entry, ...conversation } : entry)),
+  );
+}
+
 export function useCreateConversationForRequest(saveId: number | null) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (requestId: number) => createConversationForRequest(saveId as number, requestId, useGameStore.getState().uiLanguage),
     onSuccess: (data, requestId) => {
+      primeConversationCache(queryClient, saveId, data.conversation);
       invalidateConversationWorkflow(queryClient, saveId, data.conversation.id);
       queryClient.invalidateQueries({ queryKey: ["customer-requests", saveId, requestId] });
     },
@@ -403,6 +456,7 @@ export function useSendConversationMessage(saveId: number | null) {
     mutationFn: ({ conversationId, body }: { conversationId: number; body: string }) =>
       sendConversationMessage(saveId as number, conversationId, body, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
+      primeConversationCache(queryClient, saveId, data);
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
   }) as UseMutationResult<CustomerConversation, Error, { conversationId: number; body: string }>;
@@ -414,6 +468,7 @@ export function useQuickReplyConversation(saveId: number | null) {
     mutationFn: ({ conversationId, actionType }: { conversationId: number; actionType: string }) =>
       quickReplyConversation(saveId as number, conversationId, actionType, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
+      primeConversationCache(queryClient, saveId, data);
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
   }) as UseMutationResult<CustomerConversation, Error, { conversationId: number; actionType: string }>;
@@ -425,6 +480,7 @@ export function useAssignConversationStaff(saveId: number | null) {
     mutationFn: ({ conversationId, staffId }: { conversationId: number; staffId: number }) =>
       assignConversationStaff(saveId as number, conversationId, staffId, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
+      primeConversationCache(queryClient, saveId, data);
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
   }) as UseMutationResult<CustomerConversation, Error, { conversationId: number; staffId: number }>;
@@ -436,6 +492,7 @@ export function useSendQuoteToConversation(saveId: number | null) {
     mutationFn: ({ conversationId, quoteId }: { conversationId: number; quoteId: number }) =>
       sendQuoteToConversation(saveId as number, conversationId, quoteId, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
+      primeConversationCache(queryClient, saveId, data.conversation);
       invalidateConversationWorkflow(queryClient, saveId, data.conversation.id);
       queryClient.invalidateQueries({ queryKey: ["quotes", saveId] });
       queryClient.invalidateQueries({ queryKey: ["quotes", saveId, data.quote.id] });
@@ -449,6 +506,7 @@ export function useMarkConversationReadyToOrder(saveId: number | null) {
     mutationFn: (conversationId: number) =>
       markConversationReadyToOrder(saveId as number, conversationId, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
+      primeConversationCache(queryClient, saveId, data);
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
   }) as UseMutationResult<CustomerConversation, Error, number>;
@@ -460,6 +518,7 @@ export function useCloseConversation(saveId: number | null) {
     mutationFn: ({ conversationId, won }: { conversationId: number; won: boolean }) =>
       closeConversation(saveId as number, conversationId, won, useGameStore.getState().uiLanguage),
     onSuccess: (data) => {
+      primeConversationCache(queryClient, saveId, data);
       invalidateConversationWorkflow(queryClient, saveId, data.id);
     },
   }) as UseMutationResult<CustomerConversation, Error, { conversationId: number; won: boolean }>;

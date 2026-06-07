@@ -3,7 +3,14 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from app.core.database import get_db
-from app.schemas.game import AutosavePayload, DashboardState, SaveGameCreate, SaveGameRead
+from app.schemas.game import (
+    AutosavePayload,
+    DashboardState,
+    SaveGameCreate,
+    SaveGamePinDisablePayload,
+    SaveGamePinPayload,
+    SaveGameRead,
+)
 from app.services import save_game_service, player_profile_service
 
 router = APIRouter(prefix="/api/save-games", tags=["save games"])
@@ -17,6 +24,39 @@ def list_save_games(db: Session = Depends(get_db)):
 @router.post("", response_model=SaveGameRead)
 def create_save_game(payload: SaveGameCreate, db: Session = Depends(get_db)):
     return save_game_service.create_save_game(db, payload.name)
+
+
+@router.delete("/{save_game_id}")
+def delete_save_game(
+    save_game_id: int,
+    x_profile_unlock_token: Optional[str] = Header(None, alias="X-Profile-Unlock-Token"),
+    db: Session = Depends(get_db),
+):
+    player_profile_service.require_profile_access(db, save_game_id, x_profile_unlock_token)
+    save_game_service.delete_save_game(db, save_game_id)
+    return {"message": "Showroom deleted successfully"}
+
+
+@router.patch("/{save_game_id}/pin", response_model=SaveGameRead)
+def set_showroom_pin(
+    save_game_id: int,
+    payload: SaveGamePinPayload,
+    x_profile_unlock_token: Optional[str] = Header(None, alias="X-Profile-Unlock-Token"),
+    db: Session = Depends(get_db),
+):
+    player_profile_service.require_profile_access(db, save_game_id, x_profile_unlock_token)
+    return save_game_service.set_showroom_pin(db, save_game_id, payload.pin, payload.current_pin)
+
+
+@router.delete("/{save_game_id}/pin", response_model=SaveGameRead)
+def disable_showroom_pin(
+    save_game_id: int,
+    payload: SaveGamePinDisablePayload,
+    x_profile_unlock_token: Optional[str] = Header(None, alias="X-Profile-Unlock-Token"),
+    db: Session = Depends(get_db),
+):
+    player_profile_service.require_profile_access(db, save_game_id, x_profile_unlock_token)
+    return save_game_service.disable_showroom_pin(db, save_game_id, payload.current_pin)
 
 
 @router.get("/{save_game_id}", response_model=SaveGameRead)

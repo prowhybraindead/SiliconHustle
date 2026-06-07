@@ -62,6 +62,15 @@ class AutosavePayload(BaseModel):
     client_state_json: dict[str, Any] | None = None
 
 
+class SaveGamePinPayload(BaseModel):
+    pin: str = Field(min_length=4, max_length=12)
+    current_pin: str | None = Field(default=None, min_length=4, max_length=12)
+
+
+class SaveGamePinDisablePayload(BaseModel):
+    current_pin: str | None = Field(default=None, min_length=4, max_length=12)
+
+
 class SaveGameRead(OrmModel):
     id: int
     name: str

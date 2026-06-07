@@ -187,6 +187,31 @@ export function createMarketEvent(saveGameId: number, payload: MarketEventCreate
   });
 }
 
+export interface SaveGamePinPayload {
+  pin: string;
+  current_pin?: string;
+}
+
+export function updateSaveGamePin(saveGameId: number, payload: SaveGamePinPayload) {
+  return apiRequest<import("../types/game").SaveGame>(`/api/save-games/${saveGameId}/pin`, {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function disableSaveGamePin(saveGameId: number, currentPin?: string) {
+  return apiRequest<import("../types/game").SaveGame>(`/api/save-games/${saveGameId}/pin`, {
+    method: "DELETE",
+    body: JSON.stringify({ current_pin: currentPin }),
+  });
+}
+
+export function deleteSaveGame(saveGameId: number) {
+  return apiRequest<{ message: string }>(`/api/save-games/${saveGameId}`, {
+    method: "DELETE",
+  });
+}
+
 // Player Profile APIs
 export function listPlayerProfiles() {
   return apiRequest<import("../types/game").PlayerProfile[]>("/api/player-profiles");

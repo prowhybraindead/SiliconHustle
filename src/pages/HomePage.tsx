@@ -1,8 +1,8 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronRight, HardDriveDownload, Plus, Play } from "lucide-react";
+import { ChevronRight, HardDriveDownload, Plus, Play, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import { useCreateSaveGame, useSaveGames } from "../api/hooks";
+import { useCreateSaveGame, useDeleteSaveGame, useSaveGames } from "../api/hooks";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import { ActionButton } from "../components/ui/ActionButton";
@@ -48,6 +48,7 @@ export function HomePage() {
   const uiLanguage = useGameStore((state) => state.uiLanguage);
   const saves = useSaveGames();
   const createSave = useCreateSaveGame();
+  const deleteSave = useDeleteSaveGame();
   const autoTutorialLaunched = useRef(false);
 
   const copy = useMemo(
@@ -80,6 +81,12 @@ export function HomePage() {
       ),
       startTutorial: pickUiText("BẮT ĐẦU TUTORIAL", "START TUTORIAL", uiLanguage),
       preparing: pickUiText("ĐANG CHUẨN BỊ...", "PREPARING...", uiLanguage),
+      deleteShowroom: pickUiText("XÓA SHOWROOM", "DELETE SHOWROOM", uiLanguage),
+      deleteConfirm: pickUiText(
+        "Xóa showroom này sẽ dọn sạch dữ liệu lưu của nó. Anh chắc muốn làm vậy chứ?",
+        "Deleting this showroom will remove its save data. Are you sure?",
+        uiLanguage,
+      ),
     }),
     [uiLanguage],
   );
@@ -105,6 +112,13 @@ export function HomePage() {
     setSelectedSaveId(tutorialSave.id);
     startTutorial(tutorialSave.id);
     navigate("/tutorial");
+  }
+
+  async function handleDeleteSave(saveId: number, saveName: string) {
+    if (!window.confirm(`${copy.deleteConfirm}\n\n${saveName}`)) return;
+    await deleteSave.mutateAsync(saveId);
+    const remaining = saves.data?.filter((save) => save.id !== saveId) ?? [];
+    setSelectedSaveId(remaining[0]?.id ?? null);
   }
 
   useEffect(() => {
@@ -200,10 +214,17 @@ export function HomePage() {
               const active = save.id === selectedSave?.id;
 
               return (
-                <button
+                <div
                   key={save.id}
-                  type="button"
                   onClick={() => setSelectedSaveId(save.id)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedSaveId(save.id);
+                    }
+                  }}
                   className={`flex items-center gap-4 border px-4 py-3 text-left transition-colors ${
                     active
                       ? "border-primary-container/50 bg-surface-container-highest shadow-console"
@@ -226,8 +247,22 @@ export function HomePage() {
                     </div>
                   </div>
 
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      void handleDeleteSave(save.id, save.name);
+                    }}
+                    disabled={deleteSave.isPending}
+                    className="inline-flex h-10 items-center gap-2 border border-rose-500/20 bg-rose-500/10 px-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-rose-300 transition hover:bg-rose-500/20 disabled:cursor-wait disabled:opacity-60"
+                    title={copy.deleteShowroom}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    {copy.deleteShowroom}
+                  </button>
+
                   <ChevronRight className={`h-4 w-4 shrink-0 ${active ? "text-primary-container" : "text-outline"}`} />
-                </button>
+                </div>
               );
             })}
           </div>

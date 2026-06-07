@@ -28,7 +28,7 @@ import { translateUiText, pickUiText } from "../utils/format";
 
 const navItems = [
   { to: "/dashboard", label: "CMD", title: "Command Center", icon: LayoutDashboard },
-  { to: "/profiles", label: "PRF", title: "Security Profiles", icon: User },
+  { to: "/profiles", label: "SEC", title: "Showroom Security", icon: User },
   { to: "/operations", label: "OPS", title: "Operations Board", icon: ListTree },
   { to: "/progression", label: "UPG", title: "Upgrade Shop", icon: BadgeDollarSign },
   { to: "/catalog", label: "CTL", title: "Product Catalog", icon: Cpu },

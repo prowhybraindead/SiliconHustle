@@ -238,7 +238,7 @@ export function SuppliersPage() {
         <div className="space-y-3">
           <h2 className="font-mono text-xs font-bold text-slate-300 uppercase tracking-wider px-1">Active Procurement Invoices</h2>
           {!saveId ? (
-            <EmptyState title="Access Denied" body="Connect profile to pull invoice pipeline." />
+            <EmptyState title="Access Denied" body="Connect showroom access to pull invoice pipeline." />
           ) : (
             <>
               {purchaseOrders.data?.length === 0 ? <EmptyState title="No active invoices" body="Initialize a procurement contract on the left." /> : null}
@@ -318,4 +318,3 @@ export function SuppliersPage() {
     </section>
   );
 }
-
