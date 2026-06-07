@@ -57,7 +57,7 @@ export function HomePage() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    const save = await createSave.mutateAsync(name.trim() || "New Showroom");
+    const save = await createSave.mutateAsync(name.trim() || "Showroom mới");
     openSave(save.id);
   }
 
@@ -91,14 +91,14 @@ export function HomePage() {
           </h1>
           <div className="mt-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
             <span className="inline-block h-2 w-2 rounded-full bg-secondary-fixed-dim animate-pulse" />
-            SESSION CONTROL // SELECT SHOWROOM
+            TRUNG TÂM PHIÊN // CHỌN SHOWROOM
           </div>
         </header>
 
         <section className="overflow-hidden border border-white/10 bg-surface-container-high">
           <div className="flex items-center justify-between border-b border-white/10 bg-surface-container-highest px-4 py-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-              ACTIVE SHOWROOM
+              SHOWROOM ĐANG DÙNG
             </span>
             <span className="rounded-sm border border-primary-container/30 bg-primary-container/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary-container">
               {selectedSave ? `[${getSaveStatus(selectedSave)}]` : "[EMPTY]"}
@@ -119,7 +119,7 @@ export function HomePage() {
                   <div className="min-w-0 flex-1">
                     <h2 className="truncate text-lg font-bold uppercase text-on-surface">{selectedSave.name}</h2>
                     <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
-                      LAST SYNC: {formatSyncTime(selectedSave.last_autosave_at ?? selectedSave.updated_at)}
+                      ĐỒNG BỘ LẦN CUỐI: {formatSyncTime(selectedSave.last_autosave_at ?? selectedSave.updated_at)}
                     </div>
                   </div>
                 </div>
@@ -154,10 +154,10 @@ export function HomePage() {
             ) : (
               <div className="flex min-h-[148px] flex-col justify-center gap-2 text-center">
                 <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-                  NO SHOWROOMS FOUND
+                  CHƯA CÓ SHOWROOM NÀO
                 </div>
                 <div className="text-sm text-on-surface-variant">
-                  Create a new save to start your run.
+                  Tạo một bản lưu mới để bắt đầu hành trình của anh.
                 </div>
               </div>
             )}
@@ -167,10 +167,10 @@ export function HomePage() {
         <section className="grid gap-panel-gap">
           <div className="flex items-center justify-between px-1">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-              SAVES
+              BẢN LƯU
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
-              {saves.data?.length ?? 0} RECORDS
+              {saves.data?.length ?? 0} BẢN GHI
             </span>
           </div>
 
@@ -197,11 +197,11 @@ export function HomePage() {
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="truncate font-semibold uppercase text-on-surface">{save.name}</div>
                       <span className="rounded-sm border border-white/10 bg-white/5 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
-                        DAY {save.game_day}
+                        NGÀY {save.game_day}
                       </span>
                     </div>
                     <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
-                      {formatVndCompact(save.cash)} / REP {save.reputation}% / {getSaveStatus(save)}
+                      {formatVndCompact(save.cash)} / UY TÍN {save.reputation}% / {getSaveStatus(save)}
                     </div>
                   </div>
 
@@ -215,19 +215,19 @@ export function HomePage() {
         <section className="overflow-hidden border border-primary-container/35 bg-surface-container-low/80 backdrop-blur-md terminal-glow">
           <div className="border-b border-white/10 px-4 py-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-              NEW SHOWROOM
+              SHOWROOM MỚI
             </span>
           </div>
 
           <form className="flex flex-col gap-3 p-4" onSubmit={handleSubmit}>
             <label className="sr-only" htmlFor="showroom-name">
-              Showroom name
+              Tên showroom
             </label>
             <input
               id="showroom-name"
               className="min-h-12 border border-white/10 bg-surface-container-high px-3 font-sans text-sm text-on-surface outline-none transition placeholder:text-on-surface-variant/60 focus:border-primary-container/50"
               onChange={(event) => setName(event.target.value)}
-              placeholder="Showroom name"
+              placeholder="Tên showroom"
               value={name}
             />
             <button
@@ -236,7 +236,7 @@ export function HomePage() {
               type="submit"
             >
               <Plus className="h-4 w-4" />
-              Create Showroom
+              Tạo showroom
             </button>
           </form>
         </section>
@@ -249,7 +249,7 @@ export function HomePage() {
             className="inline-flex h-12 flex-1 items-center justify-center gap-2 border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-on-surface-variant"
           >
             <Play className="h-4 w-4" />
-            Resume Save
+            Tiếp tục bản lưu
           </button>
           <button
             type="button"
@@ -257,27 +257,26 @@ export function HomePage() {
             className="inline-flex h-12 flex-1 items-center justify-center gap-2 border border-white/10 bg-surface-container px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant transition hover:bg-white/5"
           >
             <HardDriveDownload className="h-4 w-4" />
-            New Showroom
+            Showroom mới
           </button>
         </div>
 
         <ConsolePanel variant="z-1" className="space-y-3">
           <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-              GUIDED TUTORIAL
+              TUTORIAL HƯỚNG DẪN
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary-container">
-              SAFE PRACTICE MODE
+              CHẾ ĐỘ THỰC HÀNH AN TOÀN
             </span>
           </div>
           <p className="text-sm leading-relaxed text-on-surface-variant">
-            If you want a walk-through instead of jumping straight into your own save, I can create a clean tutorial
-            showroom and guide you through the first customer loop step by step.
+            Nếu anh muốn đi theo hướng dẫn thay vì vào thẳng bản lưu của mình, em sẽ tạo một showroom tutorial sạch
+            và dẫn anh qua vòng khách hàng đầu tiên từng bước một.
           </p>
           <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
             <div className="rounded-none border border-white/10 bg-[#080a0d] px-3 py-2 text-[11px] leading-relaxed text-outline">
-              You&apos;ll learn the dashboard, customer requests, inventory, and quote flow without touching your
-              existing saves.
+              Anh sẽ học dashboard, yêu cầu khách hàng, kho hàng và luồng báo giá mà không chạm vào các bản lưu hiện có.
             </div>
             <ActionButton
               className="h-11 w-full sm:w-[200px]"
@@ -285,7 +284,7 @@ export function HomePage() {
               onClick={handleStartTutorial}
               title="Open tutorial demo"
             >
-              {createSave.isPending ? "PREPARING..." : "START TUTORIAL"}
+              {createSave.isPending ? "ĐANG CHUẨN BỊ..." : "BẮT ĐẦU TUTORIAL"}
             </ActionButton>
           </div>
         </ConsolePanel>

@@ -20,31 +20,31 @@ import {
   ShoppingCart,
   ShieldAlert,
   Settings,
-  Star
+  Star,
 } from "lucide-react";
 
 const navItems = [
-  { to: "/dashboard", label: "CMD", title: "Command Center", icon: LayoutDashboard },
-  { to: "/profiles", label: "PRF", title: "Security Profiles", icon: User },
-  { to: "/operations", label: "OPS", title: "Operations Board", icon: ListTree },
-  { to: "/progression", label: "UPG", title: "Upgrade Shop", icon: BadgeDollarSign },
-  { to: "/catalog", label: "CTL", title: "Product Catalog", icon: Cpu },
-  { to: "/inventory", label: "WRH", title: "Warehouse Inventory", icon: Boxes },
-  { to: "/refurbish", label: "RFB", title: "Refurbish Bench", icon: Wrench },
-  { to: "/staff", label: "STF", title: "Staff Room", icon: UserPlus2 },
-  { to: "/resale", label: "RSL", title: "Resale Market", icon: Repeat },
-  { to: "/brands", label: "BRD", title: "Brands Vault", icon: Tags },
-  { to: "/currency", label: "FX", title: "FX Exchange", icon: Coins },
-  { to: "/market", label: "MKT", title: "Market Events", icon: TrendingUp },
-  { to: "/used-market", label: "USD", title: "Used Market Bargaining", icon: ShoppingBag },
-  { to: "/suppliers", label: "SPL", title: "Supplier Desk", icon: Store },
-  { to: "/customers", label: "CST", title: "Customers Desk", icon: Users },
-  { to: "/customer-chat", label: "CHT", title: "Sales Chat Consultation", icon: MessageSquareText },
-  { to: "/quotes", label: "QTE", title: "Build Quotes", icon: FileText },
-  { to: "/orders", label: "ORD", title: "Orders & Assemblies", icon: ShoppingCart },
-  { to: "/warranty", label: "WRN", title: "Warranty RMA Desk", icon: ShieldAlert },
-  { to: "/reviews", label: "REV", title: "Reviews Feed", icon: Star },
-  { to: "/settings", label: "SYS", title: "System Settings", icon: Settings },
+  { to: "/dashboard", label: "CMD", title: "Trung tâm điều khiển", icon: LayoutDashboard },
+  { to: "/profiles", label: "PRF", title: "Hồ sơ bảo mật", icon: User },
+  { to: "/operations", label: "OPS", title: "Bảng vận hành", icon: ListTree },
+  { to: "/progression", label: "UPG", title: "Cửa hàng nâng cấp", icon: BadgeDollarSign },
+  { to: "/catalog", label: "CTL", title: "Danh mục phần cứng", icon: Cpu },
+  { to: "/inventory", label: "WRH", title: "Kho hàng", icon: Boxes },
+  { to: "/refurbish", label: "RFB", title: "Bàn tân trang", icon: Wrench },
+  { to: "/staff", label: "STF", title: "Phòng nhân sự", icon: UserPlus2 },
+  { to: "/resale", label: "RSL", title: "Chợ bán lại", icon: Repeat },
+  { to: "/brands", label: "BRD", title: "Kho thương hiệu", icon: Tags },
+  { to: "/currency", label: "FX", title: "Bàn FX", icon: Coins },
+  { to: "/market", label: "MKT", title: "Sự kiện thị trường", icon: TrendingUp },
+  { to: "/used-market", label: "USD", title: "Chợ hàng cũ", icon: ShoppingBag },
+  { to: "/suppliers", label: "SPL", title: "Quầy nhà cung cấp", icon: Store },
+  { to: "/customers", label: "CST", title: "Quầy khách hàng", icon: Users },
+  { to: "/customer-chat", label: "CHT", title: "Chat tư vấn", icon: MessageSquareText },
+  { to: "/quotes", label: "QTE", title: "Báo giá", icon: FileText },
+  { to: "/orders", label: "ORD", title: "Đơn hàng", icon: ShoppingCart },
+  { to: "/warranty", label: "WRN", title: "Bảo hành / RMA", icon: ShieldAlert },
+  { to: "/reviews", label: "REV", title: "Đánh giá", icon: Star },
+  { to: "/settings", label: "SYS", title: "Cài đặt hệ thống", icon: Settings },
 ];
 
 const mobileNavItems = [
@@ -58,18 +58,17 @@ const mobileNavItems = [
 export function Sidebar() {
   return (
     <>
-      {/* Desktop Navigation Side Bar */}
       <nav className="hidden md:flex fixed left-0 top-12 bottom-0 w-16 flex-col items-center py-panel-gap z-40 bg-surface-container-lowest/90 backdrop-blur-xl border-r border-white/10 transition-all duration-200 ease-in-out select-none">
         <div className="w-full flex flex-col items-center gap-1 mb-4 border-b border-white/10 pb-3 flex-shrink-0">
           <div className="w-8 h-8 rounded bg-surface border border-white/20 flex items-center justify-center overflow-hidden mb-1 relative">
             <span className="font-mono text-xs text-secondary-fixed-dim font-black">OP</span>
           </div>
           <div className="flex flex-col items-center text-center">
-            <span className="font-mono text-[9px] text-secondary-fixed-dim">STATION-01</span>
-            <span className="text-[7px] text-primary-container/60 font-mono tracking-wider">[ONLINE]</span>
+            <span className="font-mono text-[9px] text-secondary-fixed-dim">TRẠM-01</span>
+            <span className="text-[7px] text-primary-container/60 font-mono tracking-wider">[TRỰC TUYẾN]</span>
           </div>
         </div>
-        
+
         <div className="flex-1 w-full flex flex-col gap-1 overflow-y-auto console-scrollbar pr-[1px]">
           {navItems.map((item) => (
             <NavLink
@@ -85,15 +84,12 @@ export function Sidebar() {
               }
             >
               <item.icon className="h-[18px] w-[18px] shrink-0" />
-              <span className="font-mono text-[8px] uppercase tracking-wider">
-                {item.label}
-              </span>
+              <span className="font-mono text-[8px] uppercase tracking-wider">{item.label}</span>
             </NavLink>
           ))}
         </div>
       </nav>
 
-      {/* Mobile Bottom Navigation Tab Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-surface-container-high/90 backdrop-blur-md border-t border-white/10 flex justify-around items-center z-40 select-none pb-safe">
         {mobileNavItems.map((item) => (
           <NavLink

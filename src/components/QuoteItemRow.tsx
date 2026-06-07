@@ -32,17 +32,17 @@ export function QuoteItemRow({ item }: QuoteItemRowProps) {
             />
           </div>
           <div className="text-[10px] text-outline mt-0.5">
-            QTY: {item.quantity} // {item.notes ?? "NO NOTES"}
+            SL: {item.quantity} // {item.notes ?? "KHÔNG CÓ GHI CHÚ"}
           </div>
         </div>
       </div>
 
       <div className="flex flex-wrap md:flex-nowrap gap-4 items-center justify-between md:justify-end shrink-0 select-none">
         <div className="text-outline">
-          UNIT PRICE: <span className="font-bold text-emerald-400">₫{item.unit_price_vnd.toLocaleString()}</span>
+          GIÁ BÁN ĐƠN VỊ: <span className="font-bold text-emerald-400">₫{item.unit_price_vnd.toLocaleString()}</span>
         </div>
         <div className="text-outline">
-          UNIT COST: <span className="font-bold text-on-surface">₫{item.unit_cost_vnd.toLocaleString()}</span>
+          GIÁ VỐN ĐƠN VỊ: <span className="font-bold text-on-surface">₫{item.unit_cost_vnd.toLocaleString()}</span>
         </div>
         <div className="flex gap-1.5">
           {item.inventory_unit && (

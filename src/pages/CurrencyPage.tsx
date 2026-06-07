@@ -41,7 +41,7 @@ export function CurrencyPage() {
       );
       setCalcResult(res);
     } catch (err: unknown) {
-      setCalcError(getErrorMessage(err, "Failed to convert currency"));
+      setCalcError(getErrorMessage(err, "Không thể quy đổi tiền tệ"));
     } finally {
       setCalcLoading(false);
     }
@@ -58,7 +58,7 @@ export function CurrencyPage() {
   const supported = currenciesQuery.data || [];
   const rawRates = ratesQuery.data;
   const rates = Array.isArray(rawRates) ? rawRates : rawRates ? [rawRates] : [];
-  const attribution = attributionQuery.data?.attribution || "Exchange rates loaded from Frankfurter / ExchangeRate-API.";
+  const attribution = attributionQuery.data?.attribution || "Tỷ giá được tải từ Frankfurter / ExchangeRate-API.";
 
   const ratesCount = rates.length;
   const hasFallback = rates.some(r => r.is_fallback);
@@ -100,8 +100,8 @@ export function CurrencyPage() {
         <ConsolePanel variant="z-1" className="p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-white/5 pb-3">
             <div>
-              <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider">Live Exchange Rates to VND</h2>
-              <p className="text-[10px] font-mono text-slate-500 uppercase mt-0.5">All internal supplier contracts and quotes calculate VND conversions at intake.</p>
+              <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider">Tỷ giá trực tiếp sang VND</h2>
+              <p className="text-[10px] font-mono text-slate-500 uppercase mt-0.5">Tất cả hợp đồng nhà cung cấp và báo giá nội bộ đều quy đổi sang VND ngay từ đầu.</p>
             </div>
             <ActionButton
               onClick={handleRefreshRates}
@@ -130,14 +130,14 @@ export function CurrencyPage() {
                   
                   <div className="flex items-center gap-4">
                     <div className="text-right">
-                      <span className="block text-[8px] text-slate-500">EXCHANGE RATE</span>
+                      <span className="block text-[8px] text-slate-500">TỶ GIÁ</span>
                       <span className="block font-bold text-emerald-400">
                         {formatCurrency(rate.rate, "VND")}
                       </span>
                     </div>
 
                     <div className="text-center">
-                      <span className="block text-[8px] text-slate-500 mb-0.5 font-mono">FEED TYPE</span>
+                      <span className="block text-[8px] text-slate-500 mb-0.5 font-mono">LOẠI NGUỒN</span>
                       {rate.is_fallback ? (
                         <StatusChip label="FALLBACK RATE" variant="warning" />
                       ) : (
@@ -146,7 +146,7 @@ export function CurrencyPage() {
                     </div>
 
                     <div className="text-right hidden sm:block">
-                      <span className="block text-[8px] text-slate-500">UPDATED LOG</span>
+                      <span className="block text-[8px] text-slate-500">NHẬT KÝ CẬP NHẬT</span>
                       <span className="block text-[10px] text-slate-400">
                         {new Date(rate.fetched_at).toLocaleTimeString()}
                       </span>
@@ -168,21 +168,21 @@ export function CurrencyPage() {
             </h2>
             <form onSubmit={handleCalculate} className="space-y-4 font-mono text-xs uppercase">
               <div className="space-y-1">
-                <label className="block text-slate-500 text-[8px]">AMOUNT TO CONVERT</label>
+                <label className="block text-slate-500 text-[8px]">SỐ TIỀN CẦN QUY ĐỔI</label>
                 <input
                   type="number"
                   step="any"
                   value={calcAmount}
                   onChange={(e) => setCalcAmount(e.target.value)}
                   className="w-full h-10 rounded-none border border-white/10 bg-[#0c0e11] px-3 font-mono text-xs text-white focus:border-[#00f2ff] focus:outline-none"
-                  placeholder="E.G. 100"
+                  placeholder="VD: 100"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="block text-slate-500 text-[8px]">FROM CURRENCY</label>
+                  <label className="block text-slate-500 text-[8px]">TỪ TIỀN TỆ</label>
                   <select
                     value={calcFrom}
                     onChange={(e) => setCalcFrom(e.target.value)}
@@ -196,7 +196,7 @@ export function CurrencyPage() {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-slate-500 text-[8px]">TO CURRENCY</label>
+                  <label className="block text-slate-500 text-[8px]">SANG TIỀN TỆ</label>
                   <select
                     value={calcTo}
                     onChange={(e) => setCalcTo(e.target.value)}
@@ -212,19 +212,19 @@ export function CurrencyPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="block text-slate-500 text-[8px]">MARKUP SPREAD % (SUPPLIER FEE)</label>
+                <label className="block text-slate-500 text-[8px]">PHẦN TRĂM PHỤ PHÍ (PHÍ NHÀ CUNG CẤP)</label>
                 <input
                   type="number"
                   step="0.01"
                   value={calcSpread}
                   onChange={(e) => setCalcSpread(e.target.value)}
                   className="w-full h-10 rounded-none border border-white/10 bg-[#0c0e11] px-3 font-mono text-xs text-white focus:border-[#00f2ff] focus:outline-none"
-                  placeholder="E.G. 1.5"
+                  placeholder="VD: 1.5"
                 />
               </div>
 
               <ActionButton type="submit" disabled={calcLoading}>
-                {calcLoading ? "CALCULATING RATE..." : "CONVERT CURRENCY"}
+                {calcLoading ? "ĐANG TÍNH TỶ GIÁ..." : "QUY ĐỔI TIỀN TỆ"}
               </ActionButton>
             </form>
 

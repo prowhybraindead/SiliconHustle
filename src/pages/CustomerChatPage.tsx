@@ -28,13 +28,13 @@ import { StatusChip } from "../components/ui/StatusChip";
 import { ActionButton } from "../components/ui/ActionButton";
 
 const QUICK_ACTIONS: { action: ConversationActionType; label: string; variant: "primary" | "secondary" | "danger" }[] = [
-  { action: "ASK_BUDGET", label: "Ask Budget", variant: "secondary" },
-  { action: "ASK_USE_CASE", label: "Ask Use Case", variant: "secondary" },
-  { action: "ASK_USED_PARTS", label: "Ask Used Parts", variant: "secondary" },
-  { action: "RECOMMEND_VALUE_BUILD", label: "Recommend Value", variant: "secondary" },
-  { action: "RECOMMEND_ALL_NEW_BUILD", label: "Recommend New", variant: "secondary" },
-  { action: "EXPLAIN_WARRANTY_RISK", label: "Explain Warranty", variant: "secondary" },
-  { action: "GENERATE_QUOTE", label: "Scout Quote", variant: "primary" },
+  { action: "ASK_BUDGET", label: "Hỏi ngân sách", variant: "secondary" },
+  { action: "ASK_USE_CASE", label: "Hỏi mục đích", variant: "secondary" },
+  { action: "ASK_USED_PARTS", label: "Hỏi linh kiện cũ", variant: "secondary" },
+  { action: "RECOMMEND_VALUE_BUILD", label: "Gợi ý tối ưu", variant: "secondary" },
+  { action: "RECOMMEND_ALL_NEW_BUILD", label: "Gợi ý toàn đồ mới", variant: "secondary" },
+  { action: "EXPLAIN_WARRANTY_RISK", label: "Giải thích bảo hành", variant: "secondary" },
+  { action: "GENERATE_QUOTE", label: "Tạo báo giá", variant: "primary" },
 ];
 
 export function CustomerChatPage() {
@@ -89,7 +89,7 @@ export function CustomerChatPage() {
   }, [filteredQuotes, selectedQuoteId]);
 
   if (!saveId) {
-    return <EmptyState title="No save selected" body="Open a save before using customer chat." />;
+    return <EmptyState title="Chưa chọn bản lưu" body="Mở một bản lưu trước khi dùng chat khách hàng." />;
   }
 
   if (conversationsQuery.isLoading || requestsQuery.isLoading || quotesQuery.isLoading || staffQuery.isLoading) {
@@ -187,12 +187,12 @@ export function CustomerChatPage() {
         <aside className="space-y-4 select-none">
           <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-[10px] text-outline uppercase">ACTIVE COMMS THREADS</span>
+              <span className="text-[10px] text-outline uppercase">LUỒNG TRAO ĐỔI ĐANG MỞ</span>
               <span className="text-[9px] text-primary-container">[{conversations.length} OPEN]</span>
             </div>
             <div className="space-y-1.5 max-h-[300px] overflow-y-auto pr-1 console-scrollbar">
               {conversations.length === 0 ? (
-                <p className="text-outline/40 italic font-mono text-center p-4">NO ACTIVE COMM THREADS</p>
+                <p className="text-outline/40 italic font-mono text-center p-4">CHƯA CÓ LUỒNG TRAO ĐỔI NÀO</p>
               ) : (
                 conversations.map((conversation) => (
                   <button
@@ -226,7 +226,7 @@ export function CustomerChatPage() {
           {/* Incoming request files */}
           <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
             <div className="border-b border-white/10 pb-2">
-              <span className="text-[10px] text-outline uppercase">INCOMING WALK-IN FILES</span>
+              <span className="text-[10px] text-outline uppercase">HỒ SƠ KHÁCH GHÉ CỬA HÀNG</span>
             </div>
             <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1 console-scrollbar">
               {(requestsQuery.data ?? []).slice(0, 5).map((requestItem) => (
@@ -246,7 +246,7 @@ export function CustomerChatPage() {
                     onClick={() => openConversationForRequest(requestItem.id)}
                     title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Open or create chat")}
                   >
-                    {requestItem.conversation_id ? "OPEN CHAT LINK" : "ESTABLISH LINK"}
+                    {requestItem.conversation_id ? "MỞ LIÊN KẾT CHAT" : "TẠO LIÊN KẾT"}
                   </ActionButton>
                 </div>
               ))}
@@ -265,7 +265,7 @@ export function CustomerChatPage() {
                   className={`flex flex-col h-[650px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                 >
                   <div className="flex justify-between items-center border-b border-white/10 pb-2 mb-3 select-none">
-                    <span className="font-mono text-[10px] uppercase text-outline">COMMUNICATION TRANSCRIPT</span>
+                    <span className="font-mono text-[10px] uppercase text-outline">BIÊN BẢN TRAO ĐỔI</span>
                     <span className="font-mono text-[9px] text-[#00f2ff]">
                       [{(conversationMessagesQuery.data ?? selectedConversation.messages ?? []).length} LOG ENTRIES]
                     </span>
@@ -312,7 +312,7 @@ export function CustomerChatPage() {
                           tutorialMode && tutorialStep >= 3,
                         )}`}
                         onChange={(event) => setDraft(event.target.value)}
-                        placeholder="INPUT CUSTOMER COMMUNICATOR SPEECH INSTRUCTIONS..."
+                        placeholder="NHẬP HƯỚNG DẪN NỘI DUNG GIAO TIẾP VỚI KHÁCH..."
                         value={draft}
                       />
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -321,36 +321,36 @@ export function CustomerChatPage() {
                           className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={sendMessage.isPending || draft.trim().length === 0}
                           onClick={() => handleSendMessage()}
-                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Send message")}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Gửi tin nhắn")}
                         >
-                          SEND MESSAGE
+                          GỬI TIN NHẮN
                         </ActionButton>
                         <ActionButton
                           variant="secondary"
                           className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={readyToOrder.isPending}
                           onClick={() => handleReadyToOrder()}
-                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Mark ready")}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Đánh dấu sẵn sàng")}
                         >
-                          READY TO ORDER
+                          SẴN SÀNG ĐẶT HÀNG
                         </ActionButton>
                         <ActionButton
                           variant="secondary"
                           className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={closeConversation.isPending}
                           onClick={() => handleClose(true)}
-                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Close won")}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Đóng và thắng")}
                         >
-                          CLOSE WON
+                          ĐÓNG - THẮNG
                         </ActionButton>
                         <ActionButton
                           variant="danger"
                           className={`h-8 text-[10px] ${tutorialHighlight(tutorialMode && tutorialStep >= 3)}`}
                           disabled={closeConversation.isPending}
                           onClick={() => handleClose(false)}
-                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Close lost")}
+                          title={tutorialTooltip(tutorialMode && tutorialStep >= 3, "Đóng và thua")}
                         >
-                          CLOSE LOST
+                          ĐÓNG - THUA
                         </ActionButton>
                       </div>
                     </div>
@@ -363,19 +363,19 @@ export function CustomerChatPage() {
                 {/* Dossier info */}
                 <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
                   <div className="border-b border-white/10 pb-2 select-none">
-                    <span className="text-[10px] text-outline uppercase">CLIENT DOSSIER</span>
+                    <span className="text-[10px] text-outline uppercase">HỒ SƠ KHÁCH HÀNG</span>
                   </div>
                   <div className="space-y-1.5">
                     <div className="flex justify-between bg-[#080a0d] border border-white/5 p-2 items-center">
-                      <span className="text-[9px] text-outline">PERSONA</span>
+                      <span className="text-[9px] text-outline">CHÂN DUNG</span>
                       <span className="font-bold text-[#00f2ff] uppercase">{selectedConversation.persona_type ?? "GENERIC"}</span>
                     </div>
                     <div className="flex justify-between bg-[#080a0d] border border-white/5 p-2 items-center">
-                      <span className="text-[9px] text-outline">MOOD STATUS</span>
+                      <span className="text-[9px] text-outline">TÂM TRẠNG</span>
                       <span className="font-bold text-on-surface uppercase">{selectedConversation.customer_mood ?? "neutral"}</span>
                     </div>
                     <div className="flex justify-between bg-[#080a0d] border border-white/5 p-2 items-center">
-                      <span className="text-[9px] text-outline">USED PARTS</span>
+                      <span className="text-[9px] text-outline">LINH KIỆN CŨ</span>
                       <span className="font-bold text-on-surface">
                         {selectedConversation.accepts_used_parts === null
                           ? "UNKNOWN"
@@ -385,13 +385,13 @@ export function CustomerChatPage() {
                       </span>
                     </div>
                     <div className="flex justify-between bg-[#080a0d] border border-white/5 p-2 items-center">
-                      <span className="text-[9px] text-outline">MAX BUDGET</span>
+                      <span className="text-[9px] text-outline">NGÂN SÁCH TỐI ĐA</span>
                       <span className="font-bold text-emerald-400">
                         ₫{Number(selectedConversation.detected_budget_vnd ?? request?.budget_vnd ?? 0).toLocaleString()}
                       </span>
                     </div>
                     <div className="flex flex-col bg-[#080a0d] border border-white/5 p-2">
-                      <span className="text-[9px] text-outline">USE CASE ANALYSIS</span>
+                      <span className="text-[9px] text-outline">PHÂN TÍCH MỤC ĐÍCH</span>
                       <span className="text-[10px] text-on-surface mt-1 leading-snug">
                         {selectedConversation.detected_use_case ?? request?.use_case ?? "N/A"}
                       </span>
@@ -409,11 +409,11 @@ export function CustomerChatPage() {
                 {/* Intent preference logs */}
                 <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px] select-none">
                   <div className="border-b border-white/10 pb-2">
-                    <span className="text-[10px] text-outline uppercase">INTENT PARSER LOG</span>
+                    <span className="text-[10px] text-outline uppercase">NHẬT KÝ PHÂN TÍCH Ý ĐỊNH</span>
                   </div>
                   <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1 console-scrollbar">
                     {intentEntries(selectedConversation.detected_preferences_json).length === 0 ? (
-                      <div className="text-[9px] text-outline/40 italic p-2 text-center">AWAITING PREFERENCE EXTRACTION</div>
+                      <div className="text-[9px] text-outline/40 italic p-2 text-center">ĐANG CHỜ TRÍCH XUẤT SỞ THÍCH</div>
                     ) : (
                       intentEntries(selectedConversation.detected_preferences_json).map(([key, value]) => (
                         <div key={key} className="flex items-center justify-between gap-3 bg-[#080a0d] border border-white/5 px-2.5 py-1.5">
@@ -428,7 +428,7 @@ export function CustomerChatPage() {
                 {/* Staff assigner */}
                 <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
                   <div className="border-b border-white/10 pb-2 select-none">
-                    <span className="text-[10px] text-outline uppercase">STAFF ASSIGNMENT</span>
+                    <span className="text-[10px] text-outline uppercase">PHÂN CÔNG NHÂN SỰ</span>
                   </div>
                   <div className="space-y-2">
                     <select
@@ -439,7 +439,7 @@ export function CustomerChatPage() {
                       }}
                       value={selectedConversation.assigned_staff_id ?? ""}
                     >
-                      <option value="">Assign staff...</option>
+                      <option value="">Phân công nhân sự...</option>
                       {(staffQuery.data ?? []).map((staff) => (
                         <option key={staff.id} value={staff.id}>
                           {staff.name} - {staff.role}
@@ -457,7 +457,7 @@ export function CustomerChatPage() {
                 {/* Quote Attachments selector and sender */}
                 <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
                   <div className="border-b border-white/10 pb-2 select-none">
-                    <span className="text-[10px] text-outline uppercase">QUOTE PROPOSAL ATTACHMENT</span>
+                    <span className="text-[10px] text-outline uppercase">ĐÍNH KÈM BÁO GIÁ</span>
                   </div>
                   {filteredQuotes.length === 0 ? (
                     <p className="text-[9px] text-outline/50 italic text-center p-3 bg-[#080a0d] border border-white/5">

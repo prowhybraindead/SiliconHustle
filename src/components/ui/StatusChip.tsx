@@ -1,4 +1,5 @@
 import React from "react";
+import { translateUiText } from "../../utils/format";
 
 interface StatusChipProps extends React.HTMLAttributes<HTMLSpanElement> {
   label: string;
@@ -26,7 +27,7 @@ export function StatusChip({
       className={`inline-flex items-center justify-center font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 border rounded-sm ${colors} ${className}`}
       {...props}
     >
-      [{label}]
+      [{translateUiText(label)}]
     </span>
   );
 }

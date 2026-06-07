@@ -180,17 +180,17 @@ export function AppLayout() {
             </h1>
             <div className="mt-2 flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.18em] text-on-surface-variant">
               <span className="inline-block h-2 w-2 rounded-full bg-secondary-fixed-dim animate-pulse" />
-              SYSTEM SECURE // AWAITING AUTHORIZATION
+              HỆ THỐNG AN TOÀN // ĐANG CHỜ XÁC THỰC
             </div>
           </header>
 
           <section className="overflow-hidden border border-white/10 bg-surface-container-high">
             <div className="flex items-center justify-between border-b border-white/10 bg-surface-container-highest px-4 py-2">
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-outline">
-                TARGET PROFILE
+                HỒ SƠ MỤC TIÊU
               </span>
               <span className="rounded-sm border border-primary-container/30 bg-primary-container/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary-container">
-                [LOCKED]
+                [ĐÃ KHÓA]
               </span>
             </div>
 
@@ -310,14 +310,14 @@ export function AppLayout() {
               disabled={unlockMutation.isPending || lockoutTime !== null}
               className="inline-flex h-12 flex-1 items-center justify-center border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:border-white/10 disabled:text-on-surface-variant"
             >
-              {unlockMutation.isPending ? "RESUMING..." : lockoutTime !== null ? `LOCKED (${lockoutTime}s)` : "RESUME SAVE"}
+              {unlockMutation.isPending ? "ĐANG TIẾP TỤC..." : lockoutTime !== null ? `ĐÃ KHÓA (${lockoutTime}s)` : "TIẾP TỤC BẢN LƯU"}
             </button>
             <button
               type="button"
               onClick={handleExitSave}
               className="inline-flex h-12 flex-1 items-center justify-center border border-white/10 bg-surface-container px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-on-surface-variant transition hover:bg-white/5"
             >
-              NEW SHOWROOM
+              SHOWROOM MỚI
             </button>
           </div>
 
@@ -328,7 +328,7 @@ export function AppLayout() {
             title="Open tutorial demo"
             className="inline-flex h-12 w-full items-center justify-center gap-2 border border-primary-container bg-surface px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-primary-container transition hover:bg-primary-container/10 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {createSave.isPending ? "PREPARING TUTORIAL..." : "GUIDED TUTORIAL"}
+            {createSave.isPending ? "ĐANG CHUẨN BỊ TUTORIAL..." : "TUTORIAL HƯỚNG DẪN"}
           </button>
         </main>
       </div>

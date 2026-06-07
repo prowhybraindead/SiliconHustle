@@ -1,4 +1,5 @@
 import React from "react";
+import { translateUiText } from "../../utils/format";
 
 interface SectionHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -24,7 +25,7 @@ export function SectionHeader({
         </h1>
         {subtitle && (
           <p className="font-mono text-[10px] uppercase tracking-wider text-outline mt-1">
-            {subtitle}
+            {translateUiText(subtitle)}
           </p>
         )}
       </div>

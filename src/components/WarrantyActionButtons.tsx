@@ -43,7 +43,7 @@ export function WarrantyActionButtons({
           onClick={() => onReview(claim.id)}
         >
           <Check className="h-3.5 w-3.5 text-primary-container" />
-          REVIEW CLAIM
+          XEM XÉT YÊU CẦU
         </ActionButton>
         <ActionButton
           variant="primary"
@@ -52,7 +52,7 @@ export function WarrantyActionButtons({
           onClick={() => onStartDiagnosis(claim.id)}
         >
           <Search className="h-3.5 w-3.5 text-on-primary-fixed" />
-          DIAGNOSE
+          CHẨN ĐOÁN
         </ActionButton>
       </div>
     );
@@ -67,7 +67,7 @@ export function WarrantyActionButtons({
         onClick={() => onCompleteDiagnosis(claim.id)}
       >
         <ClipboardCheck className="h-3.5 w-3.5 text-on-primary-fixed" />
-        COMPLETE DIAGNOSIS
+        HOÀN TẤT CHẨN ĐOÁN
       </ActionButton>
     );
   }
@@ -82,7 +82,7 @@ export function WarrantyActionButtons({
           onClick={() => onApprove(claim.id)}
         >
           <Check className="h-3.5 w-3.5 text-on-primary-fixed" />
-          APPROVE CLAIM
+          DUYỆT YÊU CẦU
         </ActionButton>
         <ActionButton
           variant="danger"
@@ -91,7 +91,7 @@ export function WarrantyActionButtons({
           onClick={() => onReject(claim.id)}
         >
           <ShieldX className="h-3.5 w-3.5 text-rose-300" />
-          REJECT CLAIM
+          TỪ CHỐI YÊU CẦU
         </ActionButton>
       </div>
     );
@@ -107,7 +107,7 @@ export function WarrantyActionButtons({
           onClick={() => onResolve(claim.id, "REPAIR")}
         >
           <Wrench className="h-3.5 w-3.5 text-on-primary-fixed" />
-          REPAIR
+          SỬA CHỮA
         </ActionButton>
         <ActionButton
           variant="secondary"
@@ -116,7 +116,7 @@ export function WarrantyActionButtons({
           onClick={() => onResolve(claim.id, "REPLACE")}
         >
           <PackageCheck className="h-3.5 w-3.5 text-primary-container" />
-          REPLACE
+          THAY THẾ
         </ActionButton>
         <ActionButton
           variant="secondary"
@@ -125,7 +125,7 @@ export function WarrantyActionButtons({
           onClick={() => onResolve(claim.id, "REFUND")}
         >
           <BadgeDollarSign className="h-3.5 w-3.5 text-[#ffba20]" />
-          REFUND
+          HOÀN TIỀN
         </ActionButton>
         <ActionButton
           variant="danger"
@@ -134,7 +134,7 @@ export function WarrantyActionButtons({
           onClick={() => onResolve(claim.id, "REJECT")}
         >
           <ShieldX className="h-3.5 w-3.5 text-rose-300" />
-          REJECT
+          TỪ CHỐI
         </ActionButton>
         <ActionButton
           variant="secondary"
@@ -143,7 +143,7 @@ export function WarrantyActionButtons({
           onClick={() => onResolve(claim.id, "GOODWILL_CREDIT")}
         >
           <BadgeDollarSign className="h-3.5 w-3.5 text-primary-container" />
-          GOODWILL
+          THIỆN CHÍ
         </ActionButton>
         <ActionButton
           variant="secondary"
@@ -165,16 +165,16 @@ export function WarrantyActionButtons({
         className="!h-9 !w-auto !px-3 font-mono text-[10px]"
         disabled={isBusy}
         onClick={() => onClose(claim.id)}
-      >
-        <X className="h-3.5 w-3.5 text-on-primary-fixed" />
-        CLOSE CLAIM
+        >
+          <X className="h-3.5 w-3.5 text-on-primary-fixed" />
+        ĐÓNG YÊU CẦU
       </ActionButton>
     );
   }
   
   return (
     <span className="inline-flex items-center justify-center font-mono text-[10px] font-bold uppercase tracking-wider px-3 h-9 border border-white/10 bg-white/5 text-slate-400">
-      [RESOLVED]
+      [ĐÃ XỬ LÝ]
     </span>
   );
 }

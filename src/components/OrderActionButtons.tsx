@@ -15,7 +15,7 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
   if (order.status === "DELIVERED") {
     return (
       <div className="font-mono text-[9px] text-[#00f2ff] border border-[#00f2ff]/20 bg-[#00f2ff]/5 px-2.5 py-1 uppercase font-bold tracking-wider select-none">
-        DELIVERED
+        ĐÃ GIAO
       </div>
     );
   }
@@ -29,7 +29,7 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
         onClick={() => onStartBuild(order.id)}
       >
         <Play className="h-3 w-3" />
-        START BUILD
+        BẮT ĐẦU LẮP RÁP
       </ActionButton>
     );
   }
@@ -43,7 +43,7 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
         onClick={() => onRunBuildTest(order.id)}
       >
         <TestTube2 className="h-3 w-3" />
-        RUN BUILD TEST
+        CHẠY KIỂM TRA LẮP RÁP
       </ActionButton>
     );
   }
@@ -57,10 +57,10 @@ export function OrderActionButtons({ order, isBusy, onStartBuild, onRunBuildTest
         onClick={() => onDeliver(order.id)}
       >
         <PackageCheck className="h-3 w-3" />
-        DELIVER
+        GIAO HÀNG
       </ActionButton>
     );
   }
 
-  return <span className="font-mono text-[9px] text-outline/30 uppercase select-none">NO ACTION</span>;
+  return <span className="font-mono text-[9px] text-outline/30 uppercase select-none">KHÔNG CÓ HÀNH ĐỘNG</span>;
 }

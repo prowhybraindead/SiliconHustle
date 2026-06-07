@@ -1,4 +1,5 @@
 import React from "react";
+import { translateUiText } from "../../utils/format";
 
 interface MetricPillProps extends React.HTMLAttributes<HTMLDivElement> {
   label: string;
@@ -18,7 +19,7 @@ export function MetricPill({
       {...props}
     >
       <span className="font-mono text-[9px] uppercase tracking-wider text-outline mb-1">
-        {label}
+        {translateUiText(label)}
       </span>
       <span className="font-mono text-sm font-bold text-primary-fixed-dim">
         {value}

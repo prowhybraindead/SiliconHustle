@@ -1,3 +1,5 @@
+import { translateUiText } from "../utils/format";
+
 interface EmptyStateProps {
   title: string;
   body: string;
@@ -6,8 +8,8 @@ interface EmptyStateProps {
 export function EmptyState({ title, body }: EmptyStateProps) {
   return (
     <div className="panel rounded-lg p-8 text-center">
-      <h3 className="font-semibold text-slate-100">{title}</h3>
-      <p className="mt-2 text-sm text-slate-400">{body}</p>
+      <h3 className="font-semibold text-slate-100">{translateUiText(title)}</h3>
+      <p className="mt-2 text-sm text-slate-400">{translateUiText(body)}</p>
     </div>
   );
 }
