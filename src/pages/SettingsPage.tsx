@@ -4,7 +4,7 @@ import { Terminal, Shield, CheckCircle, Copy, AlertTriangle, HardDrive, RefreshC
 import { apiBaseUrl } from "../api/client";
 import { useSaveGames, usePlayerProfiles, useLockPlayerProfile } from "../api/hooks";
 import { useGameStore } from "../store/gameStore";
-import { formatVnd } from "../utils/format";
+import { formatVnd, translateUiText } from "../utils/format";
 
 import { ConsolePanel } from "../components/ui/ConsolePanel";
 import { StatusChip } from "../components/ui/StatusChip";
@@ -105,7 +105,7 @@ export function SettingsPage() {
       {/* Header and Telemetry */}
       <ConsolePanel variant="z-1" className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <SectionHeader title="Systems Panel" subtitle="CORE OPTIONS // SAVE DIAGNOSTICS" />
+          <SectionHeader title={translateUiText("Systems Panel")} subtitle={translateUiText("CORE OPTIONS // SAVE DIAGNOSTICS")} />
           <div className="font-mono text-[10px] text-slate-500 mt-1 uppercase">
             STATUS: <span className="text-[#00f2ff] font-bold">SYSTEM STABLE</span> // AUTOSAVE: ENABLED
           </div>
@@ -113,15 +113,15 @@ export function SettingsPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[10px] uppercase shrink-0">
           <div className="bg-[#0c0e11] border border-white/5 p-2 rounded-sm text-center">
-            <span className="text-slate-500 text-[8px] block tracking-wider">SAVE STATE</span>
+            <span className="text-slate-500 text-[8px] block tracking-wider">{translateUiText("SAVE STATE")}</span>
             <span className="text-white font-bold text-xs">{selectedSaveId ? "ACTIVE" : "NONE"}</span>
           </div>
           <div className="bg-[#0c0e11] border border-white/5 p-2 rounded-sm text-center">
-            <span className="text-slate-500 text-[8px] block tracking-wider">PROFILE LOCK</span>
+            <span className="text-slate-500 text-[8px] block tracking-wider">{translateUiText("PROFILE LOCK")}</span>
             <span className="text-[#00f2ff] font-bold text-xs">{selectedProfile?.pin_enabled ? "ENABLED" : "OFF"}</span>
           </div>
           <div className="bg-[#0c0e11] border border-white/5 p-2 rounded-sm text-center">
-            <span className="text-slate-500 text-[8px] block tracking-wider">BACKEND HEALTH</span>
+            <span className="text-slate-500 text-[8px] block tracking-wider">{translateUiText("BACKEND HEALTH")}</span>
             <span className="text-emerald-400 font-bold text-xs">ONLINE</span>
           </div>
           <div className="bg-[#0c0e11] border border-white/5 p-2 rounded-sm text-center">
@@ -170,36 +170,36 @@ export function SettingsPage() {
           <ConsolePanel variant="z-1" className="p-5 space-y-4">
             <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider border-b border-white/5 pb-2 flex items-center gap-1.5">
               <HardDrive className="h-4 w-4 text-[#00f2ff]" />
-              Active Save Game Configuration
+              {translateUiText("Active Save Game Configuration")}
             </h2>
 
             {currentSave ? (
               <div className="space-y-4 font-mono text-xs uppercase">
                 <div className="grid grid-cols-2 gap-2 bg-[#0c0e11] border border-white/5 p-3 rounded-none">
                   <div>
-                    <span className="text-slate-500 text-[8px] block">SHOWROOM NAME</span>
+                    <span className="text-slate-500 text-[8px] block">{translateUiText("SHOWROOM NAME")}</span>
                     <span className="font-bold text-white text-sm">{currentSave.name}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 text-[8px] block">SAVE DIRECTORY INDEX</span>
+                    <span className="text-slate-500 text-[8px] block">{translateUiText("SAVE DIRECTORY INDEX")}</span>
                     <span className="font-bold text-slate-300">ID #{currentSave.id}</span>
                   </div>
                   <div className="mt-2">
-                    <span className="text-slate-500 text-[8px] block">CURRENT CYCLE</span>
+                    <span className="text-slate-500 text-[8px] block">{translateUiText("CURRENT CYCLE")}</span>
                     <span className="font-bold text-[#ffba20]">DAY {currentSave.game_day}</span>
                   </div>
                   <div className="mt-2">
-                    <span className="text-slate-500 text-[8px] block">REPUTATION LEVEL</span>
+                    <span className="text-slate-500 text-[8px] block">{translateUiText("REPUTATION LEVEL")}</span>
                     <span className="font-bold text-emerald-400">{currentSave.reputation} REP</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <ActionButton onClick={handleSaveNow}>
-                    SAVE NOW
+                    {translateUiText("SAVE NOW")}
                   </ActionButton>
                   <ActionButton variant="secondary" onClick={handleExport}>
-                    EXPORT METADATA
+                    {translateUiText("EXPORT METADATA")}
                   </ActionButton>
                 </div>
 
@@ -225,17 +225,17 @@ export function SettingsPage() {
           <ConsolePanel variant="z-1" className="p-5 space-y-4">
             <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider border-b border-white/5 pb-2 flex items-center gap-1.5">
               <Shield className="h-4 w-4 text-[#00f2ff]" />
-              PIN Lock & Access Security
+              {translateUiText("PIN Lock & Access Security")}
             </h2>
 
             <div className="font-mono text-xs uppercase space-y-3">
               <div className="bg-[#0c0e11] border border-white/5 p-3 rounded-none space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">ASSIGNED PROFILE:</span>
+                  <span className="text-slate-500">{translateUiText("ASSIGNED PROFILE")}:</span>
                   <span className="text-white font-bold">{selectedProfile?.display_name ?? "NONE"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">PIN STATUS:</span>
+                  <span className="text-slate-500">{translateUiText("PIN STATUS")}:</span>
                   <span>
                     {selectedProfile ? (
                       selectedProfile.pin_enabled ? (
@@ -250,7 +250,7 @@ export function SettingsPage() {
                 </div>
                 {activeToken && (
                   <div className="flex justify-between text-[10px] text-emerald-400">
-                    <span>VERIFIED SESSION TOKEN:</span>
+                    <span>{translateUiText("VERIFIED SESSION TOKEN")}:</span>
                     <span>ACTIVE</span>
                   </div>
                 )}
@@ -259,12 +259,12 @@ export function SettingsPage() {
               <div className="flex gap-2">
                 {activeToken && selectedProfile && (
                   <ActionButton variant="danger" className="flex-1" onClick={handleLockProfile}>
-                    REVOKE LOCK SESSION
+                    {translateUiText("REVOKE LOCK SESSION")}
                   </ActionButton>
                 )}
                 <Link className="flex-1" to="/profiles">
                   <ActionButton variant="secondary">
-                    PROFILES SETTINGS
+                    {translateUiText("PROFILES SETTINGS")}
                   </ActionButton>
                 </Link>
               </div>
@@ -275,13 +275,13 @@ export function SettingsPage() {
           <ConsolePanel variant="z-1" className="p-5 border-glow-amber bg-yellow-500/[0.02] space-y-3">
             <h2 className="text-xs font-bold font-mono text-[#ffba20] uppercase tracking-wider flex items-center gap-1.5">
               <AlertTriangle className="h-4 w-4 text-[#ffba20]" />
-              DANGEROUS OPERATIONS ZONE
+              {translateUiText("DANGEROUS OPERATIONS ZONE")}
             </h2>
             <p className="font-mono text-[10px] text-slate-400 uppercase leading-relaxed">
               DESTRUCTIVE COLD RESETS RESCIND PROFILE LOCKS AND FLUSH ACTIVE DATABASE LOGS. COLD CLEARS ARE DISABLED IN THIS WORKSPACE DIRECTORY TO PREVENT ACCIDENTAL LOSS.
             </p>
             <ActionButton variant="secondary" className="!h-9 cursor-not-allowed border-white/10 text-slate-500" disabled>
-              RESET SYSTEMS COLD [LOCKED]
+              {translateUiText("RESET SYSTEMS COLD [LOCKED]")}
             </ActionButton>
           </ConsolePanel>
         </div>
@@ -292,7 +292,7 @@ export function SettingsPage() {
             <div className="flex items-center justify-between border-b border-white/5 pb-2">
               <h2 className="text-xs font-bold font-mono text-white uppercase tracking-wider flex items-center gap-1.5">
                 <Terminal className="h-4 w-4 text-[#00f2ff]" />
-                Diagnostics & Connection Logs
+                {translateUiText("Diagnostics & Connection Logs")}
               </h2>
               <ActionButton
                 className="!h-8 !w-auto !px-3 font-mono text-[10px]"
@@ -300,7 +300,7 @@ export function SettingsPage() {
                 disabled={diagnosticsRunning}
               >
                 <RefreshCw className={`h-3 w-3 ${diagnosticsRunning ? "animate-spin" : ""}`} />
-                RUN TESTS
+                {translateUiText("RUN TESTS")}
               </ActionButton>
             </div>
 
@@ -319,7 +319,7 @@ export function SettingsPage() {
             </div>
 
             <div className="bg-white/[0.01] border border-white/5 p-3 font-mono text-[10px] text-slate-400 uppercase leading-relaxed">
-              <span className="font-bold text-white block mb-0.5">LOCAL SYNC ARCHITECTURE NOTICE</span>
+              <span className="font-bold text-white block mb-0.5">{translateUiText("LOCAL SYNC ARCHITECTURE NOTICE")}</span>
               Save states are synchronized automatically to SQLite databases and local browsers. Reloading the browser session recovers from the latest cached cycle.
             </div>
           </ConsolePanel>

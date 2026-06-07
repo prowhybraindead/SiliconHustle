@@ -12,7 +12,7 @@ import { EmptyState } from "../components/EmptyState";
 import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import { useGameStore } from "../store/gameStore";
-import { formatVnd } from "../utils/format";
+import { formatVnd, translateUiText } from "../utils/format";
 import type { CustomerRequest } from "../types/game";
 
 import { ConsolePanel } from "../components/ui/ConsolePanel";
@@ -51,10 +51,10 @@ export function CustomersPage() {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2 select-none">
         <div>
           <span className="font-mono text-[10px] text-primary-container tracking-widest uppercase block mb-1">
-            STATION_04 // SHOWROOM FRONT COUNTER
+            {translateUiText("STATION_04 // SHOWROOM FRONT COUNTER")}
           </span>
           <h1 className="font-sans text-2xl font-black text-on-surface uppercase tracking-tighter">
-            Walk-in Requests Registry
+            {translateUiText("Walk-in Requests Registry")}
           </h1>
         </div>
         <div>
@@ -65,7 +65,7 @@ export function CustomersPage() {
             onClick={() => generateCustomer.mutate()}
             title={tutorialTooltip(tutorialMode && tutorialStep <= 1, "Generate sample walk-in")}
           >
-            GENERATE WALK-IN SAMPLE
+            {translateUiText("GENERATE WALK-IN SAMPLE")}
           </ActionButton>
         </div>
       </div>
@@ -101,19 +101,19 @@ export function CustomersPage() {
                 {/* Details layout rows */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#080a0d] border border-white/5 p-3">
                   <div>
-                    <span className="text-[9px] text-outline block">ACQUISITION VERB // USE CASE</span>
+                    <span className="text-[9px] text-outline block">{translateUiText("ACQUISITION VERB // USE CASE")}</span>
                     <span className="text-on-surface block mt-0.5">
                       {request.request_type} // {request.use_case}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[9px] text-outline block">TARGET BUDGET</span>
+                    <span className="text-[9px] text-outline block">{translateUiText("TARGET BUDGET")}</span>
                     <span className="text-emerald-400 font-bold block mt-0.5">
                       {formatVnd(request.budget_vnd)}
                     </span>
                   </div>
                   <div>
-                    <span className="text-[9px] text-outline block">WAR ROOM DIAGNOSTICS</span>
+                    <span className="text-[9px] text-outline block">{translateUiText("WAR ROOM DIAGNOSTICS")}</span>
                     <span className="text-on-surface block mt-0.5 text-[10px]">
                       KNOW: {request.customer.knowledge_level} // NEG: {request.customer.negotiation_score} // RISK: {request.customer.risk_tolerance}
                     </span>
@@ -123,7 +123,7 @@ export function CustomersPage() {
                 {/* Badges strip */}
                 <div className="flex flex-wrap gap-1.5 items-center">
                   <span className={`px-1.5 py-0.5 border text-[9px] ${request.accepts_used_parts ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-400" : "border-white/10 text-outline"}`}>
-                    {request.accepts_used_parts ? "USED_PARTS_OK" : "NEW_PARTS_ONLY"}
+                    {request.accepts_used_parts ? translateUiText("USED_PARTS_OK") : translateUiText("NEW_PARTS_ONLY")}
                   </span>
                   <span className="border border-white/10 bg-white/[0.03] px-1.5 py-0.5 text-[9px] text-outline">
                     WARRANTY: {request.warranty_expectation_days ?? 30} DAYS
@@ -158,7 +158,7 @@ export function CustomersPage() {
                   onClick={() => handleGenerateQuote(request.id)}
                   title={tutorialTooltip(tutorialMode && tutorialStep >= 2, "Generate quote from this request")}
                 >
-                  SCOUT QUOTE
+                  {translateUiText("SCOUT QUOTE")}
                 </ActionButton>
                   <ActionButton
                     className={`h-8 text-[9px] flex-1 lg:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 2)}`}
@@ -167,7 +167,7 @@ export function CustomersPage() {
                     onClick={() => handleOpenChat(request)}
                     title={tutorialTooltip(tutorialMode && tutorialStep >= 2, "Open customer chat")}
                   >
-                  OPEN CHAT DESK
+                    {translateUiText("OPEN CHAT DESK")}
                   </ActionButton>
                   <ActionButton
                     className={`h-8 text-[9px] flex-1 lg:flex-none ${tutorialHighlight(tutorialMode && tutorialStep >= 2)}`}
@@ -176,7 +176,7 @@ export function CustomersPage() {
                     onClick={() => evaluateQuotes.mutate(request.id)}
                     title={tutorialTooltip(tutorialMode && tutorialStep >= 2, "Re-score fit")}
                   >
-                  RE-SCORE FIT
+                    {translateUiText("RE-SCORE FIT")}
                 </ActionButton>
               </div>
             </div>

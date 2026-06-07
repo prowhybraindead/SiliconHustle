@@ -6,6 +6,7 @@ import { ErrorState } from "../components/ErrorState";
 import { LoadingState } from "../components/LoadingState";
 import { useGameStore } from "../store/gameStore";
 import type { ExchangeRate } from "../types/game";
+import { translateUiText } from "../utils/format";
 
 import { ConsolePanel } from "../components/ui/ConsolePanel";
 import { MetricPill } from "../components/ui/MetricPill";
@@ -62,7 +63,7 @@ export function DashboardPage() {
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-2 select-none">
         <div>
           <span className="font-mono text-[10px] text-primary-container tracking-widest uppercase block mb-1">
-            SHOWROOM COMMAND CENTER // SYSTEM ONLINE
+            {translateUiText("SHOWROOM COMMAND CENTER // SYSTEM ONLINE")}
           </span>
           <h1 className="font-sans text-2xl font-black text-on-surface uppercase tracking-tighter">
             {dashboard.save_game.name}
@@ -75,46 +76,46 @@ export function DashboardPage() {
 
       {/* Persistent Status Strip Telemetry */}
       <div className="grid gap-2 grid-cols-2 lg:grid-cols-4">
-        <MetricPill label="FUNDS TELEMETRY" value={`₫${dashboard.cash.toLocaleString()}`} />
-        <MetricPill label="SHOWROOM REPUTATION" value={`${dashboard.reputation}%`} />
+        <MetricPill label={translateUiText("FUNDS TELEMETRY")} value={`₫${dashboard.cash.toLocaleString()}`} />
+        <MetricPill label={translateUiText("SHOWROOM REPUTATION")} value={`${dashboard.reputation}%`} />
         <MetricPill
-          label="ESTIMATED PENDING REV"
+          label={translateUiText("ESTIMATED PENDING REV")}
           value={`₫${(dashboard.order_fulfillment_summary.estimated_pending_revenue ?? 0).toLocaleString()}`}
         />
-        <MetricPill label="ACTIVE RMA CLAIMS" value={dashboard.warranty_summary.open_warranty_claims ?? 0} />
+        <MetricPill label={translateUiText("ACTIVE RMA CLAIMS")} value={dashboard.warranty_summary.open_warranty_claims ?? 0} />
       </div>
 
       {/* Facility Progression panel */}
       {progression.data && (
         <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
           <div className="flex justify-between items-center border-b border-white/10 pb-2">
-            <span className="text-[10px] uppercase text-outline">FACILITY PROGRESSION LOG</span>
+            <span className="text-[10px] uppercase text-outline">{translateUiText("FACILITY PROGRESSION LOG")}</span>
             <Link to="/progression" className="text-[10px] text-primary-container hover:underline">
               [UPGRADES]
             </Link>
           </div>
           <div className="grid gap-2 grid-cols-2 lg:grid-cols-4">
             <div className="bg-[#090b0e] border border-white/5 p-2">
-              <span className="text-[9px] text-outline block">OPERATIONS LEVEL</span>
+              <span className="text-[9px] text-outline block">{translateUiText("OPERATIONS LEVEL")}</span>
               <span className="text-sm font-bold text-on-surface">LVL {progression.data.shop_level}</span>
             </div>
             <div className="bg-[#090b0e] border border-white/5 p-2">
-              <span className="text-[9px] text-outline block">ACCUMULATED XP</span>
+              <span className="text-[9px] text-outline block">{translateUiText("ACCUMULATED XP")}</span>
               <span className="text-sm font-bold text-on-surface">{progression.data.shop_xp} XP</span>
             </div>
             <div className="bg-[#090b0e] border border-white/5 p-2">
-              <span className="text-[9px] text-outline block">ACQUIRED UPGRADES</span>
+              <span className="text-[9px] text-outline block">{translateUiText("ACQUIRED UPGRADES")}</span>
               <span className="text-sm font-bold text-[#00f2ff]">{Number(progressionSummary.purchased_upgrades_count ?? 0)} modules</span>
             </div>
             <div className="bg-[#090b0e] border border-white/5 p-2">
-              <span className="text-[9px] text-outline block">INVENTORY CAPACITY</span>
+              <span className="text-[9px] text-outline block">{translateUiText("INVENTORY CAPACITY")}</span>
               <span className="text-sm font-bold text-[#ffba20]">
                 {dashboard.inventory_summary.total ?? 0} / {capacitySummary.total_capacity ?? 50} units
               </span>
             </div>
           </div>
           <div className="bg-[#080a0d] border border-white/5 p-2 text-[10px] text-outline">
-            <span className="text-outline/40">RECOMMENDED FACILITY DEPLOYMENT: </span>
+            <span className="text-outline/40">{translateUiText("RECOMMENDED FACILITY DEPLOYMENT")}: </span>
             <span className="font-bold text-on-surface uppercase">
               {String(progressionSummary.next_recommended_upgrade_title ?? "None detected")}
             </span>
@@ -129,7 +130,7 @@ export function DashboardPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center select-none">
               <span className="font-mono text-[10px] uppercase tracking-wider text-outline">
-                SHOWROOM FLOORS MONITOR // TELEMETRY LINKED
+                {translateUiText("SHOWROOM FLOORS MONITOR // TELEMETRY LINKED")}
               </span>
               <StatusChip label="ONLINE" variant="success" />
             </div>
@@ -139,48 +140,48 @@ export function DashboardPage() {
           {/* Active Statistics grid */}
           <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-[10px] uppercase text-outline">ACTIVE OPERATIONS LOG</span>
+              <span className="text-[10px] uppercase text-outline">{translateUiText("ACTIVE OPERATIONS LOG")}</span>
               <Link to="/operations" className="text-[10px] text-primary-container hover:underline">
                 [WORKFLOW]
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">UNTESTED STOCK</span>
+                <span className="text-[9px] text-outline block">{translateUiText("UNTESTED STOCK")}</span>
                 <span className="text-xs font-bold text-[#ffba20]">{dashboard.inventory_summary.untested ?? 0} items</span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">ACTIVE ORDERS</span>
+                <span className="text-[9px] text-outline block">{translateUiText("ACTIVE ORDERS")}</span>
                 <span className="text-xs font-bold text-[#00f2ff]">{dashboard.active_orders.length} units</span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">BUILD QUEUE</span>
+                <span className="text-[9px] text-outline block">{translateUiText("BUILD QUEUE")}</span>
                 <span className="text-xs font-bold text-on-surface">
                   {dashboard.order_fulfillment_summary.orders_in_progress ?? 0} builds
                 </span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">TEST BENCH</span>
+                <span className="text-[9px] text-outline block">{translateUiText("TEST BENCH")}</span>
                 <span className="text-xs font-bold text-on-surface">
                   {dashboard.order_fulfillment_summary.orders_in_testing ?? 0} rigs
                 </span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">QUOTES PROPOSED</span>
+                <span className="text-[9px] text-outline block">{translateUiText("QUOTES PROPOSED")}</span>
                 <span className="text-xs font-bold text-[#00f2ff]">{dashboard.quote_summary.quoted_not_accepted ?? 0} files</span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">RESERVED STOCK</span>
+                <span className="text-[9px] text-outline block">{translateUiText("RESERVED STOCK")}</span>
                 <span className="text-xs font-bold text-on-surface">{dashboard.quote_summary.reserved_inventory ?? 0} units</span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">DIAGNOSING CLAIMS</span>
+                <span className="text-[9px] text-outline block">{translateUiText("DIAGNOSING CLAIMS")}</span>
                 <span className="text-xs font-bold text-[#ffba20]">
                   {dashboard.warranty_summary.diagnosing_warranty_claims ?? 0} claims
                 </span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">WARRANTY EXPOSURE</span>
+                <span className="text-[9px] text-outline block">{translateUiText("WARRANTY EXPOSURE")}</span>
                 <span className="text-xs font-bold text-rose-400">
                   ₫{(dashboard.warranty_summary.warranty_cost_exposure ?? 0).toLocaleString()}
                 </span>
@@ -197,30 +198,30 @@ export function DashboardPage() {
           {/* Staff operations card */}
           <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-[10px] uppercase text-outline">PERSONNEL ROSTER</span>
+              <span className="text-[10px] uppercase text-outline">{translateUiText("PERSONNEL ROSTER")}</span>
               <Link to="/staff" className="text-[10px] text-primary-container hover:underline">
                 [MANAGE]
               </Link>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">TOTAL HEADCOUNT</span>
+                <span className="text-[9px] text-outline block">{translateUiText("TOTAL HEADCOUNT")}</span>
                 <span className="text-sm font-bold text-on-surface">{dashboard.staff_count ?? 0} operators</span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">STANDBY / ACTIVE</span>
+                <span className="text-[9px] text-outline block">{translateUiText("STANDBY / ACTIVE")}</span>
                 <span className="text-sm font-bold text-on-surface">
                   {dashboard.available_staff_count ?? 0} / {Math.max(0, (dashboard.staff_count ?? 0) - (dashboard.available_staff_count ?? 0))}
                 </span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">DAILY DEBIT</span>
+                <span className="text-[9px] text-outline block">{translateUiText("DAILY DEBIT")}</span>
                 <span className="text-sm font-bold text-[#ffba20]">
                   ₫{(dashboard.daily_salary_total_vnd ?? 0).toLocaleString()}
                 </span>
               </div>
               <div className="bg-[#090b0e] border border-white/5 p-2">
-                <span className="text-[9px] text-outline block">TEAM MORALE</span>
+                <span className="text-[9px] text-outline block">{translateUiText("TEAM MORALE")}</span>
                 <span className="text-sm font-bold text-[#00f2ff]">
                   {Number(staffSummary?.average_morale ?? 100).toFixed(0)}%
                 </span>
@@ -231,20 +232,20 @@ export function DashboardPage() {
           {/* Market conditions card */}
           <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
             <div className="flex justify-between items-center border-b border-white/10 pb-2">
-              <span className="text-[10px] uppercase text-outline">MARKET LOG</span>
+              <span className="text-[10px] uppercase text-outline">{translateUiText("MARKET LOG")}</span>
               <Link to="/market" className="text-[10px] text-primary-container hover:underline">
                 [TERMINAL]
               </Link>
             </div>
             <div className="bg-[#080a0d] border border-white/5 p-2 flex justify-between items-center">
               <div>
-                <span className="text-[9px] text-outline block">ACTIVE PRESSURES</span>
+                <span className="text-[9px] text-outline block">{translateUiText("ACTIVE PRESSURES")}</span>
                 <span className="text-xs font-bold text-on-surface">
                   {dashboard.market_summary?.active_market_events_count ?? 0} events
                 </span>
               </div>
               <div className="text-right">
-                <span className="text-[9px] text-outline block">PEAK COEFFICIENT</span>
+                <span className="text-[9px] text-outline block">{translateUiText("PEAK COEFFICIENT")}</span>
                 <span
                   className={`text-xs font-bold ${
                     (dashboard.market_summary?.strongest_market_multiplier ?? 1.0) >= 1.0
@@ -268,7 +269,7 @@ export function DashboardPage() {
         {/* Pending Sales Quotes */}
         <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
           <div className="flex justify-between items-center border-b border-white/10 pb-2">
-            <span className="text-[10px] uppercase text-outline">PENDING SALES QUOTES</span>
+            <span className="text-[10px] uppercase text-outline">{translateUiText("PENDING SALES QUOTES")}</span>
             <Link to="/quotes" className="text-[10px] text-primary-container hover:underline">
               [LEDGER]
             </Link>
@@ -301,7 +302,7 @@ export function DashboardPage() {
         {/* Active Assembly Queue */}
         <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
           <div className="flex justify-between items-center border-b border-white/10 pb-2">
-            <span className="text-[10px] uppercase text-outline">ACTIVE ASSEMBLY QUEUE</span>
+            <span className="text-[10px] uppercase text-outline">{translateUiText("ACTIVE ASSEMBLY QUEUE")}</span>
             <Link to="/orders" className="text-[10px] text-primary-container hover:underline">
               [BUILD BAY]
             </Link>
@@ -332,7 +333,7 @@ export function DashboardPage() {
         {/* Warranty RMA Incidents */}
         <ConsolePanel variant="z-1" className="space-y-3 font-mono text-[11px]">
           <div className="flex justify-between items-center border-b border-white/10 pb-2">
-            <span className="text-[10px] uppercase text-outline">WARRANTY RMA INCIDENTS</span>
+            <span className="text-[10px] uppercase text-outline">{translateUiText("WARRANTY RMA INCIDENTS")}</span>
             <Link to="/warranty" className="text-[10px] text-primary-container hover:underline">
               [RMA DESK]
             </Link>

@@ -152,7 +152,7 @@ def create_conversation_for_customer(
         db,
         save_game_id,
         conversation.id,
-        _t(normalized_locale, "Da mo cuoc tro chuyen cho yeu cau cua khach.", "Conversation opened for customer request."),
+        _t(normalized_locale, "Đã mở cuộc trò chuyện cho yêu cầu của khách.", "Conversation opened for customer request."),
         metadata={
             "event": "conversation_opened",
             "persona_type": persona_type,
@@ -291,7 +291,7 @@ def handle_player_message(
         save_game_id,
         conversation.id,
         sender_type=ConversationMessageSender.PLAYER,
-        sender_label=_t(normalized_locale, "Ban", "You"),
+        sender_label=_t(normalized_locale, "Bạn", "You"),
         body=message_body,
     )
 
@@ -307,7 +307,7 @@ def handle_player_message(
             conversation.id,
             sender_type=ConversationMessageSender.CUSTOMER,
             body=reply_payload["body"],
-            sender_label=conversation.customer.name if conversation.customer else _t(normalized_locale, "Khach hang", "Customer"),
+            sender_label=conversation.customer.name if conversation.customer else _t(normalized_locale, "Khách hàng", "Customer"),
             message_type=ConversationMessageType.TEXT,
             metadata=reply_payload.get("metadata"),
         )
@@ -341,7 +341,7 @@ def assign_sales_staff(
         conversation.id,
         _t(
             normalized_locale,
-            f"Da phan cong nhan su tu van: {staff.name} ({staff.role.value}).",
+            f"Đã phân công nhân sự tư vấn: {staff.name} ({staff.role.value}).",
             f"Assigned sales staff: {staff.name} ({staff.role.value}).",
         ),
         metadata={
@@ -385,8 +385,8 @@ def quick_reply(
             save_game_id,
             conversation.id,
             ConversationMessageSender.PLAYER,
-            _t(normalized_locale, "Minh dang muon giu ngan sach trong khoang nao a?", "What budget range are you trying to stay within?"),
-            sender_label=_t(normalized_locale, "Ban", "You"),
+            _t(normalized_locale, "Mình đang muốn giữ ngân sách trong khoảng nào ạ?", "What budget range are you trying to stay within?"),
+            sender_label=_t(normalized_locale, "Bạn", "You"),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
         )
@@ -408,8 +408,8 @@ def quick_reply(
             save_game_id,
             conversation.id,
             ConversationMessageSender.PLAYER,
-            _t(normalized_locale, "Minh se dung bo may nay chu yeu cho viec gi a?", "What will you mainly use the PC for?"),
-            sender_label=_t(normalized_locale, "Ban", "You"),
+            _t(normalized_locale, "Mình sẽ dùng bộ máy này chủ yếu cho việc gì ạ?", "What will you mainly use the PC for?"),
+            sender_label=_t(normalized_locale, "Bạn", "You"),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
         )
@@ -433,10 +433,10 @@ def quick_reply(
             ConversationMessageSender.PLAYER,
             _t(
                 normalized_locale,
-                "Neu de giu dung ngan sach thi minh co the chap nhan linh kien cu da test ky khong a?",
+                "Nếu để giữ đúng ngân sách thì mình có thể chấp nhận linh kiện cũ đã test kỹ không ạ?",
                 "Would you accept tested used parts if it keeps the build under budget?",
             ),
-            sender_label=_t(normalized_locale, "Ban", "You"),
+            sender_label=_t(normalized_locale, "Bạn", "You"),
             message_type=ConversationMessageType.QUICK_REPLY,
             action_type=action,
         )
@@ -462,7 +462,7 @@ def quick_reply(
             ConversationMessageSender.STAFF if conversation.assigned_staff_id else ConversationMessageSender.PLAYER,
             _t(
                 normalized_locale,
-                "Em nghi mot cau hinh toi uu gia tri se hop ngan sach hon ma van giu duoc hieu nang.",
+                "Em nghĩ một cấu hình tối ưu giá trị sẽ hợp ngân sách hơn mà vẫn giữ được hiệu năng.",
                 "A hybrid value build may fit your budget better while preserving performance.",
             ),
             sender_label=_assigned_staff_name(conversation),
@@ -491,7 +491,7 @@ def quick_reply(
             ConversationMessageSender.STAFF if conversation.assigned_staff_id else ConversationMessageSender.PLAYER,
             _t(
                 normalized_locale,
-                "Neu di toan do moi thi se yen tam hon ve bao hanh, nhung chi phi co the cao hon.",
+                "Nếu đi toàn đồ mới thì sẽ yên tâm hơn về bảo hành, nhưng chi phí có thể cao hơn.",
                 "An all-new build improves warranty confidence, but it may stretch the budget.",
             ),
             sender_label=_assigned_staff_name(conversation),
@@ -520,7 +520,7 @@ def quick_reply(
             ConversationMessageSender.STAFF if conversation.assigned_staff_id else ConversationMessageSender.PLAYER,
             _t(
                 normalized_locale,
-                "Linh kien cu hoac do tin cay thap co the tiet kiem tien, nhung rui ro bao hanh se cao hon.",
+                "Linh kiện cũ hoặc độ tin cậy thấp có thể tiết kiệm tiền, nhưng rủi ro bảo hành sẽ cao hơn.",
                 "Used or low-confidence parts can save money, but may increase warranty risk.",
             ),
             sender_label=_assigned_staff_name(conversation),
@@ -546,7 +546,7 @@ def quick_reply(
             save_game_id,
             conversation.id,
             ConversationMessageSender.SYSTEM,
-            _t(normalized_locale, "Da bat dau len bao gia cho yeu cau hien tai.", "Quote build initiated for the current request."),
+            _t(normalized_locale, "Đã bắt đầu lên báo giá cho yêu cầu hiện tại.", "Quote build initiated for the current request."),
             sender_label="System",
             message_type=ConversationMessageType.ACTION_EVENT,
             action_type=action,
@@ -596,7 +596,7 @@ def send_quote_to_customer(
         message_type=ConversationMessageType.QUOTE_ATTACHMENT,
         action_type=ConversationActionType.SEND_QUOTE,
         quote_id=quote.id,
-        body=_t(normalized_locale, f"Da gui bao gia: #{quote.id} - {quote.title}", f"Quote attached: #{quote.id} - {quote.title}"),
+        body=_t(normalized_locale, f"Đã gửi báo giá: #{quote.id} - {quote.title}", f"Quote attached: #{quote.id} - {quote.title}"),
         metadata={
             "quote_id": quote.id,
             "quote_status": quote.status.value,
@@ -639,7 +639,7 @@ def mark_ready_to_order(
         conversation.id,
         _t(
             normalized_locale,
-            "Khach da san sang dat hang. Bay gio co the chuyen bao gia thanh don theo quy trinh hien tai.",
+            "Khách đã sẵn sàng đặt hàng. Bây giờ có thể chuyển báo giá thành đơn theo quy trình hiện tại.",
             "Customer is ready to order. Quote can now be converted using the existing quote workflow.",
         ),
         metadata={"event": "ready_to_order"},
@@ -667,9 +667,9 @@ def close_conversation(
         db,
         save_game_id,
         conversation.id,
-        _t(normalized_locale, "Da dong cuoc tro chuyen va chot thanh cong.", "Conversation closed as won.")
+        _t(normalized_locale, "Đã đóng cuộc trò chuyện và chốt thành công.", "Conversation closed as won.")
         if won
-        else _t(normalized_locale, "Da dong cuoc tro chuyen va mat khach.", "Conversation closed as lost."),
+        else _t(normalized_locale, "Đã đóng cuộc trò chuyện và mất khách.", "Conversation closed as lost."),
         metadata={"won": won, "event": "conversation_closed"},
     )
     _sync_request_from_conversation(conversation)
@@ -996,11 +996,11 @@ def _warranty_reply(conversation: CustomerConversation, customer: Customer | Non
 
 def _build_intent_summary(conversation: CustomerConversation, detected_preferences: dict[str, Any], locale: str) -> str:
     used_parts = conversation.accepts_used_parts
-    used_parts_label = "co" if used_parts is True else "khong" if used_parts is False else "chua ro"
-    warranty_label = detected_preferences.get("warranty_sensitivity", "chua ro")
+    used_parts_label = "có" if used_parts is True else "không" if used_parts is False else "chưa rõ"
+    warranty_label = detected_preferences.get("warranty_sensitivity", "chưa rõ")
     return _t(
         locale,
-        "Da phan tich nhu cau: "
+        "Đã phân tích nhu cầu: "
         f"ngan_sach={_format_vnd(conversation.detected_budget_vnd)}, "
         f"muc_dich={conversation.detected_use_case or 'khong_ro'}, "
         f"chap_nhan_do_cu={used_parts_label}, "
